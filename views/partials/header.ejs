@@ -1,0 +1,74 @@
+<!-- navbarrrr -->
+<nav class="flex items-center justify-between p-4 bg-black text-white h-20">
+  <img src="../img/comiX.png" alt="ComiX Logo" class="h-32 w-auto ml-5 ">
+  <div class="hidden md:flex items-center space-x-8">
+      <a href="#" class="hover:text-gray-300">Home</a>
+      <a href="#" class="hover:text-gray-300">Shop</a>
+
+      <div class="relative w-full md:w-2/5">
+        <input type="text" placeholder="Search" class="bg-black text-white text-sm px-4 py-2 border rounded-full w-full pr-10 focus:outline-none focus:ring-2 focus:ring-gray-500">
+        <button class="absolute right-2 top-1/2 transform -translate-y-1/2" aria-label="Search">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </button>
+      </div>
+
+
+
+
+      <a href="#" class="hover:text-gray-300">
+          <i class="fas fa-heart"></i>
+        </a>
+        <a href="#" class="hover:text-gray-300">
+          <i class="fas fa-shopping-cart"></i>
+        </a>
+      <a href="#" class="hover:text-gray-300">
+          <i class="fas fa-user"></i>
+      </a>
+
+      <!-- <div class="relative" x-data="{ userOpen: false }">
+        <button @click="userOpen = !userOpen" class="hover:text-gray-300 focus:outline-none">               //dropbox menu//
+            <i class="fas fa-user"></i>
+        </button>
+        <div x-show="userOpen" @click.away="userOpen = false" class="absolute right-0 mt-2 w-48 bg-black text-white rounded-md shadow-lg">
+            <a href="#" class="block px-4 py-2 hover:bg-gray-700">Login</a>
+            <a href="#" class="block px-4 py-2 hover:bg-gray-700">My Profile</a>
+        </div>
+    </div>  -->
+
+  </div>
+ 
+
+  <div class="md:hidden" x-data="{ open: false }">
+    <button @click="open = !open" class="focus:outline-none">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+        </svg>
+    </button>
+    <div x-show="open" class="absolute right-0 mt-2 w-48 bg-black text-white rounded-md shadow-lg z-40"> 
+        <a href="#" class="block px-4 py-2 hover:bg-gray-700">Home</a>
+        <a href="#" class="block px-4 py-2 hover:bg-gray-700">Shop</a>
+        <a href="#" class="block px-4 py-2 hover:bg-gray-700">
+            <i class="fas fa-heart"></i>
+        </a>
+        <a href="#" class="block px-4 py-2 hover:bg-gray-700">
+            <i class="fas fa-shopping-cart"></i>
+        </a>
+        <a href="#" class="block px-4 py-2 hover:bg-gray-700">
+            <i class="fas fa-user"></i>
+        </a>
+
+        <!-- <div class="relative w-full md:w-2/5">
+          <input type="text" placeholder="Search" class="bg-black text-white text-sm px-4 py-2 border rounded-full w-full pr-10 focus:outline-none focus:ring-2 focus:ring-gray-500">
+          <button class="absolute right-2 top-1/2 transform -translate-y-1/2" aria-label="Search">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </button>
+        </div> -->
+    </div>
+</div>
+</div>
+</nav>
+<!-- nabar enedd -->

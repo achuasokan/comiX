@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Category</title>
+ 
+</head>
+<body class="bg-[#18191a] text-gray-200 m-0 p-0 flex flex-col md:flex-row min-h-screen">
+
+  <!-- Sidebar -->
+  <div class="sidebar bg-[#121212] flex flex-col items-center border-b md:border-r border-[#3a3a3a] shadow-lg w-full md:w-[280px] md:h-screen p-6">
+    <img src="/img/comiX.png" alt="comiX Logo" class="w-11/12 h-auto -mt-6">
+    <div class="w-full space-y-3 mt-6">
+      <!-- nav links -->
+      <div class="flex items-center bg-[#1f1f1f] hover:bg-[#2f2f2f] text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
+        <a href="/admin/dashboard" class="w-full">Dashboard</a>
+      </div>
+      <div class="flex items-center bg-[#1f1f1f] hover:bg-[#2f2f2f] text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
+        <a href="#" class="w-full">Products</a>
+      </div>
+      <div class="flex items-center bg-[#1f1f1f] hover:bg-[#2f2f2f] text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
+        <a href="/admin/users" class="w-full">Customers</a>
+      </div>
+      <div class="flex items-center bg-[#1f1f1f] hover:bg-[#2f2f2f] text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
+        <a href="/admin/category" class="w-full">Category</a>
+      </div>
+      <div class="flex items-center bg-[#1f1f1f] hover:bg-[#2f2f2f] text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
+        <a href="#" class="w-full">Orders</a>
+      </div>
+      <div class="flex items-center bg-[#1f1f1f] hover:bg-[#2f2f2f] text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
+        <a href="#" class="w-full">Coupons</a>
+      </div>
+      <div class="flex items-center bg-[#1f1f1f] hover:bg-[#2f2f2f] text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
+        <a href="#" class="w-full">Offers</a>
+      </div>
+      <div class="flex items-center bg-[#1f1f1f] hover:bg-[#2f2f2f] text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
+        <a href="#" class="w-full">Banner</a>
+      </div>
+      <div class="flex items-center bg-[#1f1f1f] hover:bg-[#2f2f2f] text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
+        <a href="#" class="w-full">Sales Report</a>
+      </div>
+      <div class="flex items-center bg-[#1f1f1f] hover:bg-[#2f2f2f] text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
+        <a href="/admin/logout" class="w-full">Logout</a>
+      </div>
+    </div>
+  </div>
+  <!-- Sidebar end -->
+
+  <!-- Main Content -->
+  <div class="flex flex-col flex-grow w-full md:w-auto">
+    <!-- Navbar -->
+    <nav class="bg-[#18191a] h-11 shadow-md flex items-center justify-center px-6">
+      <div class="relative w-full md:w-2/5">
+        <input type="text" placeholder="Search" class="bg-[#242526] text-gray-200 text-sm px-4 py-2 rounded-full w-full pr-10 focus:outline-none focus:ring-2 focus:ring-gray-500">
+        <button class="absolute right-2 top-1/2 transform -translate-y-1/2" aria-label="Search">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </button>
+      </div>
+    </nav>
+    <!-- Navbar end -->
+
+          
+    <div class="flex-grow p-6 overflow-y-auto">
+
+             <!-- Add Category Button -->
+             <div class="flex justify-end items-center">
+              <a href="/add-category" class="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-2 px-4 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110">  
+                  Add New Category      
+              </a>
+            </div>
+
+            <!-- Add Category Button end -->
+
+               <!-- Table -->
+                
+      <div class="mt-8">
+
+        <h2 class="text-2xl font-bold text-white mb-6">Category</h2>
+        
+        <div class="bg-[#242526] rounded-lg shadow-lg overflow-x-auto">
+
+          <table class=" w-full text-sm text-left text-gray-300">
+
+            <thead class="text-xs  bg-[#1f1f1f] text-gray-400 text-center">
+              <tr>
+                <th scope="col" class="px-6 py-4 font-medium text-xl">SI</th>
+                <th scope="col" class="px-6 py-4 font-medium text-xl">Name</th>
+                <th scope="col" class="px-6 py-4 font-medium text-xl">Added on</th>
+              
+                <th scope="col" class="px-6 py-4 font-medium text-xl">Status</th>
+                <th scope="col" class="px-6 py-4 font-medium text-xl">Action</th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              <tr class="border-b border-[#3a3a3a] hover:bg-[#2a2a2a] transition-colors duration-200 text-center">
+                <td class="px-6 py-4 font-medium text-lg">1</td>
+                <td class="px-6 py-4 text-lg ">Marvel</td>
+                <td class="px-6 py-4 text-lg ">10/12/2024</td>
+
+                <td class="px-6 py-4 font-semibold  text-lg ">Active</td>
+                <td class="px-6 py-4">
+                  <span class="bg-gradient-to-r from-amber-600 to-lime-700 text-white text-sm tracking-widest  font-medium px-2.5 py-1 rounded-full">Edit</span>
+                  <span class="bg-red-600 text-white text-xs tracking-widest  font-medium px-3.5 py-1.5 rounded-full">Delete</span>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+
+      <div class="flex justify-center items-center space-x-2 mt-6">
+        <a href="#" class="px-4 py-2 bg-[#1f1f1f] text-gray-300 rounded-md hover:bg-[#2f2f2f] transition duration-200">Previous</a>
+        <a href="#" class="px-4 py-2 bg-[#1f1f1f] text-gray-300 rounded-md hover:bg-[#2f2f2f] transition duration-200">1</a>
+        <a href="#" class="px-4 py-2 bg-[#1f1f1f] text-gray-300 rounded-md hover:bg-[#2f2f2f] transition duration-200">2</a>
+        <a href="#" class="px-4 py-2 bg-[#1f1f1f] text-gray-300 rounded-md hover:bg-[#2f2f2f] transition duration-200">3</a>
+        <a href="#" class="px-4 py-2 bg-[#1f1f1f] text-gray-300 rounded-md hover:bg-[#2f2f2f] transition duration-200">Next</a>
+      </div>
+      <!-- Pagination end -->
+
+    </div>
+    <!-- Table end -->
+  </div>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+</body>
+</html>
