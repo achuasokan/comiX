@@ -6,15 +6,8 @@ const isUser=(req,res,next)=>{
   }
 }
 
-const isUserLogout=(req,res,next)=>{
-  if(req.session.userID){
-    // res.redirect('/user/dashboard')
-    res.redirect('/')
-  }else{
-    next()
-  }
-}
-export default {
-  isUser,
-  isUserLogout
-}
+
+export default  isUser
+
+
+

@@ -1,16 +1,16 @@
 import mongoose from "mongoose";
 
 const userSchema=mongoose.Schema({
-  name:{
+  name: {
     type:String,
     required:true
   },
-  email:{
+  email: {
     type:String,
     required:true,
     unique:true
   },
-  password:{
+  password: {
     type:String,
     minlength:6
   },
@@ -31,17 +31,11 @@ const userSchema=mongoose.Schema({
     type:Boolean,
     default:false
   },
-  address:{
-    type:mongoose.Schema.Types.ObjectId,
-    ref:'Address'
-  },
-  orders:{
-    type:mongoose.Schema.Types.ObjectId,
-    ref:'Order'
+  mobile:{
+    type:Number
   }
-  
 },{timestamps:true})
 
-const User=mongoose.model('User',userSchema)
+const User= mongoose.model('User',userSchema)
 
 export default User

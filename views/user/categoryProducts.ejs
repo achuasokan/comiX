@@ -1,0 +1,66 @@
+<!-- Main container/body -->
+ <div class="bg-black text-white">
+
+   <%- include ('../partials/header.ejs')%>
+
+   <!-- Category name -->
+   <div class="bg-gradient-to-r from-yellow-400 to-orange-500 shadow-lg flex justify-center items-center h-24 md:h-28 lg:h-28">
+     <h1 class="text-4xl md:text-4xl lg:text-5xl font-bold text-gray-800 text-center almendra-sc-regular"><%= category.name %></h1>    
+       </div>
+       <!-- Sort by option-->
+       <div class="flex  justify-between mb-4 p-4">  
+        <div class="flex items-center">
+          <label for="filter" class="text-white mr-2 font-semibold">Filter</label>
+          <select id="filter" onchange="filterProducts()" class="bg-gray-700 text-white rounded-md p-2 transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="all">All</option>
+              <option value="brand1">Brand 1</option>
+              <option value="brand2">Brand 2</option>
+          </select>
+      </div>
+  
+        <div class="flex items-center">
+            <label for="sort" class="text-white mr-2 font-semibold">Sort by:</label>
+            <select id="sort" class="bg-gray-700 text-white rounded-md p-2 transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="asc">Low to High</option>
+                <option value="desc">High to Low</option>
+                <option value="desc">A-Z</option>
+                <option value="desc">Z-A</option>
+            </select>
+        </div>
+     </div>
+
+
+       <!-- Product cards -->
+       <section
+       class="flex flex-wrap justify-center gap-14 mt-10 mb-5 ">     
+          <% product.forEach(products => { %>
+           
+           <div class="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
+               <a href="/product/<%= products._id %>">
+   
+                   <img src="<%= products.image[1] %>" alt="<%= products.image[1] %>" class="h-80 w-72 object-cover rounded-t-xl" />
+               </a>
+                 <div class="px-4 py-3 w-72">
+                   <span class="text-gray-400 mr-3 uppercase text-xs"><%= products.category.name %></span>
+                   <p class="text-lg font-bold text-black truncate block capitalize"><%= products.name %></p>
+                   <div class="flex items-center">
+                     <p class="text-lg font-semibold text-black cursor-auto my-3">₹<%= products.price %></p>
+                     <!-- <del>
+                       <p class="text-sm text-gray-600 cursor-auto ml-2">$199</p>
+                     </del> -->
+                     <div class="ml-auto">
+                       <a href="#">
+                           <i class="fas fa-cart-plus text-black"></i> 
+                       </a>
+                     </div>
+                   </div>
+                 </div>
+               
+             </div>
+          <% }) %>
+               
+   </section>
+
+   <%- include ('../partials/footer.ejs')%>
+   
+ </div>

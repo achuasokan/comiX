@@ -1,0 +1,86 @@
+<!-- main Container/body -->
+    <div class="bg-black text-white">
+      
+        <%- include('../partials/header.ejs')%>
+
+
+            <!-- Banner -->
+        <section class="relative h-96 bg-cover bg-center" style="background-image: url('../img/banner.jpg');">
+            <div class="absolute inset-0 bg-black bg-opacity-10 flex justify-center items-center mt-52">
+              <h1 class="text-white text-3xl md:text-5xl font-bold font-">
+                Seen the World of Unseen
+              </h1>
+            </div>
+          </section>
+          
+          <!-- Category -->
+          <div class="bg-black py-8">
+            <h2 class="text-center text-5xl mb-8  almendra-sc-regular">Category</h2>         
+            <!--  grid layout -->
+             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
+                 <!-- Card 1 -->
+                  <% if (categorylist .length > 0 ) { %>
+               <% categorylist.forEach(Category => { %>
+                <div class="  rounded-lg overflow-hidden shadow-lg">
+                  <div class="h-96 w-full overflow-hidden">
+                    <a href="/Category/<%= Category._id %>">
+                      <img src="<%- Category.image %>" alt="<%- Category.image %>" class="w-full h-full object-cover" loading="lazy">
+                    </a>
+                  </div>
+                  <div class="p-4">
+                    <h3 class="text-white text-xl font-semibold text-center"><%- Category.name %></h3>
+                    <p class="text-center">
+                      <a href="/Category/<%= Category._id %>" class="text-orange-400 hover:text-orange-600 font-bold">Shop Now</a>
+                    </p>
+                  </div>
+                </div>
+               <% }) %>     
+               <% } else { %>
+                <p class="text-center text-red-400">No categories available</p>
+                <% } %>        
+            </div>
+          </div>
+    
+       
+    
+    <!-- Latest Products -->
+    <div class="text-center p-10">
+        <h1 class="font-bold text-4xl mb-4">Latest Products</h1>
+        
+    </div>
+    
+    <!-- ✅ product Section - Starts Here 👇 -->
+    <section
+        class="flex flex-wrap justify-center gap-14 mt-10 mb-5 ">
+           <% latestproduct.forEach(products => { %>
+            
+            <article class="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
+                <a href="/product/<%= products._id %>">
+    
+                    <img src="<%= products.image[1] %>" alt="<%= products.image[1] %>" class="h-80 w-72 object-cover rounded-t-xl" />
+                </a>
+                  <div class="px-4 py-3 w-72">
+                    <span class="text-gray-400 mr-3 uppercase text-xs"><%= products.category.name %></span>
+                    <p class="text-lg font-bold text-black truncate block capitalize"><%= products.name %></p>
+                    <div class="flex items-center">
+                      <p class="text-lg font-semibold text-black cursor-auto my-3">₹<%= products.price %></p>
+                      <!-- <del>
+                        <p class="text-sm text-gray-600 cursor-auto ml-2">$199</p>
+                      </del> -->
+                      <div class="ml-auto">
+                        <a href="#">
+                            <i class="fas fa-cart-plus text-black"></i> 
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                
+            </article>
+           <% }) %>
+                
+    </section>
+    
+    <%- include('../partials/footer.ejs') %>
+  
+    </div>
+    

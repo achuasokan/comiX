@@ -42,7 +42,7 @@ const addressSchema=mongoose.Schema({
 
 },{timestamps:true})
 
-const address=mongoose.model('Address',addressSchema)
+const address = mongoose.model('Address',addressSchema)
 
 export default address
 

@@ -1,0 +1,75 @@
+<!-- Sidebar -->
+   
+<div class="sidebar bg-[#121212] flex flex-col items-center border-r border-[#3a3a3a] shadow-lg h-screen w-[280px] p-6">
+  <!-- <img src="/public/img/comiX.png" alt="comiX Logo" class="w-full h-auto "> -->
+  <img src="/img/comiX.png" alt="comiX Logo" class="w-11/12 h-auto -mt-6">
+  <div class="w-full space-y-3">
+    <!-- nav links -->
+    <div class="flex items-center bg-[#1f1f1f] hover:bg-[#2f2f2f] text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
+      <a href="/admin/dashboard">Dashboard</a>
+    </div>
+    <div class="flex items-center bg-[#1f1f1f] hover:bg-[#2f2f2f] text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
+      <a href="/admin/products">Products</a>
+    </div>
+    <div class="flex items-center bg-[#1f1f1f] hover:bg-[#2f2f2f] text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
+      <a href="/admin/users">Customers</a>
+    </div>
+    <div class="flex items-center bg-[#1f1f1f] hover:bg-[#2f2f2f] text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
+      <a href="/admin/category">Category</a>
+    </div>
+    <div class="flex items-center bg-[#1f1f1f] hover:bg-[#2f2f2f] text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
+      <a href="#">Orders</a>
+    </div>
+    <div class="flex items-center bg-[#1f1f1f] hover:bg-[#2f2f2f] text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
+      <a href="#">Coupons</a>
+    </div>
+    <div class="flex items-center bg-[#1f1f1f] hover:bg-[#2f2f2f] text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
+      <a href="#">Offers</a>
+    </div>
+    <div class="flex items-center bg-[#1f1f1f] hover:bg-[#2f2f2f] text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
+      <a href="#">Banner</a>
+    </div>
+    <div class="flex items-center bg-[#1f1f1f] hover:bg-[#2f2f2f] text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
+      <a href="#">Sales Report</a>
+    </div>
+    <div class="flex items-center bg-[#1f1f1f] hover:bg-[#2f2f2f] text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
+      <a href="#" id="logoutLink">Logout</a>
+    </div>
+  </div>
+</div>
+
+
+<!--------------------------------- Logout Modal  ------------------------------>
+<div id="logoutModal" class="fixed inset-0 bg-[#121212] bg-opacity-90 flex items-center justify-center hidden">
+  <div class="bg-[#1f1f1f] p-6 rounded-lg shadow-lg max-w-sm w-full mx-4">
+    <h4 class="text-xl font-semibold mb-4 text-gray-300">Confirm Logout</h4>
+    <p class="mb-4 text-gray-200">Are you sure you want to log out?</p>
+    <div class="flex justify-end space-x-2">
+      <button id="cancelLogout" class="bg-gray-600 text-white py-2 px-4 rounded-lg shadow-md hover:bg-gray-700 transition">Cancel</button>
+      <a href="/admin/logout" id="confirmLogout" class="bg-red-600 text-white py-2 px-4 rounded-lg shadow-md hover:bg-red-700 transition">Log Out</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const logoutLink = document.getElementById('logoutLink');
+    const logoutModal = document.getElementById('logoutModal');
+    const cancelLogout = document.getElementById('cancelLogout');
+    const confirmLogout = document.getElementById('confirmLogout');
+
+    logoutLink.addEventListener('click', function(event) {
+      event.preventDefault();
+      logoutModal.classList.remove('hidden');
+    });
+
+    cancelLogout.addEventListener('click', function() {
+      logoutModal.classList.add('hidden');
+    });
+
+    confirmLogout.addEventListener('click', function() {
+      logoutModal.classList.add('hidden');
+     
+    });
+  });
+</script>

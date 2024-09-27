@@ -1,19 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Signup</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
- 
-<!-- <script src="https://cdn.tailwindcss.com"></script> -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head>
-<body>
+
   <%- include('../partials/header.ejs')%>
 
   <div class="min-h-screen flex items-center justify-center bg-black">
-    <!-- <div class="min-h-screen w-auto  flex items-center justify-center bg-cover bg-center" style="background-image: url('../img/mikasa.jpg')"> -->
   
     <div class="bg-black bg-opacity-10 p-8 mb-6 rounded-xl max-w-md w-full">
   
@@ -23,52 +11,45 @@
   
           <h2 class="text-4xl p-2 font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-red-600 mb-8 text-center ">SignUp</h2>
   
-          <% if (typeof message !== 'undefined') { %>
+          <% if (locals.message) { %>
             <div class="mb-4 p-3 bg-gradient-to-r from-red-500/30 to-orange-500/30 rounded-lg backdrop-blur-sm">
               <div class="flex items-center">
-                <svg class="w-5 h-5 text-red-400 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
-                </svg>
-                <p class="text-red-200 text-sm"><%= message %></p>
+                <p class="text-red-200 text-sm"><%= locals.message %></p>
               </div>
             </div>
-          <% } %>
+         <% } %>
   
-          <!-- <% if (typeof error !== 'undefined') { %>
-            <div class="mb-4 p-3 bg-red-500/20 border border-red-500/50 rounded-lg backdrop-blur-sm">
-              <p class="text-red-400 text-sm text-center"><%= error %></p>
-            </div>
-          <% } %> -->
   
-          <form class="space-y-4" action="/signup" method="post">
-            
-  
+          <form class="space-y-4" action="/signup" method="post" id="signupForm">
             <div class="relative">
               <label for="name" class="text-white text-lg transition-all duration-300 pointer-events-none transform origin-left">Username</label>
-        <input id="name"name="name" type="text" placeholder="Enter your name" required class="w-full px-2 py-2 bg-white/5 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 placeholder:text-gray-500 backdrop-blur transition duration-300">
+              <input id="name" name="name" type="text" placeholder="Enter your name" required class="w-full px-2 py-2 bg-white text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 placeholder:text-gray-500 backdrop-blur transition duration-300">
+              <p id="nameError" class="text-red-200 text-sm" aria-live="assertive"></p>
             </div>
             
             <div class="relative">
               <label for="email" class="text-white text-lg transition-all duration-300 pointer-events-none transform origin-left">Email</label>
-        <input id="email"name="email" type="email" placeholder="Enter your Email" required class="w-full px-2 py-2 bg-white/5 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 placeholder:text-gray-500 backdrop-blur transition duration-300">
+              <input id="email" name="email" type="email" placeholder="Enter your Email" required class="w-full px-2 py-2 bg-white text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 placeholder:text-gray-500 backdrop-blur transition duration-300">
+              <p id="emailError" class="text-red-200 text-sm" aria-live="assertive"></p>
             </div>
             
             <div class="relative">
               <label for="password" class="text-white text-lg transition-all duration-300 pointer-events-none transform origin-left">Password</label>
-              <input id="password"name="password" type="password" placeholder="Enter your Password" required class="w-full px-2 py-2 bg-white/5 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 placeholder:text-gray-500 backdrop-blur transition duration-300">
+              <input id="password" name="password" type="password" placeholder="Enter your Password" required class="w-full px-2 py-2 bg-white text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 placeholder:text-gray-500 backdrop-blur transition duration-300">
+              <p id="passwordError" class="text-red-200 text-sm" aria-live="assertive"></p>
             </div>
-  
+
+            <div class="relative">
+              <label for="confirmPassword" class="text-white text-lg transition-all duration-300 pointer-events-none transform origin-left"> Confirm Password</label>
+              <input id="confirmPassword" name="confirmPassword" type="password" placeholder="Confirm your Password" required class="w-full px-2 py-2 bg-white text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 placeholder:text-gray-500 backdrop-blur transition duration-300">
+              <p id="confirmPasswordError" class="text-red-200 text-sm" aria-live="assertive"></p>
+            </div>
+          
             <div>
-              
-              <button
-                type="submit"
-                class="w-full py-2 px-2 bg-gradient-to-r from-yellow-400 to-red-600 text-white font-bold rounded-lg hover:from-yellow-500 hover:to-red-700 transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400 transform hover:scale-105"
-              >
+              <button type="submit" class="w-full py-2 px-2 bg-gradient-to-r from-yellow-400 to-red-600 text-white font-bold rounded-lg hover:from-yellow-500 hover:to-red-700 transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400 transform hover:scale-105">
                 SignUp
               </button>
             </div>
-  
-  
           </form>
           <!-- google auth -->
           <div class="mt-5">
@@ -115,6 +96,85 @@
 
   <%- include('../partials/footer.ejs') %>
 
-  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-</body>
-</html>
+  <script>
+    const form = document.getElementById('signupForm');
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput=document.getElementById('confirmPassword')
+    const nameError = document.getElementById('nameError');
+    const emailError = document.getElementById('emailError');
+    const passwordError = document.getElementById('passwordError');
+    const confirmPasswordError= document.getElementById('confirmPasswordError')
+  
+  
+    
+    const namePattern = /^(?! )[A-Za-z ]{4,}$/;
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])(?!.*\s)[A-Za-z\d!@#$%^&*]{6,}$/;
+  
+    // Real-time name validation
+    nameInput.addEventListener('input', function () {
+      if (!namePattern.test(nameInput.value)) {
+        nameError.textContent = "Name must be at least 4 characters long and contain only alphabets.";
+      } else {
+        nameError.textContent = "";
+      }
+    });
+  
+    // Real-time email validation
+    emailInput.addEventListener('input', function () {
+      if (!emailPattern.test(emailInput.value)) {
+        emailError.textContent = "Please enter a valid email address.";
+      } else {
+        emailError.textContent = "";
+      }
+    });
+  
+    // Real-time password validation
+    passwordInput.addEventListener('input', function () {
+      if (!passwordPattern.test(passwordInput.value)) {
+        passwordError.textContent = "Password must be at least 6 characters long, include upper and lower case letters, a digit anda special character.";
+      } else {
+        passwordError.textContent = "";
+      }
+    });
+
+    confirmPasswordInput.addEventListener('input', function () {
+      if(passwordInput.value !== confirmPasswordInput.value) {
+        confirmPasswordError.textContent = "The passwords you entered do not match.Please try again."
+      } else {
+        confirmPasswordError.textContent = "";
+      }
+    })
+  
+    // Final validation on form submit
+    form.addEventListener('submit', function (event) {
+      let valid = true;
+  
+      if (!namePattern.test(nameInput.value)) {
+        nameError.textContent = "Name must be at least 4 characters long and contain only alphabets.";
+        valid = false;
+      }
+  
+      if (!emailPattern.test(emailInput.value)) {
+        emailError.textContent = "Please enter a valid email address.";
+        valid = false;
+      }
+  
+      if (!passwordPattern.test(passwordInput.value)) {
+        passwordError.textContent = "Password must be at least 6 characters long, include upper and lower case letters, a digit anda special character.";
+        valid = false;
+      }
+
+      if (passwordInput.value !== confirmPasswordInput.value) {
+        confirmPasswordError.textContent = "The passwords you entered do not match. Please try again."
+        valid = false;
+      }
+  
+      // Prevent form submission if validation fails
+      if (!valid) {
+        event.preventDefault();
+      }
+    });
+  </script>

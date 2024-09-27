@@ -11,7 +11,7 @@ passport.use(new GoogleStrategy({                                               
   callbackURL: process.env.GOOGLE_CALLBACK_URL                                            //  google callback url
 
 },
-async(a,b,profile,done)=>{                                                                // google callback
+async(acessToken,refreshToken,profile,done)=>{                                                                // google callback
   try{
     console.log(1);
     let user=await userModel.findOne({email:profile.emails[0].value})                     // find user
@@ -24,9 +24,9 @@ async(a,b,profile,done)=>{                                                      
         name:profile.displayName,                                                         // user name
         email:profile.emails[0].value                                                     // user email
       });
-      console.log(`user created`);
-      done(null,user)
+      console.log(`user created`,user);
     }
+    done(null,user)
   }catch(error){
     done(error,null)
   }

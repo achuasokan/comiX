@@ -1,8 +1,11 @@
 import userModel from "../../models/User.js"
 
-export const getDashboard=async (req,res) =>{                                                    //admin dashboard
+// //  //  //   //  //          GET DASHBOARD PAGE    //  //  //  //  //  //  // 
+
+export const getDashboard=async (req,res) =>{  
+                                                   
   try{
-    res.render('admin/dashboard')                                                                 //render dashboard
+    res.render('admin/dashboard')                                                                 
   }catch(error){
     console.log(error);
   }

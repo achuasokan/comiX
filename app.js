@@ -8,6 +8,8 @@ import dotenv from "dotenv";
 import {fileURLToPath} from "url";
 import connectDB from './config/db.js'
 import passport from './config/passport.js'
+import expressLayouts from 'express-ejs-layouts';
+
 
 //dotenv config
 dotenv.config();
@@ -27,6 +29,7 @@ import userRouter from './routes/userRoutes.js'
 import adminRouter from './routes/adminRoutes.js'
 
 
+
 //middleware
 app.use(express.json());                                                                        //parse json
 app.use(express.urlencoded({extended:false}));                                                  //parse urlencoded
@@ -37,7 +40,12 @@ app.use(morgan('dev'));                                                         
 app.set('view engine','ejs');                                                                  //set view engine
 app.set('views',path.join(__dirname,'views'));                                                //set views directory
 
-app.use(nocache());                                                                           //prevent caching
+// Use express-ejs-layouts middleware
+app.use(expressLayouts);
+app.set('layout', 'layouts/layout');                                                           // Default layout
+
+//set cache
+app.use(nocache());                                                                           
 
 //session middleware
 app.use(session({                                                                            
@@ -54,6 +62,9 @@ app.use(passport.session());                                                    
 // routes
 app.use('/admin',adminRouter)                                                                  //admin routes
 app.use('/',userRouter)                                                                         //user routes
+
+
+
 
 
 //exporting the app

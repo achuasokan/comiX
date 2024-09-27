@@ -1,106 +1,59 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-[#18191a] text-gray-200 m-0 p-0 flex h-screen">
 
-  <!-- Sidebar -->
-   
-  <div class="sidebar bg-[#121212] flex flex-col items-center border-r border-[#3a3a3a] shadow-lg h-screen w-[280px] p-6">
-    <!-- <img src="/public/img/comiX.png" alt="comiX Logo" class="w-full h-auto "> -->
-    <img src="/img/comiX.png" alt="comiX Logo" class="w-11/12 h-auto -mt-6">
-    <div class="w-full space-y-3">
-      <!-- nav links -->
-      <div class="flex items-center bg-[#1f1f1f] hover:bg-[#2f2f2f] text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
-        <a href="/admin/dashboard">Dashboard</a>
+<!-- main Container/body -->
+<div class="bg-[#18191a] text-gray-200 m-0 p-0 flex h-screen">
+ 
+ <!-- Sidebar -->
+ <%- include("./sidebar.ejs")%>
+<!-- Sidebar end -->
+
+
+<!-- Main Content -->
+<div class="flex flex-col flex-grow overflow-hidden">
+  <!-- Navbar -->
+  <nav class="bg-[#18191a] h-11 shadow-md flex items-center justify-center px-6">
+    <div class="relative w-2/5">
+      <input type="text" placeholder="Search" class="bg-[#242526] text-gray-200 text-sm px-4 py-2 rounded-full w-full pr-10 focus:outline-none focus:ring-2 focus:ring-gray-500">
+      <button class="absolute right-2 top-1/2 transform -translate-y-1/2" aria-label="Search">
+        <i class="fas fa-search text-gray-400"></i>
+      </button>
+    </div>
+  </nav>
+  
+
+  <!-- Dashboard Content -->
+  <div class="flex-grow p-6 overflow-y-auto">
+    <h1 class="text-xl font-bold text-white mb-4">Sales Summary</h1>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <!-- Card 1 -->
+      <div class="bg-[#242526] rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-bold text-white mb-4">Revenue</h2>
+        <p class="text-3xl font-bold">₹10,864</p>
+        <p class="text-sm text-gray-400">Last 24 Hours</p>
       </div>
-      <div class="flex items-center bg-[#1f1f1f] hover:bg-[#2f2f2f] text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
-        <a href="#">Products</a>
+      <!-- Card 2 -->
+      <div class="bg-[#242526] rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-bold text-white mb-4">Orders</h2>
+        <p class="text-3xl font-bold">₹10,864</p>
+        <p class="text-sm text-gray-400">Last 24 Hours</p>
       </div>
-      <div class="flex items-center bg-[#1f1f1f] hover:bg-[#2f2f2f] text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
-        <a href="/admin/users">Customers</a>
+      <!-- Card 3 -->
+      <div class="bg-[#242526] rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-bold text-white mb-4">Products Sold</h2>
+        <p class="text-3xl font-bold">₹10,864</p>
+        <p class="text-sm text-gray-400">Last 24 Hours</p>
       </div>
-      <div class="flex items-center bg-[#1f1f1f] hover:bg-[#2f2f2f] text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
-        <a href="/admin/category">Category</a>
+      <!-- Card 4 -->
+      <div class="bg-[#242526] rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-bold text-white mb-4">Total Customers</h2>
+        <p class="text-3xl font-bold">₹10,864</p>
+        <p class="text-sm text-gray-400">Last 24 Hours</p>
       </div>
-      <div class="flex items-center bg-[#1f1f1f] hover:bg-[#2f2f2f] text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
-        <a href="#">Orders</a>
-      </div>
-      <div class="flex items-center bg-[#1f1f1f] hover:bg-[#2f2f2f] text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
-        <a href="#">Coupons</a>
-      </div>
-      <div class="flex items-center bg-[#1f1f1f] hover:bg-[#2f2f2f] text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
-        <a href="#">Offers</a>
-      </div>
-      <div class="flex items-center bg-[#1f1f1f] hover:bg-[#2f2f2f] text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
-        <a href="#">Banner</a>
-      </div>
-      <div class="flex items-center bg-[#1f1f1f] hover:bg-[#2f2f2f] text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
-        <a href="#">Sales Report</a>
-      </div>
-      <div class="flex items-center bg-[#1f1f1f] hover:bg-[#2f2f2f] text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
-        <a href="/admin/logout">Logout</a>
-      </div>
+    </div>
+
+        <!-- Graph box -->
+    <div class="bg-[#242526] rounded-lg shadow-md p-6 mt-6 h-96">
+      <h2 class="text-xl font-bold text-white mb-4">New Box</h2>
     </div>
   </div>
 
-  <!-- Main Content -->
-  <div class="flex flex-col flex-grow overflow-hidden">
-    <!-- Navbar -->
-    <nav class="bg-[#18191a] h-11 shadow-md flex items-center justify-center px-6">
-      <!-- <div class="text-xl font-semibold">Dashboard</div> -->
-      <div class="relative w-2/5">
-        <input type="text" placeholder="Search" class="bg-[#242526] text-gray-200 text-sm px-4 py-2 rounded-full w-full pr-10 focus:outline-none focus:ring-2 focus:ring-gray-500">
-        <button class="absolute right-2 top-1/2 transform -translate-y-1/2" aria-label="Search">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-        </button>
-      </div>
-    </nav>
-
-    <!-- Dashboard Content -->
-    <div class="flex-grow p-6 overflow-y-auto">
-      <h1 class="text-xl font-bold text-white mb-4">Sales Summary</h1>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <!-- Card 1 -->
-        <div class="bg-[#242526] rounded-lg shadow-md p-6">
-          <h2 class="text-xl font-bold text-white mb-4">Revenue</h2>
-          <p class="text-3xl font-bold">₹10,864</p>
-          <p class="text-sm text-gray-400">Last 24 Hours</p>
-        </div>
-        <!-- Card 2 -->
-        <div class="bg-[#242526] rounded-lg shadow-md p-6">
-          <h2 class="text-xl font-bold text-white mb-4">Orders</h2>
-          <p class="text-3xl font-bold">₹10,864</p>
-          <p class="text-sm text-gray-400">Last 24 Hours</p>
-        </div>
-        <!-- Card 3 -->
-        <div class="bg-[#242526] rounded-lg shadow-md p-6">
-          <h2 class="text-xl font-bold text-white mb-4">Products Sold</h2>
-          <p class="text-3xl font-bold">₹10,864</p>
-          <p class="text-sm text-gray-400">Last 24 Hours</p>
-        </div>
-        <!-- Card 4 -->
-        <div class="bg-[#242526] rounded-lg shadow-md p-6">
-          <h2 class="text-xl font-bold text-white mb-4">Total Customers</h2>
-          <p class="text-3xl font-bold">₹10,864</p>
-          <p class="text-sm text-gray-400">Last 24 Hours</p>
-        </div>
-      </div>
-
-          <!-- Graph box -->
-      <div class="bg-[#242526] rounded-lg shadow-md p-6 mt-6 h-96">
-        <h2 class="text-xl font-bold text-white mb-4">New Box</h2>
-      </div>
-    </div>
-
-    
-      
-
-</body>
-</html>
+</div>

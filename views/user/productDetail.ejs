@@ -1,0 +1,216 @@
+
+<!-- Main container/body -->
+<div class="bg-black text-white">
+  <!-- Header -->
+  <%- include ('../partials/header.ejs') %>
+
+  <div>
+    <div class="container mx-auto px-4 py-8">
+      <!-- Breadcrumbs -->
+      <nav class="text-white py-2 px-4">
+        <ol class="list-reset flex">
+          <li><a href="/" class="hover:underline">Home</a></li>
+          <li><span class="mx-2">/</span></li>
+          <li><a href="/Category/<%= product.category._id %>" class="hover:underline"><%= product.category.name %></a></li>
+          <li><span class="mx-2">/</span></li>
+          <li class="font-bold"><%= product.name %></li>
+        </ol>
+      </nav>
+
+      <!-- Product Image -->
+      <div class="flex flex-wrap -mx-4">
+        <!-- Main Product Images -->
+        <div class="w-96 md:96 px-4 mb-8 main-image"> <!-- Added main-image class -->
+          <img src="<%= product.image[1] %>" alt="Product"
+               class="w-96 h-96 rounded-lg shadow-md mb-4 border border-gray-100"
+               id="mainImage">
+               <!-- Thumbnail images -->
+          <div class="flex gap-4 py-4 justify-center overflow-x-auto">
+            <% product.image.forEach((image, index) => { %>
+              <img src="<%= image %>" alt="Thumbnail <%= index + 1 %>"
+                   class="h-16 w-16 border border-gray-100 object-cover rounded-md cursor-pointer opacity-60 hover:opacity-100 transition duration-300"
+                   onclick="changeImage(this.src)">
+            <% }) %>
+          </div>
+        </div>
+
+        <!-- Product Details -->
+        <div class="w-full md:w-1/2 px-4">
+          <h2 class="text-4xl font-bold mb-2"><%= product.name %></h2>
+          <p class=" text-lg text-gray-400"><%= product.SKU %></p>
+
+          <!-- Product Price -->
+          <div class="mb-4">
+            <% if (product.discount > 0) { %>
+              <span class="text-2xl font-bold mr-2">₹<%= (product.price - (product.price * product.discount / 100)).toFixed(0) %></span>
+              <span class="text-gray-500 line-through">₹<%= product.price %></span>
+              <span class="text-yellow-500 font-bold ml-2"><%= product.discount %>% OFF</span>
+            <% } else { %>
+              <span class="text-2xl font-bold mr-2">₹<%= product.price %></span>
+            <% } %>
+          </div>
+
+          <!-- Rating -->
+          <div class="flex items-center mb-4">
+            <% for (let i = 0; i < 5; i++) { %>
+              <i class="fas fa-star <%= i < Math.round(product.rating) ? 'text-yellow-500' : 'text-gray-500' %>"></i>
+            <% } %>
+            <span class="ml-2 text-gray-600"><%= product.rating.toFixed(1) %> (<%= product.reviews.length %> reviews)</span>
+          </div>
+
+              <!-- Stock Status -->
+              <% if (product.stock > 0) { %>
+                <div class="text-green-500 font-bold ">In Stock: <%= product.stock %> units</div>
+              <% } else { %>
+                <div class="text-red-500 font-bold ">Out of Stock</div>
+              <% } %>
+
+          <!-- Product Description -->
+          <p class="text-gray-300 mb-6 mt-4 leading-relaxed"><%= product.description %></p>
+
+          <!-- Quantity -->
+          <div class="mb-6">
+            <label for="quantity" class="block text-sm font-medium text-white mb-1">Quantity:</label>
+            <input type="number" id="quantity" name="quantity" min="1" value="1"
+                   class="w-12 text-black text-center rounded-md border-gray-300 shadow-sm focus:border-indigo-300">
+          </div>
+
+          <!-- Add to Cart & Buy Now -->
+          <div class="flex space-x-4 mb-4">
+            <% if (product.stock > 0) { %>
+              <button class="bg-yellow-500 flex gap-2 items-center text-black px-4 py-2 font-bold uppercase rounded hover:bg-yellow-600 transition duration-300">
+                <i class="fas fa-shopping-cart"></i>
+                Add to Cart
+              </button>
+              <button class="bg-green-600 flex gap-2 items-center text-white px-6 py-2 rounded-md hover:bg-green-700">
+                Buy Now
+              </button>
+            <% } else { %>
+              <button class="bg-yellow-500 flex gap-2 items-center text-black px-4 py-2 font-bold uppercase rounded cursor-not-allowed" disabled>
+                <i class="fas fa-shopping-cart"></i>
+                Add to Cart
+              </button>
+              <button class="bg-green-600 flex gap-2 items-center text-white px-6 py-2 rounded-md cursor-not-allowed" disabled>
+                Buy Now
+              </button>
+            <% } %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reviews Section -->
+      <div class="mt-8">
+        <h3 class="text-2xl font-bold mb-4">Reviews</h3>
+        <div class="space-y-6">
+          <% if (product.reviews.length > 0) { %>
+            <% product.reviews.forEach(review => { %>
+              <div class="p-2 bg-gray-800 rounded-md shadow">
+                <div class="flex items-center mb-2">
+                  <% for (let i = 0; i < 5; i++) { %>
+                    <i class="fas fa-star <%= i < review.rating ? 'text-yellow-500' : 'text-gray-500' %>"></i>
+                  <% } %>
+                  <% if (review.userId && review.userId.name) { %>
+                    <p class="ml-2 font-semibold text-gray-400"><%= review.userId.name %></p>
+                  <% } else { %>
+                    <p class="ml-2 font-semibold text-gray-600">Anonymous</p>
+                  <% } %>
+                </div>
+                <p class="text-gray-300"><%= review.comment %></p>
+              </div>
+            <% }) %>
+          <% } else { %>
+            <p class="text-gray-600">No reviews yet.</p>
+          <% } %>
+        </div>
+
+        </div>
+       
+
+      <% if (user) { %>
+        <div class="mt-8">
+          <h3 class="text-2xl font-bold mb-4">Write a Review</h3>
+          <form action="/product/<%= product._id %>/review" method="POST">
+            <div class="mb-4">
+              <label for="rating" class="block text-gray-700 text-sm">Rating</label>
+              <select id="rating" name="rating" class="w-full text-black rounded-md border-gray-300 shadow-sm focus:border-indigo-300">
+                <option value="1">1 Star</option>
+                <option value="2">2 Star</option>
+                <option value="3">3 Star</option>
+                <option value="4">4 Star</option>
+                <option value="5">5 Star</option>
+              </select>
+            </div>
+            <div class="mb-4">
+              <label for="comment" class="block text-black text-sm">Comment</label>
+              <textarea id="comment" name="comment" rows="4" class="w-full p-2 border text-black border-gray-300 rounded"></textarea>
+            </div>
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Submit</button>
+          </form>
+        </div>
+      <% } %>
+    </div>
+
+    <!-- Related Product Recommendations -->
+    <div class="text-start p-4">
+      <h1 class="font-bold text-4xl almendra-sc-regular">Related Products</h1>
+    </div>
+    <section class="flex flex-wrap justify-center gap-14 mt-10 mb-5">
+      <% relatedProducts.forEach(products => { %>
+        <article class="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
+          <a href="/product/<%= products._id %>">
+            <img src="<%= products.image[1] %>" alt="Product" class="h-80 w-72 object-cover rounded-t-xl" />
+          </a>
+          <div class="px-4 py-3 w-72">
+            <span class="text-gray-400 mr-3 uppercase text-xs"><%= products.category.name %></span>
+            <p class="text-lg font-bold text-black truncate block capitalize"><%= products.name %></p>
+            <div class="flex items-center">
+              <p class="text-lg font-semibold text-black cursor-auto my-3">₹<%= products.price %></p>
+              <!-- <del>
+                <p class="text-sm text-gray-600 cursor-auto ml-2">$199</p>
+              </del> -->
+              <div class="ml-auto">
+                <a href="#">
+                  <i class="fas fa-cart-plus text-black"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </article>
+      <% }) %>
+    </section>
+
+    <!-- Footer -->
+    <%- include ('../partials/footer.ejs') %>
+  </div> 
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    const imageContainer = $('.main-image'); 
+    const productImg = $('#mainImage'); // Select the main image
+
+    imageContainer.on("mousemove", (e) => {
+        const rect = imageContainer[0].getBoundingClientRect(); 
+        const x = (e.clientX - rect.left) / rect.width; 
+        const y = (e.clientY - rect.top) / rect.height; 
+        productImg.css({
+            'transform-origin': `${x * 100}% ${y * 100}%`, 
+            'transform': 'scale(1.5)' // Scale the image
+        });
+    });
+
+    imageContainer.on("mouseleave", () => {
+        productImg.css({
+            'transform-origin': 'center', 
+            'transform': 'scale(1)' 
+        });
+    });
+});
+
+function changeImage(src) {
+    const mainImage = $('#mainImage');
+    // Change the main image source
+    mainImage.attr('src', src);
+}
+</script>

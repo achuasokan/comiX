@@ -13,6 +13,10 @@ const productSchema=mongoose.Schema({
     type:String,
     required:true
   }],
+  SKU:{
+    type:String,
+    required:true
+  },
   price:{
     type:Number,
     required:true
@@ -43,10 +47,12 @@ const productSchema=mongoose.Schema({
     ref:'Category',
     required:true
   },
+  isDeleted:{type:Boolean,default:false},
+  
   reviews:[{
     userId:{type:mongoose.Schema.Types.ObjectId,ref:'User'},
     comment:{type:String},
-    rating:{type:Number, min:1,max:100}
+    rating:{type:Number, min:1,max:5}
   }]
 },{timestamps:true})
 

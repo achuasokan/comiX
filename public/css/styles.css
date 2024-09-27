@@ -1,0 +1,16 @@
+
+.almendra-sc-regular {
+  font-family: "Almendra SC", serif;
+  font-style:normal;
+  letter-spacing: 0.1em;
+  color: white;
+}
+
+.main-image {
+  position: relative;
+  overflow: hidden; 
+}
+
+#mainImage {
+  transition: transform 0.2s;
+}

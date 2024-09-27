@@ -93,7 +93,7 @@ comic-book-store/
 │   │   ├── otp.ejs                   # OTP verification page
 │   │   ├── forgetPassword.ejs        # Forgot password page
 │   │   ├── resetPassword.ejs         # Reset password page
-│   │   ├── index.ejs                 # Homepage
+│   │   ├── home.ejs                  # Homepage
 │   │   ├── productDetails.ejs        # Product details page
 │   │   ├── cart.ejs                  # Cart view
 │   │   └── profile.ejs               # User profile view
