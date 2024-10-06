@@ -7,6 +7,10 @@ const addressSchema=mongoose.Schema({
     ref:'User',
     required:true
   },
+  name:{
+    type:String,
+    required:true
+  },
   buildingName:{
     type:String,
     required:true
@@ -42,7 +46,7 @@ const addressSchema=mongoose.Schema({
 
 },{timestamps:true})
 
-const address = mongoose.model('Address',addressSchema)
+const address = mongoose.model('address',addressSchema)
 
 export default address
 

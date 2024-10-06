@@ -31,10 +31,10 @@ const productSchema=mongoose.Schema({
     default:0
   },
   discount:{
-    type:Number,
-    default:0,
-    min:0,
-    max:100
+    type:mongoose.Schema.Types.ObjectId,
+    ref:'Discount',
+    required:true,
+    default:null
   },
   rating:{
     type:Number,

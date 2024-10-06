@@ -1,0 +1,59 @@
+<!-- main Container/body -->
+<div class="bg-[#18191a] text-gray-200 m-0 p-0 flex flex-col md:flex-row min-h-screen">
+  <!-- Sidebar -->
+<%- include("./sidebar.ejs")%>
+<!-- Sidebar end -->
+
+<div class="container mx-auto py-6">
+<h1 class="text-2xl font-semibold mb-4 text-gray-200">Edit Discount</h1>
+<form action="/admin/editDiscount/<%=discount._id%>" method="POST" id="edit-discount-form" class="bg-[#242526] p-6 rounded shadow-md">
+
+ <div class="mb-4">
+   <label class="block text-gray-300">Discount Type:</label>
+   <select id="discountTypes" name="discountType" value="<%=discount.discountType %>"class="input w-full bg-[#1f1f1f] text-white border border-gray-600 rounded-md p-2 mb-4">
+     <option value="">Select Option</option>
+     <option value="product">Product</option>
+     <option value="category">Category</option>
+   </select>
+ </div>
+
+ <div class="mb-4">
+   <label class="block text-gray-300">Discount Value:</label>
+   <input type="number" id="discountValue" name="discountValue" value="<%=discount.discountValue %>" required class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4" >
+ </div>
+
+ <div id="productSelect" class="mb-4 hidden">
+   <label class="block text-gray-300">Product:</label>
+   <select id="product" name="product" value="<%=discount.product %>" class="input w-full bg-[#1f1f1f] text-white border border-gray-600 rounded-md p-2 mb-4">
+     <option value="">Select Option</option>
+     <% productList.forEach((product) => { %>
+       <option value="<%= product._id %>"><%= product.name %></option>
+       <% }); %>
+   </select>
+ </div>
+
+ <div id="categorySelect" class="mb-4 hidden">
+   <label class="block text-gray-300">Category:</label>
+   <select id="category" name="category" value="<%=discount.category %>" class="input w-full bg-[#1f1f1f] text-white border border-gray-600 rounded-md p-2 mb-4">
+     <option value="">Select Option</option>
+     <% categoryList.forEach((category) => { %>
+       <option value="<%= category._id %>"><%= category.name %></option>
+       <% }); %>
+   </select>
+ </div>
+
+ <button type="submit" class="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-1 px-2 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110">
+   update changes
+ </button>
+</form>
+</div>
+</div>
+
+<script>
+// Toggle between product and category options based on discount type
+document.querySelector('select[name="discountType"]').addEventListener('change', function() {
+ const discountType = this.value;
+ document.getElementById('productSelect').style.display = (discountType === 'product') ? 'block' : 'none';
+ document.getElementById('categorySelect').style.display = (discountType === 'category') ? 'block' : 'none';
+});
+</script>

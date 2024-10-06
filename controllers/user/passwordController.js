@@ -48,7 +48,7 @@ export const postForgotPassword = async (req,res) => {
 
   } catch(error) {
     console.log(error);
-    res.status(500).render('user/forgotPassowrd',{message:"An Error occurred during password reset. Please try again"})
+    res.status(500).render('user/forgotPassword',{message:"An Error occurred during password reset. Please try again"})
 
   }
 }
@@ -85,7 +85,7 @@ export const postVerifyPasswordOTP =async (req,res) => {
     const {email,otp:storedOTP,otpExpiresAt} = tempForgotPassword
     
     // Check if the entered OTP matches the stored OTP and is not expired
-    if(otp ==! storedOTP && otpExpiresAt < new Date()) {
+    if(otp !== storedOTP || otpExpiresAt < new Date()) {
       return res.status(400).render('user/otpForgotPassword',{message:'invalid or expired otp'})
     }
 
@@ -165,7 +165,7 @@ export const postResetPassword =async (req,res) => {
 
  // Check if the new password and confirm password match
     if(newPassword !== confirmPassword){
-      return res.status(400).redirect('/forgotPassword?message=session expired. please try again')
+      return res.status(400).render('user/resetPassword',{message:"The password you entered do not match.Please try again"})
     }
 
  // Retrieve tempForgotPassword session data

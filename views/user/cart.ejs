@@ -1,0 +1,120 @@
+<div class="bg-black text-white min-h-screen flex flex-col">
+  <%- include('../partials/header.ejs') %>
+
+  <div class="container mx-auto py-8 px-4 md:px-8">
+    <h1 class="text-2xl md:text-3xl font-bold text-center mb-6">Shopping Cart</h1>
+
+    <% if (cart && cart.items.length > 0) { %>
+      <!-- Responsive Grid Layout -->
+      <div class="lg:grid lg:grid-cols-3 lg:gap-8">
+        <!-- Cart Items (will span across two columns on larger screens) -->
+        <div class="lg:col-span-2 space-y-6">
+          <% cart.items.forEach(item => { %>
+            <div class="bg-gray-900 p-4 rounded-lg flex flex-col md:flex-row items-start md:items-center justify-between">
+              <div class="flex items-start md:items-center mb-4 md:mb-0">
+                <a href="/product/<%= item.product._id %>">
+                  <img src="<%= item.product.image[1] %>" alt="<%= item.product.name %>" class="w-20 h-20 mr-4">
+                </a>
+                <div>
+                  <a href="/product/<%= item.product._id %>">
+                    <h3 class="text-lg font-semibold"><%= item.product.name %></h3>
+                  </a>
+                  <p class="text-gray-400"><%= item.product.category.name %></p>
+                  <p class="text-gray-400 line-through"><strong>Price:</strong> ₹<%= item.price %></p>
+                  <p class="text-green-500"><strong>Total:</strong> ₹<%= Math.floor((item.discountPrice ? item.discountPrice : 0) * item.quantity) %></p>
+                </div>
+              </div>
+
+              <div class="flex items-center">
+                <form class="update-cart-form flex items-center" action="/cart/<%= item.product._id %>/update" method="POST">
+                  <button type="button" class="bg-gray-600 text-white rounded-l px-3" onclick="decrementQuantity(this.form)">-</button>
+                  <input type="number" name="quantity" value="<%= item.quantity %>" min="1" max="5" class="border border-gray-600 rounded p-1 w-16 bg-gray-700 text-white text-center mx-2" readonly>
+                  <button type="button" class="bg-gray-600 text-white rounded-r px-3" onclick="incrementQuantity(this.form, <%= item.quantity %>)">+</button>
+                </form>
+
+                <form action="/cart/delete/<%= item.product._id %>" method="POST" class="ml-4">
+                  <button type="button" class="text-red-500 hover:text-red-700" onclick="openModal('<%= item.product._id %>')">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </form>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+
+        <div class="mt-8 lg:mt-0 bg-gray-900 shadow-md p-4 rounded-lg lg:sticky lg:top-4 lg:self-start">
+          <h2 class="text-xl font-bold mb-4">Order Summary</h2>
+          <p class="mb-2">Items: <%= cart.items.length %></p>
+          <p class="mb-2">Original Price: ₹<%= originalPrice %></p>
+          <p class="mb-2">Discount:<span class="text-green-500"> -₹<%= Math.floor(totalDiscount) %></span></p>
+          <p class="mb-2">Total Amount: ₹<%= Math.floor(cart.total) %></p>
+
+          <a href="/checkout" class="mt-2 bg-green-600 text-white rounded px-4 py-2 w-full block text-center">Proceed to Checkout</a>
+        </div>
+      </div>
+    <% } else { %>
+      <div class="flex flex-col items-center justify-center h-64 bg-black shadow-md rounded-lg p-6">
+        <h2 class="text-2xl font-bold">Your cart is empty!</h2>
+        <p class="text-gray-400">Add items to it now.</p>
+        <a href="/" class="mt-4 bg-yellow-500 text-black px-3 py-1 font-semibold uppercase rounded hover:bg-yellow-600 transition duration-200">Shop Now</a>
+      </div>
+    <% } %>
+
+    <%- include('../partials/footer.ejs') %>
+  </div>
+</div>
+
+<!-- Modal Structure -->
+<div id="deleteModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-50">
+  <div class="bg-gray-800 rounded-lg p-6 w-11/12 max-w-md">
+    <span class="absolute top-2 right-2 cursor-pointer text-white" onclick="closeModal()">&times;</span>
+    <h2 class="text-xl font-bold text-white">Are you sure?</h2>
+    <p class="text-gray-400">You want to remove this product from your cart</p>
+    <div class="flex justify-end mt-4">
+      <button id="confirmDelete" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Yes, remove it!</button>
+      <button class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 ml-2" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+  let productIdToDelete;
+
+  function openModal(productId) {
+    productIdToDelete = productId; // Store the product ID to delete
+    document.getElementById('deleteModal').classList.remove('hidden');
+  }
+
+  function closeModal() {
+    document.getElementById('deleteModal').classList.add('hidden');
+  }
+
+  document.getElementById('confirmDelete').onclick = function() {
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '/cart/delete/' + productIdToDelete;
+    document.body.appendChild(form);
+    form.submit();
+  };
+
+  function incrementQuantity(form, currentQuantity) {
+    const maxQuantity = 5;
+    if (parseInt(currentQuantity) >= maxQuantity) {
+      Swal.fire({
+        icon: 'warning',
+        
+        text: 'You can only add a maximum of 5 items.',
+      });
+    } else {
+      form.quantity.value = parseInt(form.quantity.value) + 1;
+      form.submit();
+    }
+  }
+
+  function decrementQuantity(form) {
+    form.quantity.value = Math.max(1, (parseInt(form.quantity.value) - 1));
+    form.submit();
+  }
+</script>

@@ -3,17 +3,19 @@ import userModel from '../../models/User.js'
 export const getUserList=async (req,res)=> {
   try{
     const page=parseInt(req.query.page) || 1
-    const limit=2
+    const limit=5
     const skip=(page -1) * limit
     const usersdata=await userModel.find({}).skip(skip).limit(limit)                                               //get all users from database
 
     const totalproducts=await userModel.countDocuments({})
     const totalPages=Math.ceil(totalproducts / limit)
+    const startIndex = skip + 1;
 
     res.render('admin/userList',{
       usersdata,
       currentPage: page,
-      totalPages
+      totalPages,
+      startIndex
     })                                                    //render customers page
   }catch(message){
     console.log(message);

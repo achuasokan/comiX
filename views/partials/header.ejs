@@ -3,17 +3,19 @@
   <img src="../img/comiX.png" alt="ComiX Logo" class="h-28 w-auto ml-5">
   
   <div class="relative w-72 md:w-96 lg:w-96">
-    <input type="text" placeholder="Search" class="bg-black text-white text-sm px-4 py-2 border rounded-full w-full pr-10 focus:outline-none focus:ring-1 focus:ring-blue-900">
+    <form action="/shop/allProducts" method="GET">
+    <input type="text" placeholder="Search" name="search" class="bg-black text-white text-sm px-4 py-2 border rounded-full w-full pr-10 focus:outline-none focus:ring-1 focus:ring-blue-900">
     <!-- Search Icon (Font Awesome) -->
     <button class="absolute right-2 top-1/2 transform -translate-y-1/2" aria-label="Search">
       <i class="fas fa-search text-white"></i>
     </button>
+    </form>
   </div>
 
   <!-- Desktop Menu -->
   <div class="hidden md:flex items-center space-x-8">
     <a href="/" class="hover:text-orange-500 ">Home</a>
-    <a href="/shop" class="hover:text-orange-500 ">Shop</a>
+    <a href="/shop/allProducts" class="hover:text-orange-500 ">Shop</a>
 
     <!-- User Icon and Dropdown -->
     <% if (name) { %>
@@ -35,14 +37,27 @@
     <% } %>
 
     <!-- Heart Icon -->
-    <a href="#" class="hover:text-gray-300">
-      <i class="fas fa-heart text-white h-6 w-6"></i>
-    </a>
+     <% if (user) { %>
+      <a href="/wishlist" class="hover:text-gray-300">
+        <i class="fas fa-heart text-white h-6 w-6"></i>
+      </a>
+    <% } else { %>
+      <a href="/login" class="hover:text-gray-300">
+        <i class="fas fa-heart text-white h-6 w-6"></i>
+      </a>
+    <% } %>
+   
 
     <!-- Cart Icon -->
-    <a href="#" class="hover:text-gray-300">
-      <i class="fas fa-shopping-cart text-white h-6 w-6"></i>
-    </a>
+     <% if (user) { %>
+      <a href="/cart" class="hover:text-gray-300">
+        <i class="fas fa-shopping-cart text-white h-6 w-6"></i>
+      </a>
+    <% } else { %>
+      <a href="/login" class="hover:text-gray-300">
+        <i class="fas fa-shopping-cart text-white h-6 w-6"></i>
+      </a>
+    <% } %> 
   </div>
 
   <!-- Mobile Menu - Hamburger -->
@@ -56,14 +71,27 @@
     <div id="mobile-menu" class="hidden absolute right-0 mt-2 w-48 bg-black text-white rounded-md shadow-lg z-50">
       <a href="/" class="block px-4 py-2 hover:bg-gray-700">Home</a>
       <a href="#" class="block px-4 py-2 hover:bg-gray-700">Shop</a>
-      <a href="#" class="block px-4 py-2 hover:bg-gray-700">
-        <!-- Heart Icon (Font Awesome) -->
-        <i class="fas fa-heart h-6 w-6"></i>
+       <!-- Heart Icon -->
+     <% if (user) { %>
+      <a href="/wishlist" class="hover:text-gray-300">
+        <i class="fas fa-heart text-white h-6 w-6"></i>
       </a>
-      <a href="#" class="block px-4 py-2 hover:bg-gray-700">
-        <!-- Cart Icon (Font Awesome) -->
-        <i class="fas fa-shopping-cart h-6 w-6"></i>
+    <% } else { %>
+      <a href="/login" class="hover:text-gray-300">
+        <i class="fas fa-heart text-white h-6 w-6"></i>
       </a>
+    <% } %>
+    
+      <!-- Cart Icon -->
+      <% if (user) { %>
+        <a href="/cart" class="hover:text-gray-300">
+          <i class="fas fa-shopping-cart text-white h-6 w-6"></i>
+        </a>
+      <% } else { %>
+        <a href="/login" class="hover:text-gray-300">
+          <i class="fas fa-shopping-cart text-white h-6 w-6"></i>
+        </a>
+      <% } %> 
       <!-- Reuse User Menu for mobile -->
       <% if(user) { %>
       <div class="relative">

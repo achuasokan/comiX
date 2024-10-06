@@ -33,6 +33,10 @@ const userSchema=mongoose.Schema({
   },
   mobile:{
     type:Number
+  },
+  cart: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref:'Cart'
   }
 },{timestamps:true})
 

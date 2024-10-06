@@ -1,104 +1,50 @@
 <%- include('../partials/header.ejs') %>
 <div class="bg-black text-white flex">
-<!-- Sidebar for profile -->
-<%- include('profileSidebar.ejs') %>
-<!-- Sidebar end -->
+  <%- include('profileSidebar.ejs') %>
 
-<!-- Address -->
- <!-- <div class="flex flex-col items-center justify-center flex-grow p-6">
-  <h2 class="text-lg font-bold">No Address Found in your account</h2>
-  <p>Please add your address to continue</p>
-  <a href="/profile/add-address" class="mt-4 flex items-center bg-blue-500 text-white px-8 py-3 rounded-lg hover:bg-blue-600 text-white transform duration-200">
-    Add Address
-  </a>
- </div> -->
-
- <!-- <div class="flex flex-col  flex-grow p-6">
-  <h2 class="text-lg font-bold">Manage Addresses</h2>
-  <div class="mt-4 w-48">
-    <a href="/profile/add-address" class="mt-4 flex items-center bg-blue-500 text-white px-8 py-3 rounded-lg hover:bg-blue-600 text-white transform duration-200">Add New Address</a>
-  </div>
-  <div class="w-full space-y-4 mt-4">
-   <div class="bg-[#1f1f1f] p-4 rounded-lg mt-2">
-    <div class="flex justify-between items-center">
-      <div>
-        <span class="text-green-400 font-bold">Default Address</span>
-        <div class="font-bold">hgjhgjhgj jhjhkjhkjhk</div>
-      </div>
-    </div>
-    
-     <div><p>hjhgjhgjhjhjhknk, asdasdas, asdasda, asdasdas, asdasdsa, asdasdasdas - 232433</p></div>
-     <div class="flex justify-between mt-2">
-      <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 text-white transform duration-200">Edit</button>
-      <button class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 text-white transform duration-200">Delete</button>
-     </div>
-   </div>
-  </div>
- </div> -->
- <div class="flex flex-col items-center justify-center flex-grow p-6">
-  <% if (addresses.length === 0) { %>
+  <div class="flex flex-col items-center justify-center flex-grow p-6">
+    <% if (addresses.length === 0) { %>
       <h2 class="text-lg font-bold">No Address Found in your account</h2>
       <p>Please add your address to continue</p>
       <a href="/profile/add-address" class="mt-4 flex items-center bg-blue-500 text-white px-8 py-3 rounded-lg hover:bg-blue-600 transform duration-200">
-          Add Address
+        Add Address
       </a>
-  <% } else { %>
-      <div class="flex flex-col flex-grow p-6">
-          <h2 class="text-lg font-bold">Manage Addresses</h2>
-          <!-- Add New Address Button -->
-          <div class="mt-4">
-              <a href="/profile/add-address" class="flex items-center bg-blue-500 text-white px-8 py-3 rounded-lg hover:bg-blue-600 transform duration-200">
-                  Add New Address
-              </a>
-          </div>
-          <div class="w-full space-y-4 mt-4 overflow-y-auto" style="max-height: 400px;"> <!-- Set max height and enable scrolling -->
-              <% addresses.forEach(address => { %>
-                  <div class="bg-[#1f1f1f] p-4 rounded-lg">
-                      <div class="flex justify-between items-center">
-                          <div>
-                              <% if (address.isDefault) { %> <!-- Check if the address is default -->
-                                  <span class="text-green-400 font-bold">Default Address</span>
-                              <% } %>
-                              <span class="font-bold"><%= address.name %></span> <%= address.mobile %>
-                          </div>
-                      </div>
-                      <div>
-                          <p>
-                              <%= address.buildingName %>, <%= address.street %>, <%= address.city %>, <%= address.state %>, <%= address.country %> - <%= address.pincode %>
-                          </p>
-                      </div>
-                      <div class="flex justify-between mt-2">
-                          <a href="/profile/edit-address/<%= address.id %>" class="text-blue-400 hover:underline">Edit</a>
-                          <a href="/profile/delete-address/<%= address.id %>" class="text-red-400 hover:underline">Delete</a>
-                      </div>
-                  </div>
-              <% }) %>
-          </div>
+    <% } else { %>
+      <h2 class="text-lg font-bold mb-4">Manage Addresses</h2>
+      <% if (message) { %>
+        <p class="text-red-500 mb-4"><%= message %></p>
+      <% } %>
+      <div class="mt-4">
+        <a href="/profile/add-address" class="flex items-center bg-blue-500 text-white px-8 py-3 rounded-lg hover:bg-blue-600 transform duration-200">
+          Add New Address
+        </a>
       </div>
-  <% } %>
-</div>
-
-<!-- Address end -->
-</div>
-
-
-<%- include('../partials/footer.ejs') %>
-
-
-
-
-
-
-<!-- <div class="flex flex-col  flex-grow p-6">
-  <h2 class="text-lg font-bold">Manage Addresses</h2>
-  <div class="w-full space-y-4 mt-4">
-   <div class="bg-[#1f1f1f] p-4 rounded-lg">
-     <div class="font-bold">hgjhgjhgj jhjhkjhkjhk</div>
-     <div><p>hjhgjhgjhjhjhknk, asdasdas, asdasda, asdasdas, asdasdsa, asdasdasdas - 232433</p></div>
-     <div class="flex justify-between mt-2">
-      <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 text-white transform duration-200">Edit</button>
-      <button class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 text-white transform duration-200">Delete</button>
-     </div>
-   </div>
+      <div class="w-full space-y-4 mt-4 "">
+        <% addresses.forEach(address => { %>
+          <div class="bg-[#1f1f1f] p-4 rounded-lg shadow-md max-w-md mx-auto"> <!-- Limit width and center -->
+            <div class="flex justify-between items-start mb-2">
+              <div>
+                <% if (address.isDefault) { %>
+                  <span class="text-green-400 font-bold">Default Address</span>
+                <% } %>
+                <div class="font-bold text-lg"><%= address.name %></div>
+                <div class="text-sm"><%= address.mobile %></div>
+              </div>
+              <div class="flex items-center">
+                <a href="/profile/edit-address/<%= address._id %>" class="text-blue-400 hover:underline">Edit</a>
+                <form action="/profile/delete-address/<%=address._id%>" method="post" >
+                  <button type="submit" class="text-red-400 hover:underline ml-4">Delete</button>
+                </form>
+               
+              </div>
+            </div>
+            <p class="text-sm">
+              <%= address.buildingName %>, <%= address.street %>, <%= address.city %>, <%= address.state %>, <%= address.country %> - <%= address.pincode %>
+            </p>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
   </div>
- </div> -->
+</div>
+<%- include('../partials/footer.ejs') %>

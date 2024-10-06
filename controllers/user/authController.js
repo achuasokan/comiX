@@ -4,8 +4,7 @@ import bcrypt from 'bcrypt'
 import { generateOTP,sendOTPEmail } from '../../utils/otp.js'                                //import otp utils
 import categoryModel from '../../models/Category.js'
 import productModel from '../../models/Product.js'
-
-
+import  {calculateDiscountPrice  } from '../../utils/discountprice.js'
 
 
 // //  //  //   //  //          getting Login page     //  //  //  //  //  //  //
@@ -29,20 +28,7 @@ export const postLogin=async(req,res)=>{
   //get email and password from request body
     const {email,password}=req.body                                                       
 
-    //     validation  //  
-    let error="";
-    const emailpattern=/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    const passwordpattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])(?!.*\s)[A-Za-z\d!@#$%^&*]{6,}$/;
-
-   if(!emailpattern.test(email)) {
-    error="Please enter a valid email address"
-   } else if(!passwordpattern.test(password)) {
-    error="Password must be at least 6 characters long, include upper and lower case letters, a digit and a special character."
-   }
-
-    if(error) {
-      return res.render("user/userLogin",{message:error})
-    }
+   
 
       //find user in database
     const userFind=await userModel.findOne({email})  
@@ -83,7 +69,7 @@ res.redirect('/home')
   }
 }
 
-// //  //  //   //  //    GET user Home Page            //  //  //  //  //  //  //
+  // //  //  //   //  //      GET user Home Page            //  //  //  //  //  //  //
 
 export const getHome=async (req,res)=> {                                     
   try{
@@ -159,9 +145,11 @@ export const postSignup=async(req,res)=>{
 
   }catch(error){
     console.log(error);
-    res.render('user/userSignUp',{message:"An error occurred during registration,Please try again"})
+    res.render('user/userSignUp',{message:`An error occurred during registration,Please try again`})
   }
 }
+
+// //  //  //   //  //        Get  VERIFY OTP          //  //  //  //  //  //  //
 
 export const getverifyOTP=(req,res)=>{
   try{
@@ -194,8 +182,8 @@ export const postverifyOTP=async (req,res)=>{
   const {name,email,password,otp:storedOtp,otpExpiresAt} =tempUser
 
 // Check if the provided OTP matches and whether it is expired
-  if(otp !== storedOtp && otpExpiresAt < new Date()){
-    return res.status(400).render('user/otp',{message:'invalid or Expired otp'})
+  if(otp !== storedOtp || otpExpiresAt < new Date()){
+    return res.status(400).render('user/otpSignup',{message:'invalid or Expired otp'})
   }
 
 // Hash the password 
@@ -286,6 +274,10 @@ export const getlandingPage=async(req,res)=>{
     //find the latest product and populate the category details and sort them by createdAt in descending order and limit the result to 12
     const latestproduct=await productModel.find({isDeleted:false}).populate('category','name').sort({createdAt:-1}).limit(12)
 
+    for (let product of latestproduct) {
+      product.discountedPrice = await calculateDiscountPrice(product);
+    }
+
     //render the home page with the category list and latest product
     res.render("user/home",{categorylist,latestproduct})
 
@@ -294,7 +286,6 @@ export const getlandingPage=async(req,res)=>{
     console.log(error); 
     res.status(500).send("Internal server error")
   }
-
 }
 
 

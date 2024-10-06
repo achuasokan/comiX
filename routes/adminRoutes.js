@@ -5,7 +5,7 @@ import * as categoryController from '../controllers/admin/categoryController.js'
 import * as productController from '../controllers/admin/productController.js'                      //import admin product controller
 import * as userController from '../controllers/admin/userController.js'                            //import admin user controller
 import adminMiddleware from '../middleware/adminMiddleware.js'                                      //import admin middleware
-
+import * as discountController from "../controllers/admin/discountController.js"
 import upload from '../middleware/multerMiddleware.js'
 
 const router=express.Router()
@@ -39,11 +39,11 @@ router.get('/category',adminMiddleware.isAdmin,categoryController.getCategory)  
 
 router.get('/addCategory',adminMiddleware.isAdmin,categoryController.getAddCategory)
 
-router.post('/addCategory',upload.single('image'),categoryController.postAddCategory)
+router.post('/addCategory',upload.single('image'),adminMiddleware.isAdmin,categoryController.postAddCategory)
 
 router.get('/editCategory/:id',adminMiddleware.isAdmin,categoryController.getEditCategory)
 
-router.post('/editCategory/:id',upload.single('image'),categoryController.postEditCategory)
+router.post('/editCategory/:id',upload.single('image'),adminMiddleware.isAdmin,categoryController.postEditCategory)
 
 router.post('/blockcategory/:id',adminMiddleware.isAdmin,categoryController.blockCategory)
 
@@ -57,18 +57,30 @@ router.get('/products',adminMiddleware.isAdmin,productController.getProduct)
 
 router.get('/addProduct',adminMiddleware.isAdmin,productController.getAddProduct)
 
-router.post('/addProduct', upload.array('image', 5), productController.postAddProduct);
+router.post('/addProduct', upload.array('image', 5), adminMiddleware.isAdmin,productController.postAddProduct);
 
 router.post("/softDeleteProduct/:id",adminMiddleware.isAdmin,productController.softDeleteProduct)
 
-router.get('/editProduct/:id',productController.getEditProduct)
+router.get('/editProduct/:id',adminMiddleware.isAdmin,productController.getEditProduct)
 
-router.post('/editProduct/:id',upload.array('image',5),productController.postEditProduct)
-
-
+router.post('/editProduct/:id',upload.array('image',5),adminMiddleware.isAdmin,productController.postEditProduct)
 
 
 
+
+// //  //  //      Discount routes  //  //  //  //  //
+
+router.get('/discounts',adminMiddleware.isAdmin,discountController.getDiscountListPage)
+
+router.get('/addDiscount',adminMiddleware.isAdmin,discountController.addDiscountPage)
+
+router.post('/addDiscount',adminMiddleware.isAdmin,discountController.addDiscount)
+
+router.get('/editDiscount/:id',adminMiddleware.isAdmin,discountController.editDiscountPage)
+
+router.post('/editDiscount/:id',adminMiddleware.isAdmin,discountController.postEditDiscount)
+
+router.post('/discounts/block/:id',adminMiddleware.isAdmin,discountController.blockDiscount)
 
 export default router
 

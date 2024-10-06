@@ -134,7 +134,7 @@
     // Real-time password validation
     passwordInput.addEventListener('input', function () {
       if (!passwordPattern.test(passwordInput.value)) {
-        passwordError.textContent = "Password must be at least 6 characters long, include upper and lower case letters, a digit anda special character.";
+        passwordError.textContent = "Password must be at least 6 characters long, include upper and lower case letters, a digit and a special character.";
       } else {
         passwordError.textContent = "";
       }

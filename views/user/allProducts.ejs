@@ -1,0 +1,132 @@
+<div class="bg-black text-white">
+
+    <%- include('../partials/header.ejs') %>
+        <!-- Heading name -->
+        <div
+            class="bg-gradient-to-r from-yellow-400 to-orange-500 shadow-lg flex justify-center items-center h-24 md:h-28 lg:h-28">
+            <% if(searchQuery){ %>
+              <h1 class="text-4xl md:text-4xl lg:text-5xl font-bold text-gray-800 text-center almendra-sc-regular">Search results for "<%= searchQuery %>"</h1>
+            <% } else { %>
+              <h1 class="text-4xl md:text-4xl lg:text-5xl font-bold text-gray-800 text-center almendra-sc-regular">All Products</h1>
+            <% } %>
+        </div>
+
+ <!-- Filter and Sort Controls -->
+        <div class="flex  justify-between mb-4 p-4">
+            <!-- Category Filter -->
+    <div class="flex items-center">
+      <label for="filter" class="text-white mr-2 font-semibold">Filter</label>
+      <select id="filter"class="bg-gray-800 text-white rounded-md p-2" onchange="filterProducts()">
+        <option value="all" <%= categoryFilter === 'all' ? 'selected' : '' %>>All</option>
+        <% categories.forEach(category => { %>
+          <option value="<%= category.name %>" <%= categoryFilter === category.name ? 'selected' : '' %>>
+            <%= category.name %>
+          </option>
+        <% }) %>
+      </select>
+    </div>
+            <!-- Sorting option -->
+            <div class="flex items-center">
+                <label for="sort" class="text-white mr-2 font-semibold">Sort by:</label>
+                <select id="sort"
+                  class="bg-gray-800 text-white rounded-md p-2 transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  onchange="filterProducts()">
+                  <option value="latest" <%=sortOption==='latest' ? 'selected' : "" %>>Latest</option>
+                  <option value="asc" <%=sortOption==='asc' ? 'selected' : "" %>>Price: Low to High</option>
+                  <option value="desc" <%=sortOption==='desc' ? 'selected' : "" %>>Price: High to Low</option>
+                  <option value="a-z" <%=sortOption==='a-z' ? 'selected' : "" %>>A-Z</option>
+                  <option value="z-a" <%=sortOption==='z-a' ? 'selected' : "" %>>Z-A</option>
+                  <option value="discount" <%=sortOption==='discount' ? 'selected' : "" %>>Discount</option>
+                </select>
+              </div>
+        </div>
+<!-- fiter and sort ended -->
+
+<!-- Product cards -->
+<% if(product.length === 0){ %>
+  <h1 class="flex justify-center items-center text-4xl md:text-4xl lg:text-5xl font-bold text-white text-center almendra-sc-regular min-h-28">No products found</h1>
+<% }else { %>
+
+    <section class="flex flex-wrap justify-center gap-14 mt-10 mb-5 ">
+      
+        <% product.forEach(products=> { %>
+  
+          <div class="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
+            <a href="/product/<%= products._id %>">
+  
+              <img src="<%= products.image[1] %>" alt="<%= products.image[1] %>"
+                class="h-80 w-72 object-cover rounded-t-xl" />
+            </a>
+            <div class="px-4 py-3 w-72">
+              <span class="text-gray-400 mr-3 uppercase text-xs">
+                <%= products.category.name %>
+              </span>
+              <p class="text-lg font-bold text-black truncate block capitalize">
+                <%= products.name %>
+              </p>
+              <div class="flex items-center">
+                <% if(products.discountedPrice < products.price) { %>
+                  <span class="text-lg text-black font-bold cursor-auto mr-2">₹<%= products.discountedPrice.toFixed(0)%>
+                      </span>
+                  <p class="text-sm font-semibold text-black cursor-auto my-3 line-through">₹<%= products.price %>
+                  </p>
+                  <span class="text-sm text-yellow-500 ml-2 font-bold">
+                    <%= Math.round(((products.price - products.discountedPrice) / products.price) * 100) %> % OFF
+                  </span>
+                  <% } else { %>
+                    <p class="text-lg font-semibold text-black cursor-auto my-3">₹<%= products.price %>
+                    </p>
+                    <% } %>
+                    <div class="ml-auto flex items-center gap-3">
+                      <% if(user) { %>
+                        <form action="/wishlist/<%= products._id %>" method="POST">
+                          <button type="submit" class="text-black">
+                            <i class="fas fa-heart"></i>
+                          </button>
+                        </form>
+                        <form action="/cart/<%= products._id %>/add" method="POST">
+                          <button type="submit"class="text-black"<% if(products.stock <= 0) { %> disabled title="Out of stock"  <% } %>>
+                            <i class="fas fa-cart-plus"></i>
+                          </button>
+                        </form>
+                      <% } else { %>
+                        <a href="/login">
+                          <i class="fas fa-heart text-black"></i>
+                        </a>
+                        <a href="/login">
+                          <i class="fas fa-cart-plus text-black"></i>
+                        </a>
+                      <% } %>
+                    </div>
+              </div>
+            </div>
+  
+          </div>
+          <% }) %>
+  
+      </section>
+      <% } %>
+      
+    <!-- Pagination -->
+    <div class="flex justify-center items-center space-x-2 mt-6">
+      <% for (let i = 1; i <= totalPages; i++) { %>
+        <a href="?page=<%= i %>&category=<%= categoryFilter %>&sort=<%= sortOption %>"
+           class="px-4 py-2 <%= currentPage === i ? 'bg-blue-500 text-white' : 'bg-[#1f1f1f] text-gray-300' %> rounded-md">
+
+          <%= i %>
+        </a>
+      <% } %>
+    </div>
+        <%- include('../partials/footer.ejs') %>
+
+</div>
+<script>
+  function filterProducts() {
+    const category = document.getElementById('filter').value;
+    const sort = document.getElementById('sort').value;
+    const currentUrl = new URL(window.location.href);
+    currentUrl.searchParams.set('category', category);
+    currentUrl.searchParams.set('sort', sort);
+    window.location.href = currentUrl.href;
+  }
+</script>

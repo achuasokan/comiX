@@ -63,15 +63,36 @@
                     <span class="text-gray-400 mr-3 uppercase text-xs"><%= products.category.name %></span>
                     <p class="text-lg font-bold text-black truncate block capitalize"><%= products.name %></p>
                     <div class="flex items-center">
-                      <p class="text-lg font-semibold text-black cursor-auto my-3">₹<%= products.price %></p>
-                      <!-- <del>
-                        <p class="text-sm text-gray-600 cursor-auto ml-2">$199</p>
-                      </del> -->
-                      <div class="ml-auto">
-                        <a href="#">
-                            <i class="fas fa-cart-plus text-black"></i> 
-                        </a>
-                      </div>
+                      <% if(products.discountedPrice < products.price) { %>
+                        <span class="text-lg text-black font-bold cursor-auto mr-2">₹<%= products.discountedPrice.toFixed(0) %></span>
+                        <p class="text-sm font-semibold text-black cursor-auto my-3 line-through">₹<%= products.price %></p>      
+                        <span class="text-sm text-yellow-500 ml-2 font-bold"><%= Math.round(((products.price - products.discountedPrice) / products.price) * 100) %> % OFF</span>
+                      <% } else { %>
+                        <p class="text-lg font-semibold text-black cursor-auto my-3">₹<%= products.price %></p>
+                        <% } %>
+                        
+                        <div class="ml-auto flex items-center gap-3">
+                          <% if(user) { %>
+                            <form action="/wishlist/<%= products._id %>" method="POST">
+                              <button type="submit" class="text-black">
+                                <i class="fas fa-heart"></i>
+                              </button>
+                            </form>
+                            <form action="/cart/<%= products._id %>/add" method="POST">
+                              <button type="submit"class="text-black"<% if(products.stock <= 0) { %> disabled title="Out of stock"  <% } %>>
+                                <i class="fas fa-cart-plus"></i>
+                              </button>
+                            </form>
+                    
+                          <% } else { %>
+                            <a href="/login">
+                              <i class="fas fa-heart text-black"></i>
+                            </a>
+                            <a href="/login">
+                              <i class="fas fa-cart-plus text-black"></i>
+                            </a>
+                          <% } %>
+                        </div>
                     </div>
                   </div>
                 

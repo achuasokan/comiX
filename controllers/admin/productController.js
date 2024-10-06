@@ -17,11 +17,13 @@ export const getProduct=async(req,res)=>{
 
     const totalproducts=await productModel.countDocuments({isDeleted:false})
     const totalPages=Math.ceil(totalproducts / limit)
+    const startIndex = skip + 1;
    
     res.render("admin/productList",{
       productList,
       currentPage: page,
-      totalPages
+      totalPages,
+      startIndex
     })
 
   }catch(error){
@@ -66,7 +68,6 @@ export const postAddProduct = async (req, res) => {
       image: imageUrls, // Save the array of image URLs
       price: req.body.price,
       stock: req.body.stock,
-      discount: req.body.discount || 0, // Default discount to 0 if not provided
       category: req.body.category,
       SKU: req.body.SKU
     });
@@ -132,7 +133,6 @@ export const postEditProduct=async(req,res)=>{
       description:req.body.description,
       price:req.body.price,
       stock:req.body.stock,
-      discount:req.body.discount,
       category:req.body.category,
       SKU:req.body.SKU,
       image:req.file?

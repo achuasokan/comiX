@@ -7,7 +7,8 @@ import * as userControl from '../controllers/user/authController.js'            
 import * as productControl from '../controllers/user/productController.js'
 import * as passwordControl from '../controllers/user/passwordController.js'
 import * as profileControl from '../controllers/user/profileController.js'
-
+import * as wishlistControl from '../controllers/user/wishlistController.js'
+import * as cartControl from '../controllers/user/cartController.js'
 const router=express.Router()
 
 router.use(checkUserSession)
@@ -54,7 +55,7 @@ router.route('/resetPassword')
 
 router.get('/auth/google',passport.authenticate('google',{scope:['profile','email'] } ) )                 //google login
 
-router.get('/auth/google/callback',isUser,passport.authenticate('google',{failureRedirect:'/login'}),    
+router.get('/auth/google/callback',passport.authenticate('google',{failureRedirect:'/login'}),    
 (req,res)=>{
   res.redirect('/home')
 })
@@ -66,13 +67,14 @@ router.get('/auth/google/callback',isUser,passport.authenticate('google',{failur
 
 router.get('/',userControl.getlandingPage)
 
+router.get('/shop/allProducts',productControl.getAllProductPage)
+
 router.get('/Category/:id',productControl.getProductsByCategory)
 
 router.get('/product/:id',productControl.getProductDetail)
 
 // //  //  //      Product  review Adding routes  //  //  //  //  //
-router.post('/product/:id/review',productControl.addReview)
-
+router.post('/product/:id/review',isUser,productControl.addReview)
 
 // //  //  //      Profile routes  //  //  //  //  //
 
@@ -85,6 +87,36 @@ router.get('/profile/address',isUser,profileControl.getAddressPage)
 
 router.route('/profile/add-address')
     .get(isUser,profileControl.getAddAddressPage)
-    // .post(isUser,profileControl.postAddAddress)
+    .post(isUser,profileControl.postAddAddress)
 
-export default router
+router.route("/profile/edit-address/:id")
+    .get(isUser,profileControl.getEditAddressPage)
+    .post(isUser,profileControl.postEditAddress)
+
+router.post("/profile/delete-address/:id",isUser,profileControl.deleteAddress)
+
+router.route('/profile/change-password')
+    .get(isUser,profileControl.getChangePasswordPage)
+    .post(isUser,profileControl.postChangePassword)
+
+
+// //  //  //      Wishlist routes  //  //  //  //  //
+
+router.get('/wishlist',isUser,wishlistControl.getWishListPage)
+
+router.post('/wishlist/:productId',isUser,wishlistControl.addToWishlist)
+
+router.post('/wishlist/delete/:id',isUser,wishlistControl.removeFromWishlist)
+
+// //  //  //      Cart routes  //  //  //  //  //
+
+router.get('/cart',isUser,cartControl.getCartPage)
+
+router.post('/cart/:productId/add',isUser,cartControl.addToCart)
+
+router.post('/cart/:productId/update',isUser,cartControl.updateCartItemQuantity)
+
+
+router.post('/cart/delete/:productId',isUser,cartControl.removeCartItem)
+
+    export default router

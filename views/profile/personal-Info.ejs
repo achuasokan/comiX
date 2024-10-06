@@ -42,7 +42,7 @@
     const submitButton = document.getElementById('submitButton');
     
     editButton.addEventListener('click', () => {
-        const inputs = [document.getElementById('nameInput'), document.getElementById('emailInput'), document.getElementById('mobileInput')];
+        const inputs = [document.getElementById('nameInput'), document.getElementById('mobileInput')];
         inputs.forEach(input => {
             input.disabled = !input.disabled; // Toggle disabled state
         });
