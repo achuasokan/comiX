@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/css/styles.css" rel="stylesheet"> <!-- Link to your CSS -->
+    <title>Order History</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Your Order History</h1>
+        
+        <% if (orders.length === 0) { %>
+            <p>You have no orders yet.</p>
+        <% } else { %>
+            <ul>
+                <% orders.forEach(order => { %>
+                    <li>
+                        <h2>Order ID: <%= order._id %></h2>
+                        <p>Total Amount: $<%= order.totalAmount.toFixed(2) %></p>
+                        <p>Status: <%= order.status %></p>
+                        <p>Order Date: <%= order.createdAt.toLocaleDateString() %></p>
+                        <h3>Items:</h3>
+                        <ul>
+                            <% order.items.forEach(item => { %>
+                                <li>
+                                    Product: <%= item.productId.name %> - Quantity: <%= item.quantity %>
+                                </li>
+                            <% }) %>
+                        </ul>
+                    </li>
+                <% }) %>
+            </ul>
+        <% } %>
+        
+        <a href="/">Continue Shopping</a>
+    </div>
+</body>
+</html>

@@ -9,6 +9,8 @@ import * as passwordControl from '../controllers/user/passwordController.js'
 import * as profileControl from '../controllers/user/profileController.js'
 import * as wishlistControl from '../controllers/user/wishlistController.js'
 import * as cartControl from '../controllers/user/cartController.js'
+import * as checkOutControl from '../controllers/user/checkOutController.js'
+import * as orderControl from '../controllers/user/orderController.js'
 const router=express.Router()
 
 router.use(checkUserSession)
@@ -118,5 +120,19 @@ router.post('/cart/:productId/update',isUser,cartControl.updateCartItemQuantity)
 
 
 router.post('/cart/delete/:productId',isUser,cartControl.removeCartItem)
+
+// //  //  //      Checkout routes  //  //  //  //  //
+
+router.get('/checkout',isUser,checkOutControl.getCheckoutPage)
+
+router.post('/checkout/add-address',isUser,checkOutControl.addNewAddress)
+
+router.post('/checkout/place-order',isUser,checkOutControl.postOrder)
+
+router.get('/order-confirmation/:orderId',isUser,checkOutControl.getOrderConfirmationPage)
+
+// //  //  //      Order History routes  //  //  //  //  //
+
+
 
     export default router
