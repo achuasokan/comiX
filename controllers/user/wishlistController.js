@@ -35,6 +35,11 @@ export const addToWishlist = async (req, res) => {
   try {
     //get the user id from the session
     const userId = req.session.userID; // Get logged-in user ID from session
+    console.log(userId);
+    // Check if userId is valid
+    if (!userId) {
+      return res.status(400).send('User not logged in');
+    }
     //get the product id from the route params
     const productId = req.params.productId; // Get product ID from route params
 

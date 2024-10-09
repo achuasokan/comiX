@@ -14,3 +14,7 @@
 #mainImage {
   transition: transform 0.2s;
 }
+
+.truncate {
+  max-width: 199px;
+}

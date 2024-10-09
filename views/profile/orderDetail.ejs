@@ -1,0 +1,75 @@
+<!-- views/user/orderDetail.ejs -->
+
+<div class="bg-black text-white min-h-screen flex flex-col">
+  <%- include('../partials/header') %>
+
+  <div class="container mx-auto py-8 px-4">
+    <h1 class="text-3xl font-bold mb-6">Order Details</h1>
+
+    <!-- Order Information -->
+    <div class="bg-gray-900 p-6 rounded-lg mb-6">
+      <p><strong>Order ID:</strong> <%= order._id %></p>
+      <p><strong>Order Date:</strong> <%= order.createdAt.toLocaleDateString() %></p>
+      <p><strong>Status:</strong> <%= order.orderStatus %></p>
+      <p><strong>Payment Method:</strong> <%= order.paymentMethod %></p>
+    </div>
+
+    <!-- Shipping Address -->
+    <h2 class="text-2xl font-bold mb-4">Shipping Address</h2>
+    <div class="bg-gray-900 p-6 rounded-lg mb-6">
+      <p><%= order.address.name %></p>
+      <p><%= order.address.buildingName %>, <%= order.address.street %></p>
+      <p><%= order.address.city %>, <%= order.address.state %>, <%= order.address.country %></p>
+      <p><%= order.address.pincode %></p>
+      <p><strong>Mobile:</strong> <%= order.address.mobile %></p>
+    </div>
+
+    <!-- Ordered Items -->
+    <h2 class="text-2xl font-bold mb-4">Items</h2>
+    <div class="bg-gray-900 p-6 rounded-lg mb-6">
+      <% order.items.forEach(item => { %>
+        <div class="flex items-center mb-4">
+          <img src="<%= item.product.image[0] %>" alt="<%= item.product.name %>" class="w-20 h-20 mr-4">
+          <div class="flex-1">
+            <p class="text-lg font-semibold"><%= item.product.name %></p>
+            <p>Price: ₹<%= item.discountPrice %></p>
+            <p>Quantity: <%= item.quantity %></p>
+            <p>Subtotal: ₹<%= item.discountPrice * item.quantity %></p>
+          </div>
+        </div>
+        <hr class="border-gray-700 my-4">
+      <% }) %>
+    </div>
+
+    <!-- Order Summary -->
+    <h2 class="text-2xl font-bold mb-4">Order Summary</h2>
+    <div class="bg-gray-900 p-6 rounded-lg mb-6">
+      <div class="flex justify-between mb-2">
+        <p>Subtotal:</p>
+        <p>₹<%= order.subtotal %></p>
+      </div>
+      <div class="flex justify-between mb-2">
+        <p>Discount:</p>
+        <p class="text-red-500">-₹<%= order.discount || 0 %></p>
+      </div>
+      <div class="flex justify-between mb-2">
+        <p>Delivery Charges:</p>
+        <p>₹0</p>
+      </div>
+      <hr class="border-gray-700 my-2">
+      <div class="flex justify-between font-bold">
+        <p>Total Amount:</p>
+        <p>₹<%= order.total %></p>
+      </div>
+    </div>
+
+    <!-- Optional: Cancel Order Button -->
+    <% if (order.orderStatus === 'Processing' || order.orderStatus === 'Pending') { %>
+      <form action="/order/cancel/<%= order._id %>" method="POST">
+        <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Cancel Order</button>
+      </form>
+    <% } %>
+  </div>
+
+  <%- include('../partials/footer') %>
+</div>

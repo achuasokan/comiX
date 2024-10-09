@@ -81,12 +81,7 @@
                 </div>
             </div>
 
-            <!-- <div class="mb-4">
-                <label class="block text-gray-300">Discount</label>
-                <input type="text"id="discount" name="discount"
-                    class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4" />
-                    <p id="discountError" class="text-red-500 text-sm"aria-live="assertive"></p>
-            </div> -->
+            
 
             <button type="submit" class="bg-primary text-white px-4 py-2 rounded">
                 Add Product
@@ -102,7 +97,7 @@
     const priceInput = document.getElementById('price');
     const stockInput = document.getElementById('stock');
     const SKUInput = document.getElementById('SKU');
-    const discountInput = document.getElementById('discount');
+    
 
     const productNameError = document.getElementById('productNameError');
     const descriptionError = document.getElementById('descriptionError');
@@ -110,7 +105,7 @@
     const priceError = document.getElementById('priceError');
     const stockError = document.getElementById('stockError');
     const SKUError = document.getElementById('SKUError');
-    // const discountError = document.getElementById('discountError');
+    
 
     document.addEventListener('DOMContentLoaded', () => {
         // Attach input event listeners
@@ -120,7 +115,7 @@
         priceInput.addEventListener('input', validatePrice);
         stockInput.addEventListener('input', validateStock);
         SKUInput.addEventListener('input', validateSKU);
-        // discountInput.addEventListener('input', validateDiscount);
+       
 
         function validateProductName() {
     const productName = productNameInput.value.trim();
@@ -177,15 +172,7 @@
             }
         }
 
-        // function validateDiscount() {
-        //     const discount = parseFloat(discountInput.value);
-        //     if (isNaN(discount) || discount < 0 || discount > 100) {
-        //         discountError.textContent = 'Discount must be a number between 0 and 100.';
-        //     } else {
-        //         discountError.textContent = '';
-        //     }
-        // }
-
+      
         form.addEventListener('submit', function (event) {
             // Run all validations on form submit
             validateProductName();
@@ -194,7 +181,7 @@
             validatePrice();
             validateStock();
             validateSKU();
-            // validateDiscount();
+         
 
             // Check if there are any errors
             const hasErrors = productNameError.textContent || descriptionError.textContent || categoryError.textContent ||

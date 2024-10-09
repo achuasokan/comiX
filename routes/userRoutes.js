@@ -133,6 +133,10 @@ router.get('/order-confirmation/:orderId',isUser,checkOutControl.getOrderConfirm
 
 // //  //  //      Order History routes  //  //  //  //  //
 
+router.get('/profile/order',isUser,orderControl.getorderhistoryPage)
 
+router.get('/order-detail/:orderID',isUser,orderControl.getOrderDetailpage)
+
+router.post('/order/cancel/:orderID',isUser,orderControl.orderCancel)
 
     export default router

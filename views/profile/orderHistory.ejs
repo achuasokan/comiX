@@ -1,0 +1,94 @@
+<%- include('../partials/header.ejs') %>
+
+<div class="flex bg-black text-white">
+  <%- include('./profileSidebar.ejs') %>
+
+  <div class="container mx-auto p-6 flex-1">
+    <h1 class="text-3xl font-bold mb-4">Your Order History</h1>
+
+    <div class="flex flex-col md:flex-row mb-4">
+      <select
+        class="mb-2 md:mb-0 md:mr-4 p-2 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+        <option value="">Filter by Status</option>
+        <option value="Delivered">Delivered</option>
+        <option value="Cancelled">Cancelled</option>
+        <option value="Processing">Processing</option>
+        <!-- Add more options as needed -->
+      </select>
+      <input
+        type="text"
+        placeholder="Search your orders here"
+        class="w-full p-2 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+    </div>
+
+    <% if (orders.length === 0) { %>
+    <p class="text-gray-400">You have no orders yet.</p>
+    <% } else { %>
+    <ul class="space-y-4">
+      <% orders.forEach(order => { %> <% order.items.forEach(item => { %>
+      <li
+        class="border border-gray-700 rounded-lg p-4 shadow-md flex items-center justify-between"
+      >
+        <div class="flex items-center">
+            <a href="/order-detail/<%= order._id %>" class="flex items-center">
+          <img
+            src="<%= item.product.image[1] %>"
+            alt="<%= item.product.name %>"
+            class="w-16 h-16 object-cover rounded mr-4"
+          />
+          <div class="flex flex-col">
+            <h2 class="text-xl font-semibold truncate"><%= item.product.name %></h2>
+            <p class="text-sm text-gray-400">
+              Category: <%= item.product.category.name %>
+            </p>
+          </div>
+          </a>
+        </div>
+        <div class="flex flex-col items-center flex-grow">
+          <p class="text-lg">Price: ₹<%= item.price %></p>
+        </div>
+        <div class="flex flex-col items-end">
+          <p class="text-sm text-gray-400">
+            <% if (order.orderStatus === 'Processing') { %>
+
+            <span class="text-yellow-500"
+              >Processing on <%= order.orderedAt.toLocaleDateString() %></span
+            >
+
+            <% } else if (order.orderStatus === 'Shipped') { %>
+            <span class="text-green-500"
+              >Shipped on <%= order.updatedAt.toLocaleDateString() %></span
+            >
+            <% } else if (order.orderStatus === 'Confirmed') { %>
+            <span class="text-green-500"
+              >Confirmed on <%= order.updatedAt.toLocaleDateString() %></span
+            >
+            <% } else if (order.orderStatus === 'Delivered') { %>
+            <span class="text-green-500"
+              >Delivered on <%= order.updatedAt.toLocaleDateString() %></span
+            >
+            <% } else if (order.orderStatus === 'Cancelled') { %>
+            <span class="text-red-500"
+              >Cancelled on <%= order.updatedAt.toLocaleDateString() %></span
+            >
+            <% } else if (order.orderStatus === 'Returned') { %>
+            <span class="text-red-500"
+              >Returned on <%= order.updatedAt.toLocaleDateString() %></span
+            >
+            <% } else if (order.orderStatus === 'Refunded') { %>
+            <span class="text-red-500"
+              >Refunded on <%= order.updatedAt.toLocaleDateString() %></span
+            >
+            <% } %>
+          </p>
+        </div>
+      </li>
+      <% }) %> <% }) %>
+    </ul>
+    <% } %>
+  </div>
+</div>
+
+<%- include('../partials/footer.ejs') %>
