@@ -13,6 +13,7 @@ export const getCartPage = async (req,res) => {
       populate: {path: 'category', select: 'name'}
     })
 
+    // if the cart is not found return the cart page with the cart as null means the cart is empty
     if (!cart) {
       return res.render('user/cart',{cart: null})
     }
@@ -43,37 +44,47 @@ export const addToCart = async (req,res) => {
       return res.status(404).send({error: "Product not found"})
     }
 
+    // if the quantity is greater than the stock of the product return the status 400 and send the message not enough stock available
     if(quantity > product.stock) {
       return res.status(400).send({error: "Not enough stock availabless"})
     }
-
+    // calculate the discount price of the product
     const discountprice = await calculateDiscountPrice(product)
 
+    // find the cart of the user
     let cart = await cartModel.findOne({user: userId})
+    // if the cart is not found create a new cart
     if (!cart) {
       cart = new cartModel({user: userId, items:[] })
     }
 
+    // find the index of the product in the cart
     const itemIndex = cart.items.findIndex(item => item.product.equals(productId))
-
+    // if the product is already in the cart
     if(itemIndex > -1) {
+      // increase the quantity of the product
       const newQuantity = cart.items[itemIndex].quantity + quantity
 
+      // if the new quantity is greater than the stock of the product return the status 400 and send the message not enough stock available
       if(newQuantity > product.stock) {
         return res.status(400).send({error: "Not enough stock available"})
       }
-      // if (newQuantity > 5) {
-      //   return res.status(400).json({ error: "Cannot add more than 5 of the same item to the cart" });
-      // }
+      // if the new quantity is greater than 5 return the status 400 and send the message cannot add more than 5 of the same item to the cart
+      if (newQuantity > 5) {
+        return res.status(400).json({ error: "Cannot add more than 5 of the same item to the cart" });
+      }
+      // increase the quantity of the product
       cart.items[itemIndex].quantity += quantity
     } else {
-
+      // if the quantity is greater than the stock of the product return the status 400 and send the message not enough stock available
       if(quantity > product.stock) {
         return res.status(400).json({error: "Not enough stock available"})
       }
+      // if the quantity is greater than 5 return the status 400 and send the message cannot add more than 5 of the same item to the cart
       if (quantity > 5) {
         return res.status(400).json({ error: "Cannot add more than 5 of the same item to the cart" });
       }
+      // add the product to the cart
       cart.items.push({
         product: productId,
         quantity: quantity,
@@ -81,7 +92,7 @@ export const addToCart = async (req,res) => {
         discountPrice: discountprice
       })
     }
-
+// calculate the subtotal and total discount of the cart items in the cart for the cart page for the user
     cart.subtotal = calculateSubtotal(cart.items)
     cart.subtotal = calculateSubtotal(cart.items).subtotal; // Update subtotal
     cart.total = calculateTotal(cart.subtotal, cart.discount)

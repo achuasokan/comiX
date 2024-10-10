@@ -129,7 +129,7 @@ router.post('/checkout/add-address',isUser,checkOutControl.addNewAddress)
 
 router.post('/checkout/place-order',isUser,checkOutControl.postOrder)
 
-router.get('/order-confirmation/:orderId',isUser,checkOutControl.getOrderConfirmationPage)
+
 
 // //  //  //      Order History routes  //  //  //  //  //
 
