@@ -53,7 +53,7 @@ export const postOrder = async (req, res) => {
 
     // get the address of the user by the address id
     const address = await addressModel.findById(addressId);
-    // if the address is not found return the status 400 and send the message invalid address
+    
     if (!address) {
       console.log('Address not found:', addressId); // Log if address is not found
       return res.status(400).send('Invalid address');
@@ -67,7 +67,7 @@ export const postOrder = async (req, res) => {
       const discount = (discountId && mongoose.Types.ObjectId.isValid(discountId)) 
         ? mongoose.Types.ObjectId(discountId) 
         : null;
-
+        
       return {
         product: item.product._id, // Ensure this is the ObjectId of the product
         quantity: item.quantity,

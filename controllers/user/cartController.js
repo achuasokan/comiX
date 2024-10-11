@@ -93,7 +93,7 @@ export const addToCart = async (req,res) => {
       })
     }
 // calculate the subtotal and total discount of the cart items in the cart for the cart page for the user
-    cart.subtotal = calculateSubtotal(cart.items)
+    // cart.subtotal = calculateSubtotal(cart.items)
     cart.subtotal = calculateSubtotal(cart.items).subtotal; // Update subtotal
     cart.total = calculateTotal(cart.subtotal, cart.discount)
 
@@ -107,41 +107,60 @@ export const addToCart = async (req,res) => {
 }
 
 // //  //  //   //  //         UPDATE CART ITEM QUANTITY AJAX  //  //  //  //  //  //  //
-
-export const updateCartItemQuantity = async (req,res) => {
+export const updateCartItemQuantity = async (req, res) => {
   try {
     const userId = req.session.userID
     const productId = req.params.productId
-    const newQuantity = parseInt(req.body.quantity,10)
-    
+    const newQuantity = parseInt(req.body.quantity, 10)
 
-    const cart = await cartModel.findOne({ user: userId})
+    const cart = await cartModel.findOne({ user: userId }).populate('items.product')
     if (!cart) {
-      return res.status(404).send({error: "Cart not found"})
+      return res.status(404).json({ error: "Cart not found" })
     }
 
+    const itemIndex = cart.items.findIndex(item => item.product._id.equals(productId))
+    if (itemIndex > -1 && newQuantity > 0 && newQuantity <= 5) {
+      const product = await productModel.findById(productId).populate('discount')
+      if (newQuantity > product.stock) {
+        return res.status(400).json({ error: "Not enough stock available" })
+      }
 
-    const itemIndex = cart.items.findIndex(item => item.product.equals(productId))
-    if(itemIndex > -1 && newQuantity > 0) {
       cart.items[itemIndex].quantity = newQuantity;
+     
+      // const discountPrice = await calculateDiscountPrice(product)
+      // cart.items[itemIndex].discountPrice = discountPrice
+
       const { subtotal, totalDiscount } = calculateSubtotal(cart.items);
       cart.subtotal = subtotal;
       cart.total = calculateTotal(subtotal, cart.discount);
       await cart.save()
-     
-    } 
-      res.redirect('/cart')
-    
 
+      res.json({
+        itemCount: cart.items.length,
+        originalPrice: subtotal + totalDiscount,
+        totalDiscount: totalDiscount,
+        total: cart.total,
+        items: cart.items.map(item => ({
+          productId: item.product._id,
+          quantity: item.quantity,
+          price: item.price,
+          discountPrice: item.discountPrice,
+          total: item.quantity * (item.discountPrice || item.price)
+        }))
+      })
+    } else {
+      res.status(400).json({ error: "Invalid quantity" })
+    }
   } catch (error) {
     console.log("Error in updateCartItemQuantity", error)
-    res.status(500).send("Error updating cart item quantity")
+    res.status(500).json({ error: "Error updating cart item quantity" })
   }
 }
 
-// //  //  //   //  //         REMOVE CART ITEM   //  //  //  //  //  //  //
 
-export const removeCartItem = async (req,res) => {
+// // //  //  //   //  //         REMOVE CART ITEM   //  //  //  //  //  //  //
+
+export const removeCartItem = async (req, res) => {
   try {
     const userId = req.session.userID
     const productId = req.params.productId
@@ -153,14 +172,25 @@ export const removeCartItem = async (req,res) => {
       cart.subtotal = subtotal;
       cart.total = calculateTotal(subtotal, cart.discount);
 
-      await cart.save()     
+      await cart.save()
+
+      res.json({
+        itemCount: cart.items.length,
+        originalPrice: subtotal + totalDiscount,
+        totalDiscount: totalDiscount,
+        total: cart.total,
+        items: cart.items.map(item => ({
+          productId: item.product._id,
+          quantity: item.quantity,
+          total: item.quantity * (item.discountPrice || item.price)
+        }))
+      })
+    } else {
+      res.status(404).json({ error: "Cart not found" })
     }
-
-    res.redirect('/cart')
-
   } catch (error) {
     console.log("Error in removeCartItem", error)
-    res.status(500).send("Error removing cart item")
+    res.status(500).json({ error: "Error removing cart item" })
   }
 }
 
@@ -185,6 +215,8 @@ const calculateTotal = (subtotal, discount) => {
   const discountAmount = (subtotal * discount) / 100;
   return subtotal - discountAmount;
 }
+
+
 
 
 
