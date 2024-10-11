@@ -67,11 +67,11 @@
                           </button>
                         </form>
 
-                        <form action="/cart/<%= products._id %>/add" method="POST">
-                          <button type="submit" class="text-black" <% if(products.stock <= 0) { %> disabled title="Out of stock"  <% } %>>
+                       
+                          <button onclick="addToCart('<%= products._id %>')"  class="text-black">
                           <i class="fas fa-cart-plus"></i>
                         </button>
-                      </form>
+                      
                 
                       <% } else { %>
                         <a href="/login">

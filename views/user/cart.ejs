@@ -124,11 +124,18 @@
     Swal.fire({
       title: 'Are you sure?',
       text: "You want to remove this item from your cart",
-      icon: 'warning',
+      iconHtml: '<i class="fas fa-trash-alt text-red-500"></i>',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, remove it!'
+      confirmButtonText: 'Yes, remove it!',
+      customClass: {
+        popup:'bg-gray-900 text-white rounded-lg shadow-lg p-6',
+        title:'text-xl font-bold',
+        content:'text-base mb-4',
+        confirmButton:'bg-green-600 text-white rounded-lg px-4 py-2 hover:bg-green-700 transition duration-200 ease-in-out',
+        cancelButton:'bg-red-600 text-white rounded-lg px-4 py-2 hover:bg-red-700 transition duration-200 ease-in-out'
+      }
     }).then((result) => {
       if (result.isConfirmed) {
         fetch(`/cart/delete/${productId}`, {
@@ -180,12 +187,18 @@
   }
 
   function showAlert(title, text, icon) {
-    Swal.fire({
-      title: title,
-      text: text,
-      icon: icon,
-      confirmButtonColor: '#3085d6',
-    });
-  }
+  Swal.fire({
+    title: title,
+    text: text,
+    icon: icon,
+    confirmButtonColor: '#4CAF50', // Green color for the confirm button
+    customClass: {
+      popup: 'bg-gray-900 text-white rounded-lg shadow-lg p-6 transition-transform transform hover:scale-105', // Dark background
+      title: 'text-2xl font-bold mb-2', // Larger title with margin
+      content: 'text-base mb-4', // Content with margin
+      confirmButton: 'bg-green-600 text-white rounded-lg px-6 py-2 hover:bg-green-700 transition duration-200 ease-in-out', // Button with hover effect
+    },
+  });
+}
 });
 </script>

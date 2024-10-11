@@ -41,12 +41,12 @@ export const addToCart = async (req,res) => {
     
     const product = await productModel.findById(productId).populate('discount')
     if (!product) {
-      return res.status(404).send({error: "Product not found"})
+      return res.status(404).json({message: "Product not found"})
     }
 
     // if the quantity is greater than the stock of the product return the status 400 and send the message not enough stock available
     if(quantity > product.stock) {
-      return res.status(400).send({error: "Not enough stock availabless"})
+      return res.status(400).json({message: "Not enoughsss stock available"})
     }
     // calculate the discount price of the product
     const discountprice = await calculateDiscountPrice(product)
@@ -67,22 +67,23 @@ export const addToCart = async (req,res) => {
 
       // if the new quantity is greater than the stock of the product return the status 400 and send the message not enough stock available
       if(newQuantity > product.stock) {
-        return res.status(400).send({error: "Not enough stock available"})
+        return res.status(400).send({message: "Not enough stock available"})
       }
-      // if the new quantity is greater than 5 return the status 400 and send the message cannot add more than 5 of the same item to the cart
+
       if (newQuantity > 5) {
-        return res.status(400).json({ error: "Cannot add more than 5 of the same item to the cart" });
+        return res.status(400).json({ message: " You cannot add more than 5 of the same item to your cart." });
       }
       // increase the quantity of the product
       cart.items[itemIndex].quantity += quantity
     } else {
-      // if the quantity is greater than the stock of the product return the status 400 and send the message not enough stock available
+  
+      
       if(quantity > product.stock) {
-        return res.status(400).json({error: "Not enough stock available"})
+        return res.status(400).json({message: "Not enough stock availables"})
       }
-      // if the quantity is greater than 5 return the status 400 and send the message cannot add more than 5 of the same item to the cart
+    
       if (quantity > 5) {
-        return res.status(400).json({ error: "Cannot add more than 5 of the same item to the cart" });
+        return res.status(400).json({ message: "You cannot add more than 5 of the same item to your cart." });
       }
       // add the product to the cart
       cart.items.push({
@@ -98,11 +99,11 @@ export const addToCart = async (req,res) => {
     cart.total = calculateTotal(cart.subtotal, cart.discount)
 
     await cart.save()
-    res.redirect('/cart')
+   res.status(200).json({message: "Product added to cart successfully"})
 
   } catch (error) {
     console.log("error in addtoCart",error);
-    res.status(500).send("Error Adding product to cart")
+   return res.status(500).json({message: "Something went wrong.Please try again later."})
   }
 }
 
