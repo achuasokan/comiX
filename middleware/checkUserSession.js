@@ -6,14 +6,16 @@ export const checkUserSession = async (req, res, next) => {
       const user = await userModel.findById(req.session.userID);
       if (!user) {
         req.session.destroy()
-        return res.redirect('/login?message=Your account has been blocked. Please contact Support.');
+        req.flash('error','Your account has been blocked. Please contact Support.')
+        return res.redirect('/login');
       }
       if (user && user.isBlocked) {
         req.session.destroy((error) => {
           if (error) {
             console.log("Error destroying session", error);
           }
-          return res.redirect('/login?message=Your account has been blocked. Please contact Support.');// Redirect to login page
+          req.flash('error','Your account has been blocked. Please contact Support.')
+          return res.redirect('/login');// Redirect to login page
         });
       } else {
         

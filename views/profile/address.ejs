@@ -11,17 +11,17 @@
       </a>
     <% } else { %>
       <h2 class="text-lg font-bold mb-4">Manage Addresses</h2>
-      <% if (message) { %>
-        <p class="text-red-500 mb-4"><%= message %></p>
-      <% } %>
+    <!-- flash message  -->
+      <%- include('../partials/flashMessage.ejs') %>
+      
       <div class="mt-4">
         <a href="/profile/add-address" class="flex items-center bg-blue-500 text-white px-8 py-3 rounded-lg hover:bg-blue-600 transform duration-200">
           Add New Address
         </a>
       </div>
-      <div class="w-full space-y-4 mt-4 "">
+      <div class="w-full space-y-4 mt-4">
         <% addresses.forEach(address => { %>
-          <div class="bg-[#1f1f1f] p-4 rounded-lg shadow-md max-w-md mx-auto"> <!-- Limit width and center -->
+          <div class="bg-[#1f1f1f] p-4 rounded-lg shadow-md max-w-md mx-auto">
             <div class="flex justify-between items-start mb-2">
               <div>
                 <% if (address.isDefault) { %>
@@ -32,10 +32,7 @@
               </div>
               <div class="flex items-center">
                 <a href="/profile/edit-address/<%= address._id %>" class="text-blue-400 hover:underline">Edit</a>
-                <form action="/profile/delete-address/<%=address._id%>" method="post" >
-                  <button type="submit" class="text-red-400 hover:underline ml-4">Delete</button>
-                </form>
-               
+                <button class="text-red-400 hover:underline ml-4" onclick="deleteAddress('<%= address._id %>')">Delete</button>
               </div>
             </div>
             <p class="text-sm">
@@ -47,4 +44,38 @@
     <% } %>
   </div>
 </div>
+
 <%- include('../partials/footer.ejs') %>
+<script>
+  function deleteAddress(addressId) {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You want to delete this address",
+      iconHtml:'<i class="fas fa-trash-alt text-red-500"></i>',
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6", 
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+      customClass: {
+        popup: 'bg-gray-900 text-white rounded-lg shadow-lg md:p-6', 
+        title: 'md:text-xl text-lg font-bold', 
+        content: 'md:text-xl text-sm mb-4',
+        confirmButton: 'bg-green-600 text-white rounded-lg px-4 py-2 hover:bg-green-700 transition duration-200 ease-in-out', 
+        cancelButton: 'bg-red-600 text-white rounded-lg px-4 py-2 hover:bg-red-700 transition duration-200 ease-in-out', 
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $.ajax({
+          url: `/profile/delete-address/${addressId}`,
+          type: "DELETE",
+          success: function (response) {
+            location.reload(); // Reload the page to reflect changes
+          },
+          error: function (xhr) {
+            Swal.fire("Error", "Failed to delete the address", "error");
+          }
+        });
+      }
+    });
+  }
+</script>

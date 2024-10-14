@@ -10,13 +10,12 @@ import  {calculateDiscountPrice  } from '../../utils/discountprice.js'
 // //  //  //   //  //          getting Login page     //  //  //  //  //  //  //
 
 export const  getLogin=async(req,res)=>{  
-  //get message for when user is blocked by admin when user is logged in
-  const message=req.query.message || undefined           
+ 
      //if user is logged in                                                  
   if(req.session.userID){                                                                       
     return res.redirect('/home')                                                                 
   }else{                                                                                         
-    res.render('user/userLogin',{message})                                             
+    res.render('user/userLogin')                                             
   }
 }
 
@@ -35,17 +34,19 @@ export const postLogin=async(req,res)=>{
 
     //if user not found                               
     if(!userFind){                                                                       
-      res.render("user/userLogin",{message:"Please enter a valid email address"})          
-      return
+      req.flash('error',"Please enter a valid email address")
+      return res.redirect('/login')
     }
     //if user is blocked
     if(userFind.isBlocked){                                                                  //if user is blocked                     
-      res.render('user/userLogin',{message:'Your account has been blocked.Please contact Support'})
+      req.flash('error','Your account has been blocked.Please contact Support')
+      return res.redirect('/login')
     }
 
     //if user is not verified
     if(!userFind.isVerified){
-      return res.render("user/userLogin",{message:"Please verify your account before login"})
+      req.flash('error',"Please verify your account before login")
+      return res.redirect('/login')
     }
 
     // compare password
@@ -53,8 +54,8 @@ export const postLogin=async(req,res)=>{
 
     //if password is incorrect
     if(!passwordMatch) {                                                                  
-      res.render('user/userLogin',{message:"Please enter a valid password"})
-      return
+      req.flash('error',"Please enter a valid password")
+      return res.redirect('/login')
     } else {   
 
    // If password is correct, store only the user ID in the session
@@ -65,7 +66,8 @@ res.redirect('/home')
     }
   }catch(error){
     console.log(error);
-    return res.status(500).render('user/userLogin',{message:"Internal server error"}) 
+    req.flash('error',"Internal server error")
+    return res.redirect('/login') 
   }
 }
 
@@ -85,8 +87,8 @@ export const getHome=async (req,res)=> {
 
 export const getSignup=async (req,res)=> {                                
   try{
-    const message = req.query.message || undefined
-    res.render('user/userSignUp',{message})                        
+    
+    res.render('user/userSignUp')                        
   }catch(error){
     console.log(error);  
   }
@@ -116,13 +118,15 @@ export const postSignup=async(req,res)=>{
     }
 
     if(error){
-      return res.render('user/userSignUp',{message:error})
+      req.flash('error',error)
+      return res.redirect('/signup')
     }
 
    // check if user already exist
     const userMatch=await userModel.findOne({email})
     if(userMatch){
-      res.render('user/userSignUp',{message:"User Already Exist"})             
+      req.flash('error',"User Already Exist")
+      return res.redirect('/signup')
     }
 
     //generate otp
@@ -141,11 +145,13 @@ export const postSignup=async(req,res)=>{
     //send otp to email
     await sendOTPEmail(email,otp)  
 
-   res.redirect('/verify-otp?message=OTP sent to your email. Please check your email')                          //render otp page
+   req.flash('success','OTP sent to your email. Please check your email')                          //render otp page
+   return res.redirect('/verify-otp')
 
   }catch(error){
     console.log(error);
-    res.render('user/userSignUp',{message:`An error occurred during registration,Please try again`})
+    req.flash('error',`An error occurred during registration,Please try again`)
+    return res.redirect('/signup')
   }
 }
 
@@ -153,8 +159,8 @@ export const postSignup=async(req,res)=>{
 
 export const getverifyOTP=(req,res)=>{
   try{
-    const message=req.query.message || undefined
-    res.render('user/otpSignup',{message})
+    
+    res.render('user/otpSignup')
   }catch(error){
     console.log(error);
 
@@ -175,7 +181,8 @@ export const postverifyOTP=async (req,res)=>{
   const tempUser=req.session.tempUser
    
   if(!tempUser){
-    return res.status(400).redirect('/signup?message=session expired. please signup again')
+    req.flash('error',"session expired. please signup again")
+    return res.redirect('/signup')
   }
 
 // Destructure tempUser data
@@ -183,7 +190,8 @@ export const postverifyOTP=async (req,res)=>{
 
 // Check if the provided OTP matches and whether it is expired
   if(otp !== storedOtp || otpExpiresAt < new Date()){
-    return res.status(400).render('user/otpSignup',{message:'invalid or Expired otp'})
+    req.flash('error','invalid or Expired otp')
+    return res.redirect('/verify-otp')
   }
 
 // Hash the password 
@@ -200,11 +208,13 @@ export const postverifyOTP=async (req,res)=>{
   delete req.session.tempUser
 
 // Render login page with after successful signup
-  return res.status(200).redirect('/login?message=Signup Successful. Please login')
+  req.flash('success','Signup Successful.Please login')
+  return res.redirect('/login')
 
   }catch(error){
     console.log(error);
-    res.status(500).render('user/otpSignup',{message:"error verifying OTP"})
+    req.flash('error',"error verifying OTP")
+    return res.redirect('/verify-otp')
   }
 }
 
@@ -218,7 +228,8 @@ export const resendOTP=async (req,res)=>{
 
 // If tempUser doesn't exist, prompt the user to sign up again    
   if(!tempUser || !tempUser.email){
-    return res.status(400).redirect('/signup?message=session expired. please signup again')
+    req.flash('error',"session expired. please signup again")
+    return res.redirect('/signup')
   }
 // Destructure tempUser data
   const {name,email,password} = tempUser
@@ -240,11 +251,13 @@ export const resendOTP=async (req,res)=>{
      await sendOTPEmail(email,newOTP)   
 
 // Render OTP page with a success message                                                           
-   res.redirect('/verify-otp?message=New OTP has been sent to your email')                 //render otp page
+   req.flash('success','New OTP has been sent to your email')                 //render otp page
+   return res.redirect('/verify-otp')
 
   }catch(error){
     console.log('Error resending OTP',error);
-    res.status(500).redirect('/verify-otp?message=Error sending OTP. Please try again')
+    req.flash('error',"Error sending OTP. Please try again")
+    return res.redirect('/verify-otp')
   }
 }
 

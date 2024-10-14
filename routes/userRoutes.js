@@ -95,7 +95,7 @@ router.route("/profile/edit-address/:id")
     .get(isUser,profileControl.getEditAddressPage)
     .post(isUser,profileControl.postEditAddress)
 
-router.post("/profile/delete-address/:id",isUser,profileControl.deleteAddress)
+router.delete("/profile/delete-address/:id",isUser,profileControl.deleteAddress)
 
 router.route('/profile/change-password')
     .get(isUser,profileControl.getChangePasswordPage)

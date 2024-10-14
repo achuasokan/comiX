@@ -30,6 +30,7 @@ export const editProfile=async(req,res)=>{
     
     // Update the session variable to reflect the new name
     req.session.name=name
+    req.flash('success','Profile updated successfully')
     res.redirect('/profile/personal-info')
 
   }catch(error){
@@ -43,16 +44,12 @@ export const editProfile=async(req,res)=>{
 
 export const getAddressPage = async(req,res) => {
   try{
-    // get message from query
-    const message = req.query.message || undefined
-    // set message to null
-    req.session.message = null
     // get user id from session
     const userID= req.session.userID
     // get addresses from database
     const addresses=await addressModel.find({userId:userID})
-    // render address page with addresses and message
-    res.render('profile/address',{addresses,message})
+    // render address page with addresses
+    res.render('profile/address',{addresses})
   }catch(error) {
     console.log("error in get address page",error);
     res.status(500).send("internal server error in get address page")
@@ -64,7 +61,6 @@ export const getAddressPage = async(req,res) => {
 
 export const getAddAddressPage = async(req,res) => {
   try{
-    
     res.render('profile/addAddress')
   }catch(error){
     console.log("error in get add address page",error);
@@ -86,7 +82,8 @@ export const postAddAddress = async(req,res) => {
     
     // check if user address count is greater than or equal to max address
     if(userAddresses >= maxAddress) {
-      return res.status(400).redirect("/profile/address?message=you can only add 3 address")
+      req.flash('error','you can only add 3 address')
+      return res.redirect('/profile/address')
     }
 
     // create address
@@ -109,10 +106,12 @@ export const postAddAddress = async(req,res) => {
     }
 
     await addressModel.create(newAddress)
+    req.flash('success','Address added successfully')
     res.redirect('/profile/address') 
   }catch(error) {
     console.log("error in add address",error);
-    res.status(500).send("internal server error in add address")
+    req.flash('error','Internal server error while adding address')
+    res.redirect('/profile/address')
   }
 }
 
@@ -165,8 +164,8 @@ export const postEditAddress = async (req,res) => {
     // update address
     await addressModel.updateOne({_id:addressID},{$set:updateAddress})
 
-    // redirect to address page with success message
-    res.redirect('/profile/address?message=address updated successfully')
+    req.flash('success','Address updated successfully')
+    res.redirect('/profile/address')
     
   }catch(error) {
     console.log("error in patch edit address",error);
@@ -185,22 +184,21 @@ try{
   const addressID = req.params.id
   // delete address
   await addressModel.deleteOne({_id:addressID,userId:userID})
-    res.redirect('/profile/address')
+  req.flash('success','Address deleted successfully')
+    res.status(200).json({message:"Address deleted successfully"})
 }catch(error) {
   console.log("error in delete address",error);
   res.status(500).send("internal server error in delete address")
 }
   
 }
-
-
 // //  //  //   //  //          CHANGE PASSWORD   //  //  //  //  //  //  //
 
 export const getChangePasswordPage = async(req,res) => {
   try{
     // get message from query
-    const message = req.query.message || undefined
-    res.render('profile/changePassword',{message})
+   
+    res.render('profile/changePassword')
   }catch (error) {
     console.log("error in get change password page",error);
     res.status(500).send("internal server error in get change password page") 
@@ -218,13 +216,14 @@ export const postChangePassword = async (req,res) => {
 
     // check if new password is valid
     if(!passwordPattern.test(newPassword)) {
-      return res.status(400).render('profile/changePassword',
-        {message:"Password must be at least 6 characters long, include upper and lower case letters, a digit, and a special character."})
+      req.flash('error',"Password must be at least 6 characters long, include upper and lower case letters, a digit, and a special character.") 
+      return res.redirect('/profile/change-password')
     }
 
     // check if new password and confirm password match
     if(newPassword !== confirmPassword) {
-      return res.status(400).render('profile/changePassword',{message:"The password you entered do not match.Please try again"})
+      req.flash('error',"The password you entered do not match.Please try again") 
+      return res.redirect('/profile/change-password')
     }
 
     // get user from database
@@ -235,7 +234,8 @@ export const postChangePassword = async (req,res) => {
 
     // if current password is incorrect
     if(!isMatch) {
-      return res.status(400).render('profile/changePassword',{message:"The current password you entered is incorrect.Please try again"})
+      req.flash('error',"The current password you entered is incorrect.Please try again") 
+      return res.redirect('/profile/change-password')
     }
 
     // hash new password
@@ -245,7 +245,8 @@ export const postChangePassword = async (req,res) => {
     await userModel.updateOne({_id:userID},{$set:{password:hashedPassword}})
 
     // redirect to change password page with success message
-    res.redirect('/profile/change-password?message=Password updated successfully')
+    req.flash('success','Password updated successfully')
+    res.redirect('/profile/change-password')
 
   }catch(error)  {
     console.log("error in post change password",error);

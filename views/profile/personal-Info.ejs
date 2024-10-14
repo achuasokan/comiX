@@ -9,6 +9,10 @@
  <main class="flex-1 p-4 ">
     <form id="profileForm" action="/profile/personal-info" method="post" class="flex flex-col mb-4">
         <h2 class="text-lg font-bold">Personal Information</h2>
+
+        <!-- flash message  -->
+        <%- include('../partials/flashMessage.ejs') %>
+        
         <div class="mb-4 w-1/2 mt-2"> 
             <label for="nameInput">Name:</label>
             <input type="text"  name="name" id="nameInput" placeholder="Name" value="<%= user.name %>" class="bg-[#1f1f1f] text-white p-2 rounded-lg w-full" disabled />

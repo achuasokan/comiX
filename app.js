@@ -9,6 +9,7 @@ import {fileURLToPath} from "url";
 import connectDB from './config/db.js'
 import passport from './config/passport.js'
 import expressLayouts from 'express-ejs-layouts';
+import flash from 'connect-flash'
 
 
 //dotenv config
@@ -55,6 +56,15 @@ app.use(session({
     cookie:{maxAge:1000*60*60*24,secure:false},
 }))
 
+//flash middleware
+app.use(flash());
+
+
+app.use((req,res,next)=>{
+  res.locals.success=req.flash('success')
+  res.locals.error=req.flash('error')
+  next()
+})
 //passport middleware
 app.use(passport.initialize());                                                                //initialize passport
 app.use(passport.session());                                                                   //session middleware

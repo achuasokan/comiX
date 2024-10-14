@@ -21,7 +21,14 @@
                   </a>
                   <p class="text-gray-400"><%= item.product.category.name %></p>
                   <p class="text-gray-400 line-through"><strong>Price:</strong> ₹<span class="item-original-price"><%= item.price %></span></p>
-                  <p class="text-green-500"><strong>Total:</strong> ₹<span class="item-total-price"><%= Math.floor((item.discountPrice ? item.discountPrice : 0) * item.quantity) %></span></p>
+
+                  <div class="flex items-center justify-between">
+                    <p class="text-green-500"><strong>Total:</strong> ₹<span class="item-total-price"><%= Math.floor((item.discountPrice ? item.discountPrice : 0) * item.quantity) %></span></p>
+                    <% if (item.product.stock < item.quantity) { %>
+                      <p class="text-red-500 font-semibold">Currently out of stock</p>
+                    <% } %>
+                  </div>
+                  
                 </div>
               </div>
 

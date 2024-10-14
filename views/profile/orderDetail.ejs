@@ -17,11 +17,15 @@
     <!-- Shipping Address -->
     <h2 class="text-2xl font-bold mb-4">Shipping Address</h2>
     <div class="bg-gray-900 p-6 rounded-lg mb-6">
-      <p><%= order.address.name %></p>
-      <p><%= order.address.buildingName %>, <%= order.address.street %></p>
-      <p><%= order.address.city %>, <%= order.address.state %>, <%= order.address.country %></p>
-      <p><%= order.address.pincode %></p>
-      <p><strong>Mobile:</strong> <%= order.address.mobile %></p>
+      <% if (order.address) { %>
+        <p><%= order.address.name %></p>
+        <p><%= order.address.buildingName %>, <%= order.address.street %></p>
+        <p><%= order.address.city %>, <%= order.address.state %>, <%= order.address.country %></p>
+        <p><%= order.address.pincode %></p>
+        <p><strong>Mobile:</strong> <%= order.address.mobile %></p>
+      <% } else { %>
+        <p>No shipping address available.</p>
+      <% } %>
     </div>
 
     <!-- Ordered Items -->
