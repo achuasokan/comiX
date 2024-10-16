@@ -32,7 +32,7 @@
         class="border border-gray-700 rounded-lg p-4 shadow-md flex items-center justify-between"
       >
         <div class="flex items-center">
-            <a href="/order-detail/<%= order._id %>" class="flex items-center">
+            <a href="/order-detail/<%= order._id %>/<%= item._id %>" class="flex items-center">
              
               <% if (item.product) { %>
           <img
@@ -56,36 +56,26 @@
         </div>
         <div class="flex flex-col items-end">
           <p class="text-sm text-gray-400">
-            <% if (order.orderStatus === 'Processing') { %>
+            <% if (item.itemStatus === 'Pending') { %>
+            <span class="text-yellow-500">Pending on <%= order.orderedAt.toLocaleDateString() %></span>
 
-            <span class="text-yellow-500"
-              >Processing on <%= order.orderedAt.toLocaleDateString() %></span
-            >
+            <% } else if (item.itemStatus === 'Shipped') { %>
+            <span class="text-green-500">Shipped on <%= order.updatedAt.toLocaleDateString() %></span>
 
-            <% } else if (order.orderStatus === 'Shipped') { %>
-            <span class="text-green-500"
-              >Shipped on <%= order.updatedAt.toLocaleDateString() %></span
-            >
-            <% } else if (order.orderStatus === 'Confirmed') { %>
-            <span class="text-green-500"
-              >Confirmed on <%= order.updatedAt.toLocaleDateString() %></span
-            >
-            <% } else if (order.orderStatus === 'Delivered') { %>
-            <span class="text-green-500"
-              >Delivered on <%= order.updatedAt.toLocaleDateString() %></span
-            >
-            <% } else if (order.orderStatus === 'Cancelled') { %>
-            <span class="text-red-500"
-              >Cancelled on <%= order.updatedAt.toLocaleDateString() %></span
-            >
-            <% } else if (order.orderStatus === 'Returned') { %>
-            <span class="text-red-500"
-              >Returned on <%= order.updatedAt.toLocaleDateString() %></span
-            >
-            <% } else if (order.orderStatus === 'Refunded') { %>
-            <span class="text-red-500"
-              >Refunded on <%= order.updatedAt.toLocaleDateString() %></span
-            >
+            <% } else if (item.itemStatus === 'Confirmed') { %>
+            <span class="text-green-500">Confirmed on <%= order.updatedAt.toLocaleDateString() %></span>
+
+            <% } else if (item.itemStatus === 'Delivered') { %>
+            <span class="text-green-500">Delivered on <%= order.updatedAt.toLocaleDateString() %></span>
+
+            <% } else if (item.itemStatus === 'Cancelled') { %>
+            <span class="text-red-500">Cancelled on <%= order.updatedAt.toLocaleDateString() %></span>
+
+            <% } else if (item.itemStatus === 'Returned') { %>
+            <span class="text-red-500">Returned on <%= order.updatedAt.toLocaleDateString() %></span>
+            
+            <% } else if (item.itemStatus === 'Refunded') { %>
+            <span class="text-red-500">Refunded on <%= order.updatedAt.toLocaleDateString() %></span>
             <% } %>
           </p>
         </div>

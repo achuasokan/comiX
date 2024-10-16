@@ -12,9 +12,13 @@ export const getCheckoutPage = async (req, res) => {
     const cart = await cartModel.findOne({ user: req.session.userID }).populate('items.product');
 
     if(!cart || cart.items.length === 0){
-      return res.redirect('/cart');
+      return res.status(400).json({error:'Your cart is empty. Please add items to your cart before proceeding to checkout.'})
     }
     
+    const outOfStockItems = cart.items.filter(item => item.product.stock < item.quantity)
+    if(outOfStockItems.length > 0){      
+      return res.status(400).json({error:'Some of the items in your cart are out of stock.Please update your cart before proceeding to checkout.'})
+    }
     // Get the user's saved addresses
     const addresses = await addressModel.find({ userId: req.session.userID });
     
@@ -101,7 +105,7 @@ export const postOrder = async (req, res) => {
       } else {
         // log an error message if the product is not found or the stock is insufficient
         console.error(`Insufficient stock for product: ${product.name}`);     
-        return res.status(400).send(`Insufficient stock for product: ${product.name}`);  
+        return res.status(400).send(`Insufficient stock for product in post order: ${product.name}`);  
       }
     }
     

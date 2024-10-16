@@ -135,8 +135,8 @@ router.post('/checkout/place-order',isUser,checkOutControl.postOrder)
 
 router.get('/profile/order',isUser,orderControl.getorderhistoryPage)
 
-router.get('/order-detail/:orderID',isUser,orderControl.getOrderDetailpage)
+router.get('/order-detail/:orderID/:itemId',isUser,orderControl.getOrderDetailpage)
 
-router.post('/order/cancel/:orderID',isUser,orderControl.orderCancel)
+router.post('/order/cancel-item/:orderID/:itemId',isUser,orderControl.orderCancel)
 
     export default router

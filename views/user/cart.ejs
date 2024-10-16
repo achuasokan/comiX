@@ -7,7 +7,7 @@
     <% if (cart && cart.items.length > 0) { %>
       <!-- Responsive Grid Layout -->
       <div class="lg:grid lg:grid-cols-3 lg:gap-8">
-        <!-- Cart Items (will span across two columns on larger screens) -->
+       
         <div class="lg:col-span-2 space-y-6">
           <% cart.items.forEach(item => { %>
             <div id="cart-item-<%= item.product._id %>" class="bg-gray-900 p-4 rounded-lg flex flex-col md:flex-row items-start md:items-center justify-between">
@@ -25,7 +25,7 @@
                   <div class="flex items-center justify-between">
                     <p class="text-green-500"><strong>Total:</strong> ₹<span class="item-total-price"><%= Math.floor((item.discountPrice ? item.discountPrice : 0) * item.quantity) %></span></p>
                     <% if (item.product.stock < item.quantity) { %>
-                      <p class="text-red-500 font-semibold">Currently out of stock</p>
+                      <p class="text-red-500 font-semibold ml-4">Currently out of stock</p>
                     <% } %>
                   </div>
                   
@@ -54,7 +54,8 @@
           <p class="mb-2">Discount:<span class="text-green-500"> -₹ <span id="total-discount"><%= Math.floor(totalDiscount) %></span></span></p>
           <p class="mb-2">Total Amount: <span id="total-amount">₹<%= Math.floor(cart.total) %></span></p>
 
-          <a href="/checkout" class="mt-2 bg-green-600 text-white rounded px-4 py-2 w-full block text-center">Proceed to Checkout</a>
+          <!-- checkout button -->
+          <button id="checkout-button" class="mt-2 bg-green-600 text-white rounded px-4 py-2 w-full block text-center">Proceed to Checkout</button>
         </div>
       </div>
     <% } else { %>
@@ -207,5 +208,42 @@
     },
   });
 }
+
+// New AJAX call for checkout
+document.getElementById('checkout-button').addEventListener('click', function() {
+  fetch('/checkout', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+  .then(response => {
+    if (response.ok) {
+      window.location.href = '/checkout';
+    } else {
+      return response.json().then(data => {
+        if (data.error) {
+          Toastify({
+            text: data.error,
+            duration: 10000,
+            gravity: "top",
+            position: 'right',
+            backgroundColor: "red",
+          }).showToast();
+        }
+      });
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    Toastify({
+      text: 'An error occurred. Please try again.',
+      duration: 3000,
+      gravity: "top",
+      position: 'right',
+      backgroundColor: "red",
+    }).showToast();
+  });
+});
 });
 </script>
