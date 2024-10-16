@@ -118,7 +118,7 @@ export const getProductDetail = async (req,res) => {
   }
 }
 
-
+// //  //  //   //  //         ADD REVIEW   //  //  //  //  //  //  //
 export const addReview = async (req,res) => {
   try{
     const productId = req.params.id
@@ -237,84 +237,3 @@ export const getAllProductPage = async(req,res) => {
 }
 
 
-// export const getAllProductPage = async (req, res) => {
-//   try {
-//     const categoryFilter = req.query.category || "all";
-//     const sortOption = req.query.sort || "latest";
-//     const searchQuery = req.query.search || "";
-
-//     // Pagination settings
-//     const page = parseInt(req.query.page) || 1; // default to page 1
-//     const limit = 8;
-//     const skip = (page - 1) * limit;
-
-//     let filterOption = { isDeleted: false };
-//     if (categoryFilter !== "all") {
-//       const category = await categoryModel.findOne({ name: categoryFilter });
-//       if (!category) {
-//         return res.status(400).send("category not found");
-//       }
-//       filterOption.category = category._id;
-//     }
-
-//     if (searchQuery) {
-//       filterOption.name = { $regex: searchQuery, $options: 'i' };
-//     }
-
-//     // Fetch products without sorting
-//     const products = await productModel
-//       .find(filterOption)
-//       .populate("category")
-//       .skip(skip)
-//       .limit(limit)
-//       .lean();
-
-//     // Calculate discounted prices
-//     for (let product of products) {
-//       product.discountedPrice = await calculateDiscountPrice(product) || product.price; // Fallback to original price
-//     }
-
-//     // Sort products based on the selected sort option
-//     switch (sortOption) {
-//       case 'asc':
-//         products.sort((a, b) => a.discountedPrice - b.discountedPrice);
-//         break;
-//       case 'desc':
-//         products.sort((a, b) => b.discountedPrice - a.discountedPrice);
-//         break;
-//       case 'a-z':
-//         products.sort((a, b) => a.name.localeCompare(b.name));
-//         break;
-//       case 'z-a':
-//         products.sort((a, b) => b.name.localeCompare(a.name));
-//         break;
-//       case 'latest':
-//         products.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-//         break;
-//       case 'discount':
-//         products.sort((a, b) => (b.discount || 0) - (a.discount || 0)); // Sort by discount amount
-//         break;
-//       default:
-//         products.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-//         break;
-//     }
-
-//     const categories = await categoryModel.find({ isBlocked: false });
-//     const totalProducts = await productModel.countDocuments(filterOption);
-//     const totalPages = Math.ceil(totalProducts / limit);
-
-//     res.render('user/allProducts', {
-//       product: products,
-//       categories,
-//       categoryFilter,
-//       currentPage: page,
-//       totalPages,
-//       sortOption,
-//       searchQuery
-//     });
-
-//   } catch (error) {
-//     console.log("Error in all products page");
-//     res.status(500).send("Internal server error");
-//   }
-// };
