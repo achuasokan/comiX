@@ -7,7 +7,7 @@ import fs from "fs"
 export const getProduct=async(req,res)=>{
   try{
     const page=parseInt(req.query.page) || 1;
-    const limit=8;
+    const limit=7;
     const skip=(page -1) * limit
 
     const productList=await productModel.find({isDeleted:false})
