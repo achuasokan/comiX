@@ -37,10 +37,10 @@ export const getDiscountListPage = async (req,res) => {
 
 export const addDiscountPage = async (req,res) => {
   try{
-    const message = req.query.message || undefined
+    
     const productList = await productModel.find({isDeleted: false})
     const categoryList = await categoryModel.find({isBlocked: false})
-    res.render("admin/addDiscount", {message, productList, categoryList})
+    res.render("admin/addDiscount", {productList, categoryList})
   }catch(error) {
     console.log("error in addDiscountPage", error);
     res.status(500).send("Internal server error")
@@ -58,14 +58,16 @@ export const addDiscount = async (req,res) => {
     if(discountType === 'product'){
       const existingDiscount = await discountModel.findOne({product})
       if(existingDiscount){
-        return res.status(400).redirect(`/admin/addDiscount?message=A discount already exists for this product.`)
+        req.flash('error', 'A discount already exists for this product.')
+        return res.status(400).redirect(`/admin/addDiscount`)
       }
     }
 
     if(discountType === 'category'){
       const existingDiscount = await discountModel.findOne({category})
       if(existingDiscount){
-        return res.status(400).redirect("/admin/addDiscount?message=A discount already exists for this category.")
+        req.flash('error', 'A discount already exists for this category.')
+        return res.status(400).redirect(`/admin/addDiscount`)
       }
     }
 
