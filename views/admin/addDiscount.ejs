@@ -10,9 +10,7 @@
    <h1 class="text-2xl font-semibold mb-4 text-gray-200">Add Discount</h1>
    <form action="/admin/addDiscount" method="POST" id="add-discount-form" class="bg-[#242526] p-6 rounded shadow-md">
 
-    <% if (locals.message) { %>         
-      <p class="text-red-600 text-sm  "><%= locals.message %></p>
-  <% } %>
+    <%- include('../partials/flashMessage.ejs') %>
   
      <div class="mb-4">
        <label class="block text-gray-300">Discount Type:</label>
