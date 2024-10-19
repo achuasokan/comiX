@@ -18,15 +18,17 @@
             <input type="text"  name="name" id="nameInput" placeholder="Name" value="<%= user.name %>" class="bg-[#1f1f1f] text-white p-2 rounded-lg w-full" disabled />
             <p id="nameError" class="text-red-200 text-sm aria-live="assertive"></p>
         </div>
-        <div class="mb-4 w-1/2"> 
-            <label for="emailInput">Email:</label>
-            <input type="email" id="emailInput" name="email" placeholder="Email" value="<%= user.email %>" class="bg-[#1f1f1f] text-white p-2 rounded-lg w-full" disabled />
-            <p id="emailError" class="text-red-200 text-sm aria-live="assertive"></p>
-        </div>
+       
         <div class="mb-4 w-1/2"> 
             <label for="mobileInput">Mobile No:</label>
             <input type="tel" id="mobileInput" name="mobile" placeholder="Mobile No" value="<%= user.mobile %>" class="bg-[#1f1f1f] text-white p-2 rounded-lg w-full" disabled />
             <p id="mobileError" class="text-red-200 text-sm aria-live="assertive"></p>
+        </div>
+
+        <div class="mb-4 w-1/2"> 
+            <label for="emailInput" class="opacity-20">Email:</label>
+            <input type="email" id="emailInput" name="email" placeholder="Email" value="<%= user.email %>" class="bg-[#2a2a2a] text-white p-2 rounded-lg w-full cursor-not-allowed opacity-20" disabled />
+            <p id="emailError" class="text-red-200 text-sm aria-live="assertive"></p>
         </div>
     
     <button id="editButton" type="button"  class="bg-yellow-400 text-black py-2 px-4 rounded-lg hover:bg-yellow-500 transition duration-200 w-32">
