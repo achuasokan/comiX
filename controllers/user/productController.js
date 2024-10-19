@@ -152,87 +152,88 @@ export const addReview = async (req,res) => {
 
 // //  //  //   //  //         GET ALL PRODUCTS PAGE   //  //  //  //  //  //  //
 
-export const getAllProductPage = async(req,res) => {
-  try{
-  
-  const categoryFilter = req.query.category || "all";                      
-  const sortOption = req.query.sort || "latest"
-  const searchQuery = req.query.search || ""; 
-    
- // Pagination settings
- const page = parseInt(req.query.page) || 1;   //default to page 1
- const limit = 8
- const skip = (page -1) * limit
+export const getAllProductPage = async (req, res) => {
+  try {
+    const categoryFilter = req.query.category || "all";
+    const sortOption = req.query.sort || "latest";
+    const searchQuery = req.query.search || "";
 
-    let sortCriteria = {}
+    // Pagination settings
+    const page = parseInt(req.query.page) || 1; // default to page 1
+    const limit = 8;
+    const skip = (page - 1) * limit;
+
+    let filterOption = { isDeleted: false };
+    if (categoryFilter !== "all") {
+      const category = await categoryModel.findOne({ name: categoryFilter });
+      if (!category) {
+        return res.status(400).send("category not found");
+      }
+      filterOption.category = category._id;
+    }
+
+    if (searchQuery) {
+      filterOption.name = { $regex: searchQuery, $options: 'i' };
+    }
+
+    // Fetch all products based on the filter
+    const products = await productModel
+      .find(filterOption)
+      .populate("category")
+      .lean();
+
+    // Calculate discounted price for all products
+    for (let product of products) {
+      product.discountedPrice = await calculateDiscountPrice(product);
+    }
+
+    // Sort products based on the selected sort option
     switch (sortOption) {
-      case 'asc':
-        sortCriteria = {price : 1}
+      case 'discount':
+        products.sort((a, b) => {
+          const priceA = a.discountedPrice !== undefined ? a.discountedPrice : a.price; 
+          const priceB = b.discountedPrice !== undefined ? b.discountedPrice : b.price; 
+          return priceA - priceB; // Sort by discounted price (low to high)
+        });
         break;
-      case 'desc':
-        sortCriteria = {price : -1}
+      case 'discount-desc':
+        products.sort((a, b) => {
+          const priceA = a.discountedPrice !== undefined ? a.discountedPrice : a.price; 
+          const priceB = b.discountedPrice !== undefined ? b.discountedPrice : b.price; 
+          return priceB - priceA; // Sort by discounted price (high to low)
+        });
         break;
       case 'a-z':
-        sortCriteria = {name: 1}
+        products.sort((a, b) => a.name.localeCompare(b.name)); 
         break;
       case 'z-a':
-        sortCriteria = {name: -1}
-        break;
-      case 'latest':
-        sortCriteria = {createdAt : -1}
-        break;
-      case 'discount':
-        sortCriteria = {discount : -1}
+        products.sort((a, b) => b.name.localeCompare(a.name)); 
         break;
       default:
-        sortCriteria = {createdAt : -1}
+        products.sort((a, b) => b.createdAt - a.createdAt); 
         break;
     }
 
-  let filterOption = {isDeleted: false}
-  if(categoryFilter !== "all") {
-    const category = await categoryModel.findOne({name:categoryFilter})
-    if(!category) {
-      return res.status(400).send("category not found")
-    }
-    filterOption.category = category._id
-  }
+    // Apply pagination to the sorted products
+    const totalProducts = products.length;
+    const totalPages = Math.ceil(totalProducts / limit);
+    const paginatedProducts = products.slice(skip, skip + limit);
 
-  if(searchQuery){
-    filterOption.name = {$regex: searchQuery, $options: 'i'}
-  } 
+    const categories = await categoryModel.find({ isBlocked: false });
 
+    res.render('user/allProducts', {
+      product: paginatedProducts,
+      categories,
+      categoryFilter,
+      currentPage: page,
+      totalPages,
+      sortOption,
+      searchQuery
+    });
 
-  const product = await productModel
-  .find(filterOption)
-  .populate("category")
-  .sort(sortCriteria)
-  .skip(skip)
-  .limit(limit)
-  .lean()
-
-  for(let products of product) {
-    products.discountedPrice = await calculateDiscountPrice(products)
-  }
-
-  const categories =await categoryModel.find({isBlocked:false})
-
-  const totalProducts = await productModel.countDocuments(filterOption)
-  const totalPages = Math.ceil(totalProducts / limit)
-
-  res.render('user/allProducts',  {
-    product,
-    categories,
-    categoryFilter,
-    currentPage: page,
-    totalPages,
-    sortOption,
-    searchQuery
-  })
-  
-  } catch(error) {
-    console.log("Error in allp products page");
-    res.status(500).send("Internal server error")
+  } catch (error) {
+    console.log("Error in all products page", error);
+    res.status(500).send("Internal server error");
   }
 }
 
