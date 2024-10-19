@@ -69,7 +69,7 @@ export const postOrder = async (req, res) => {
 
       // Ensure discount is an ObjectId or null
       const discount = (discountId && mongoose.Types.ObjectId.isValid(discountId)) 
-        ? mongoose.Types.ObjectId(discountId) 
+        ? new mongoose.Types.ObjectId(discountId) 
         : null;
         
       return {
