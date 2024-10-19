@@ -6,6 +6,7 @@ import * as productController from '../controllers/admin/productController.js'  
 import * as userController from '../controllers/admin/userController.js'                            //import admin user controller
 import adminMiddleware from '../middleware/adminMiddleware.js'                                      //import admin middleware
 import * as discountController from "../controllers/admin/discountController.js"
+import * as orderController from '../controllers/admin/orderController.js'
 import upload from '../middleware/multerMiddleware.js'
 
 const router=express.Router()
@@ -81,6 +82,17 @@ router.get('/editDiscount/:id',adminMiddleware.isAdmin,discountController.editDi
 router.post('/editDiscount/:id',adminMiddleware.isAdmin,discountController.postEditDiscount)
 
 router.post('/discounts/block/:id',adminMiddleware.isAdmin,discountController.blockDiscount)
+
+
+
+
+// //  //  //      Order routes  //  //  //  //  //
+
+router.get('/orders',adminMiddleware.isAdmin,orderController.getOrderListPage)
+
+router.post('/orders/:orderId/:itemId/change-status',adminMiddleware.isAdmin,orderController.changeItemStatus)
+
+router.get('/orders/:orderId/details',adminMiddleware.isAdmin,orderController.getOrderDetails)
 
 export default router
 
