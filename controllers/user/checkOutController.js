@@ -2,7 +2,7 @@ import cartModel from '../../models/Cart.js';
 import addressModel from '../../models/address.js';
 import orderModel from '../../models/Order.js';
 import productModel from '../../models/Product.js';
-import mongoose from 'mongoose'
+
 
 
 // //  //  //   //  //          get Checkout page     //  //  //  //  //  //  //
@@ -41,82 +41,64 @@ export const getCheckoutPage = async (req, res) => {
 
 
 // //  //  //   //  //         Placing a Order in checkout     //  //  //  //  //  //  //
+
 export const postOrder = async (req, res) => {
   try {
-    // get the address id and payment method from the request body
     const { addressId, paymentMethod } = req.body;
-    console.log('Received addressId:', addressId); // Log the address ID
+    
 
-    // get the cart of the user and populate the product field with product details 
     const cart = await cartModel.findOne({ user: req.session.userID }).populate('items.product');
-
-    // if the cart is empty or the cart is not found redirect to the cart page
+    
     if (!cart || cart.items.length === 0) {
       return res.redirect('/cart');
     }
 
-    // get the address of the user by the address id
     const address = await addressModel.findById(addressId);
-    
     if (!address) {
-      console.log('Address not found:', addressId); // Log if address is not found
+      
       return res.status(400).send('Invalid address');
     }
 
-    // map the items of the cart to the order items
-    const items = cart.items.map(item => {
-      const discountId = item.product.discount; // Get the discount field from the product
+    const items = cart.items.map(item => ({
+      product: item.product._id,
+      quantity: item.quantity,
+      price: item.product.price,
+      discountPrice: item.discountPrice || item.product.price,
+      itemTotal: (item.discountPrice || item.product.price) * item.quantity,
+      discountAmount: (item.product.price - (item.discountPrice || item.product.price)) * item.quantity
+    }));
 
-      // Ensure discount is an ObjectId or null
-      const discount = (discountId && mongoose.Types.ObjectId.isValid(discountId)) 
-        ? new mongoose.Types.ObjectId(discountId) 
-        : null;
-        
-      return {
-        product: item.product._id, // Ensure this is the ObjectId of the product
-        quantity: item.quantity,
-        price: item.price,
-        discount, // Use the validated discount
-        discountPrice: item.discountPrice || item.price,
-      };
-    });
- 
-    // create a new order with the items, address, subtotal, total, payment method
     const newOrder = new orderModel({
       user: req.session.userID,
       items,
       address: address._id,
       subtotal: cart.subtotal,
       total: cart.total,
-      paymentMethod: paymentMethod,
+      paymentMethod: paymentMethod 
     });
 
+    console.log("new order", newOrder);
+    
     await newOrder.save();
 
-// update the stock of the product
-    for(const item of items){
+    // Update stock and handle insufficient stock
+    for (const item of items) {
       const product = await productModel.findById(item.product);
-      // if the product is found and the stock is greater than or equal to the quantity of the item
-      if(product && product.stock >= item.quantity){
-        // decrease the stock of the product
+      if (product && product.stock >= item.quantity) {
         product.stock -= item.quantity;
-        // save the product
         await product.save();
       } else {
-        // log an error message if the product is not found or the stock is insufficient
-        console.error(`Insufficient stock for product: ${product.name}`);     
-        return res.status(400).send(`Insufficient stock for product in post order: ${product.name}`);  
+        console.error(`Insufficient stock for product: ${product.name}`);
+        return res.status(400).send(`Insufficient stock for product: ${product.name}`);
       }
     }
-    
-    // Empty the user's cart after placing the order
+
     await cartModel.findOneAndUpdate({ user: req.session.userID }, { items: [], total: 0, subtotal: 0 });
-    
- 
-    res.render('user/orderConfirmation',{order:newOrder})
+
+    res.render('user/orderConfirmation', { order: newOrder });
   } catch (error) {
     console.error('Error placing order:', error);
-    res.status(500).send('Internal server error inthe post order');
+    res.status(500).send('Internal server error in post order');
   }
 };
 
