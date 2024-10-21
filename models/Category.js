@@ -9,6 +9,11 @@ const categorySchema =mongoose.Schema({
     type:String,
     required:true
   },
+  discount:{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:'Discount',
+    default:null
+  },
   isBlocked:{
     type:Boolean,
     default:false
