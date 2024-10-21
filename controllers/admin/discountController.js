@@ -1,7 +1,7 @@
 import discountModel from "../../models/discount.js";
 import productModel from "../../models/Product.js"
 import categoryModel from "../../models/Category.js"
-import category from "../../models/Category.js";
+
 
 
 // //  //  //   //  //          GET   DISCOUNT LIST PAGE   //  //  //  //  //  //  //
