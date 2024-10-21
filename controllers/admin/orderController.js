@@ -67,6 +67,7 @@ export const changeItemStatus = async (req,res) => {
 
    
     const currentStatusIndex = status.indexOf(item.itemStatus)
+    
 
     if(currentStatusIndex === -1 || currentStatusIndex >= status.length - 1) {
       return res.status(400).json({success:false, message:"Cannot change item status no more"})
@@ -111,7 +112,7 @@ export const getOrderDetails = async (req,res) => {
       return res.status(404).send("Order not found")
     }
 
-   console.log(order.items[0].product.image); // Add this line to check the image URL
+   console.log(order.items[0].product.image); 
     res.render('admin/orderDetailsModal', {order , layout :false})
     
   } catch (error) {
