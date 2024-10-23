@@ -253,6 +253,32 @@ export const postEditProduct = async (req, res) => {
       errors.push('Another product already exists with this name or SKU');
     }
 
+
+    let updatedImages = existingImages ? (Array.isArray(existingImages) ? existingImages : [existingImages]) : [];
+
+
+    if (files.length === 0) {
+      if (files.length > 3) {
+        errors.push('You can upload up to 3 images');
+      } else {
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp', 'image/svg+xml'];
+        const maxSize = 10 * 1024 * 1024; // 10 MB
+        for (let file of files) {
+          if (!allowedTypes.includes(file.mimetype)) {
+            errors.push(`Invalid file type ${file.originalname}. Only jpeg, png, jpg, gif, webp, and svg are allowed.`);
+          }
+
+          if (file.size > maxSize) {
+            errors.push(`File ${file.originalname} is too large. Maximum size is 10 MB.`);
+          }
+        }
+      }
+    }
+
+    if (updatedImages.length === 0 && files.length === 0){
+      errors.push('Please upload at least one image');
+    }
+
     // If there are validation errors, return them
     if (errors.length > 0) {
       req.flash('error', errors);
@@ -270,8 +296,7 @@ export const postEditProduct = async (req, res) => {
     };
 
     // Handle image updates
-    let updatedImages = existingImages ? (Array.isArray(existingImages) ? existingImages : [existingImages]) : [];
-
+   
     if (files && files.length > 0) {
       for (let file of files) {
         const result = await cloudinary.uploader.upload(file.path, {

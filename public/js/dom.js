@@ -15,17 +15,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const isValid = validateForm();
 
       if (isValid) {
-        console.log('Form is valid, processing images...'); // Debugging line
-        // Ensure all images (original or cropped) are processed before submitting
         processImages().then(() => {
-          // After processing images, submit the form
-          console.log('Images processed, submitting form...'); // Debugging line
           this.submit();
         }).catch((error) => {
           console.error('Error processing images:', error);
         });
       } else {
-        console.log('Form submission prevented due to validation errors.'); // Debugging line
+        console.log('Form submission prevented due to validation errors.'); 
       }
     });
 
