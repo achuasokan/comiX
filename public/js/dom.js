@@ -1,20 +1,95 @@
+
 let cropper;
 let currentImageElement;
 let currentImageIndex = 0;
 let imageFiles = []; // Store original image files
 let croppedImageFiles = []; // Store cropped images in a separate array
 
-document.getElementById('add-product-form')?.addEventListener('submit', function(event) {
-  event.preventDefault(); // Prevent the form from submitting
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('product-form');
+  if (form) {
+    form.addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent the form from submitting
 
-  // Ensure all images (original or cropped) are processed before submitting
-  processImages().then(() => {
-    // After processing images, submit the form
-    this.submit();
-  }).catch((error) => {
-    console.error('Error processing images:', error);
-  });
+      // Run all validations
+      const isValid = validateForm();
+
+      if (isValid) {
+        console.log('Form is valid, processing images...'); // Debugging line
+        // Ensure all images (original or cropped) are processed before submitting
+        processImages().then(() => {
+          // After processing images, submit the form
+          console.log('Images processed, submitting form...'); // Debugging line
+          this.submit();
+        }).catch((error) => {
+          console.error('Error processing images:', error);
+        });
+      } else {
+        console.log('Form submission prevented due to validation errors.'); // Debugging line
+      }
+    });
+
+    // Attach input event listeners
+    document.getElementById('productName').addEventListener('input', () => validateField('productName'));
+    document.getElementById('description').addEventListener('input', () => validateField('description'));
+    document.getElementById('category').addEventListener('change', () => validateField('category'));
+    document.getElementById('price').addEventListener('input', () => validateField('price'));
+    document.getElementById('stock').addEventListener('input', () => validateField('stock'));
+    document.getElementById('SKU').addEventListener('input', () => validateField('SKU'));
+  }
 });
+
+function validateForm() {
+  const fields = ['productName', 'description', 'category', 'price', 'stock', 'SKU'];
+  let isValid = true;
+  
+  fields.forEach(field => {
+    if (!validateField(field)) {
+      isValid = false;
+    }
+  });
+
+  return isValid;
+}
+
+function validateField(fieldName) {
+  const field = document.getElementById(fieldName);
+  const errorElement = document.getElementById(`${fieldName}Error`);
+  let isValid = true;
+
+  switch(fieldName) {
+    case 'productName':
+      const productNameRegex = /^[a-zA-Z][a-zA-Z0-9\s!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]{2,49}$/;
+      isValid = productNameRegex.test(field.value.trim());
+      errorElement.textContent = isValid ? '' : 'Product Name must be between 3 to 50 characters.And include only letters, numbers and special characters.';
+      break;
+    case 'description':
+      const trimmedDescription = field.value.trim();
+  const descriptionRegex = /^[a-zA-Z][\s\S]{9,999}$/;
+  isValid = descriptionRegex.test(trimmedDescription);
+      errorElement.textContent = isValid ? '' : 'Product description must be between 10 to 1000 characters.';
+      break;
+    case 'category':
+      isValid = field.value !== '';
+      errorElement.textContent = isValid ? '' : 'Please select a category.';
+      break;
+    case 'price':
+      isValid = !isNaN(parseFloat(field.value)) && parseFloat(field.value) > 0;
+      errorElement.textContent = isValid ? '' : 'Product Price must be greater than zero.';
+      break;
+    case 'stock':
+      const stockValue = field.value.trim();
+      isValid = /^\d+$/.test(stockValue) && parseInt(stockValue) >= 0;
+      errorElement.textContent = isValid ? '' : 'Stock should be a number and must be zero or greater.';
+      break;
+    case 'SKU':
+      isValid = /^[a-zA-Z0-9\-]+$/.test(field.value.trim());
+      errorElement.textContent = isValid ? '' : 'Invalid SKU format.';
+      break;
+  }
+
+  return isValid;
+}
 
 function previewImages(event) {
   const files = event.target.files;
@@ -64,7 +139,7 @@ function openCropModal(imgElement, imageIndex) {
     cropper.destroy();
   }
   cropper = new Cropper(cropImage, {
-    aspectRatio: 1,
+    aspectRatio: NaN,
     viewMode: 2,
   });
 }
