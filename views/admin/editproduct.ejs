@@ -7,8 +7,9 @@
   <div class="container mx-auto py-6">
       <h1 class="text-2xl font-semibold mb-4 text-gray-200">Add Product</h1>
 
-      <form action="/admin/editProduct/<%=products._id%>" method="POST" enctype="multipart/form-data" id="add-product-form"
+      <form action="/admin/editProduct/<%=products._id%>" method="POST" enctype="multipart/form-data" id="product-form"
           class="bg-[#242526] p-6 rounded shadow-md">
+          <%- include("../partials/flashMessage.ejs") %>
           <div class="mb-4">
               <label class="block text-gray-300">Product Name</label>
               <input type="text" id="productName" name="productName" required value="<%=products.name%>"
@@ -24,14 +25,16 @@
 
           <div class="mb-4">
               <label class="block text-gray-300">Category</label>
-              <select id="category" name="category" value="<%=products.category%>"
+              <select id="category" name="category" required
                   class="input w-full bg-[#1f1f1f] text-white border border-gray-600 rounded-md p-2 mb-4">
-                  <option value="">Select Category</option>
                   <% categorylist.forEach((category) => { %>
-                  <option value="<%= category._id %>"><%= category.name %></option>
+                  <option value="<%= category._id %>" 
+                      <%= (category._id.toString() === products.category._id.toString()) ? 'selected' : '' %>>
+                      <%= category.name %>
+                  </option>
                   <% }); %>
               </select>
-              <p id="categoryError" class="text-red-500 text-sm"aria-live="assertive"></p>
+              <p id="categoryError" class="text-red-500 text-sm" aria-live="assertive"></p>
           </div>
 
           <div class="mb-4">
@@ -56,11 +59,21 @@
 
           <div class="mb-4">
               <label class="block text-gray-300">Images</label>
-              <input type="file" id="imageInput" name="image" accept="image/*" multiple value="<%=products.image%>"
+              <input type="file" id="imageInput" name="image" accept="image/*" multiple
                   class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4"
                   onchange="previewImages(event)" />
-              <div class="mt-2 flex flex-wrap " id="imagePreviewContainer"></div> <!-- Container for multiple previews -->
-              <p id="imageError" class="text-red-500 text-sm"aria-live="assertive"></p>
+              <div class="mt-2 flex flex-wrap" id="imagePreviewContainer">
+                <% products.image.forEach((img, index) => { %>
+                  <div class="relative m-2">
+                    <img src="<%= img %>" alt="Product Image" class="w-48 h-48 object-cover rounded">
+                    <input type="hidden" name="existingImages" value="<%= img %>">
+                    <button type="button" onclick="removeImage(this)" class="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                <% }) %>
+              </div>
+              <p id="imageError" class="text-red-500 text-sm" aria-live="assertive"></p>
           </div>
 
           <!-- Cropper modal -->
@@ -88,109 +101,36 @@
   </div>
 </div>
 <script>
-  const form = document.getElementById('add-product-form');
-  const productNameInput = document.getElementById('productName');
-  const descriptionInput = document.getElementById('description');
-  const categoryInput = document.getElementById('category');
-  const priceInput = document.getElementById('price');
-  const stockInput = document.getElementById('stock');
-  const SKUInput = document.getElementById('SKU');
- 
+  function previewImages(event) {
+    const container = document.getElementById('imagePreviewContainer');
+    const files = event.target.files;
 
-  const productNameError = document.getElementById('productNameError');
-  const descriptionError = document.getElementById('descriptionError');
-  const categoryError = document.getElementById('categoryError');
-  const priceError = document.getElementById('priceError');
-  const stockError = document.getElementById('stockError');
-  const SKUError = document.getElementById('SKUError');
-  
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const reader = new FileReader();
 
-  document.addEventListener('DOMContentLoaded', () => {
-      // Attach input event listeners
-      productNameInput.addEventListener('input', validateProductName);
-      descriptionInput.addEventListener('input', validateDescription);
-      categoryInput.addEventListener('change', validateCategory);
-      priceInput.addEventListener('input', validatePrice);
-      stockInput.addEventListener('input', validateStock);
-      SKUInput.addEventListener('input', validateSKU);
-     
-
-      function validateProductName() {
-          const productName = productNameInput.value.trim();
-          if (productName.length < 3 || productName.length > 50) {
-              productNameError.textContent = 'Product Name must be between 3 to 50 characters.';
-          } else {
-              productNameError.textContent = '';
-          }
+      reader.onload = function(e) {
+        const div = document.createElement('div');
+        div.className = 'relative m-2';
+        div.innerHTML = `
+          <img src="${e.target.result}" alt="Image preview" class="w-24 h-24 object-cover rounded">
+          <button type="button" onclick="removeImage(this)" class="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1">
+            <i class="fas fa-times"></i>
+          </button>
+        `;
+        container.appendChild(div);
       }
 
-      function validateDescription() {
-          const description = descriptionInput.value.trim();
-          if (description.length < 10 || description.length > 1000) {
-              descriptionError.textContent = 'Product description must be between 10 to 1000 characters.';
-          } else {
-              descriptionError.textContent = '';
-          }
-      }
+      reader.readAsDataURL(file);
+    }
+  }
 
-      function validateCategory() {
-          const category = categoryInput.value;
-          if (!category) {
-              categoryError.textContent = 'Please select a category.';
-          } else {
-              categoryError.textContent = '';
-          }
-      }
-
-      function validatePrice() {
-          const price = parseFloat(priceInput.value);
-          if (isNaN(price) || price <= 0) {
-              priceError.textContent = 'Product Price must be greater than zero.';
-          } else {
-              priceError.textContent = '';
-          }
-      }
-
-      function validateStock() {
-          const stock = parseInt(stockInput.value);
-          if (isNaN(stock) || stock < 0) {
-              stockError.textContent = 'Stock should be a number and must be zero or greater.';
-          } else {
-              stockError.textContent = '';
-          }
-      }
-
-      function validateSKU() {
-          const SKU = SKUInput.value.trim();
-          if (!/^[a-zA-Z0-9\-]+$/.test(SKU)) {
-              SKUError.textContent = 'Invalid SKU format.';
-          } else {
-              SKUError.textContent = '';
-          }
-      }
-
-      
-
-      form.addEventListener('submit', function (event) {
-          // Run all validations on form submit
-          validateProductName();
-          validateDescription();
-          validateCategory();
-          validatePrice();
-          validateStock();
-          validateSKU();
-         
-
-          // Check if there are any errors
-          const hasErrors = productNameError.textContent || descriptionError.textContent || categoryError.textContent ||
-              priceError.textContent || stockError.textContent || SKUError.textContent || 
-
-          console.log('Validation Errors:', hasErrors); // Debugging line
-
-          if (hasErrors) {
-              event.preventDefault();  // Prevent form submission if there are validation errors
-              console.log('Form submission prevented due to validation errors.'); // Debugging line
-          }
-      });
-  });
+  function removeImage(button) {
+    const container = button.closest('div');
+    const input = container.querySelector('input[name="existingImages"]');
+    if (input) {
+      input.remove(); 
+    }
+    container.remove(); // Remove the image preview
+  }
 </script>
