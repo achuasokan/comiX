@@ -256,8 +256,7 @@ export const postEditProduct = async (req, res) => {
 
     let updatedImages = existingImages ? (Array.isArray(existingImages) ? existingImages : [existingImages]) : [];
 
-
-    if (files.length === 0) {
+      //  Validate Image
       if (files.length > 3) {
         errors.push('You can upload up to 3 images');
       } else {
@@ -273,8 +272,8 @@ export const postEditProduct = async (req, res) => {
           }
         }
       }
-    }
-
+    
+     //  Validate Image
     if (updatedImages.length === 0 && files.length === 0){
       errors.push('Please upload at least one image');
     }
