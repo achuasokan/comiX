@@ -31,23 +31,42 @@ export const getAddCategory=async (req,res)=>{                                  
 // //  //  //   //  //          POST ADD CATEGORY   //  //  //  //  //  //  //
 
 export const postAddCategory=async (req,res)=>{                                                     //post add category
+  const file = req.file
   try{
-
-const name=req.body.name
-    const categoryname=await categoryModel.findOne({name})
-
+  const {name} = req.body
   
-    if(name.length<2){
-      return res.render('admin/addCategory',{message:"Category name must be at least 2 characters"})
-    }
+  const errors = []
 
-    if(!req.file){
-      return res.render('admin/addCategory',{message:"Category image is required"})
+  const categoryNameRegex = /^[a-zA-Z][a-zA-Z0-9\s!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]{1,29}$/;
+  if (!name || !categoryNameRegex.test(name.trim())) {
+    errors.push("Category name must be at least 2 and maximum 30 characters")
+  }
+
+  if (!file) {
+    errors.push("Category image is required")
+  } else {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp', 'image/svg+xml'];
+    if (!allowedTypes.includes(file.mimetype)) {
+      errors.push('Invalid file Type.please upload a valid image file');
     }
-    if(categoryname){
-      return res.render('admin/addCategory',{exists:"Category Name already exists"})
+    const maxSize = 10 * 1024 * 1024; // 10 MB
+    if (file.size > maxSize) {
+      errors.push('File size exceeds the limit of 10 MB');
     }
+  }
+
+  const existingCategory = await categoryModel.findOne({name})
+  if (existingCategory) {
+    errors.push("Category name already exists")
+  }
+
+  if (errors.length > 0) {
+    req.flash('error',errors)
+    return res.redirect('/admin/addCategory')
+  }
   
+
+
 const result=await cloudinary.uploader.upload(req.file.path,{
   folder:'Category Image',
   use_filename:true
@@ -56,15 +75,19 @@ console.log("cloudinary result",result)
 
 
  await categoryModel.create({
-    name:req.body.name,
+    name:name.trim(),
     image:result.secure_url
   })
-  fs.unlinkSync(req.file.path)
+  
   res.redirect('/admin/category')
-;
   }catch(error){
     console.log(error);
-    res.status(500)
+    res.status(500).send("Internal server error in add category")
+
+  } finally {
+    if(file && fs.existsSync(file.path)) {
+      fs.unlinkSync(file.path)
+    }
   }
   }
 
@@ -85,46 +108,83 @@ export const getEditCategory=async(req,res)=>{
 
 
 // //  //  //   //  //          POST EDIT CATEGORY     //  //  //  //  //  //  //
+
 export const postEditCategory = async (req, res) => {
+  const file = req.file;
   try {
-    
-   
-    let id = req.params.id;
+    const id = req.params.id.trim();
+    const { name, existingImage } = req.body;
 
-    // Trim any whitespace from the ID
-    id = id.trim();
-    // console.log("categoryId:", id);
+    // Validation
+    const errors = [];
 
-    // Check if the ID is a valid MongoDB ObjectId
+    // Validate ID
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).send("Invalid category id format");
+      errors.push("Invalid category ID format");
+    }
+
+    // Validate category name
+    const categoryNameRegex = /^[a-zA-Z][a-zA-Z0-9\s!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]{1,29}$/;
+    if (!name || !categoryNameRegex.test(name.trim())) {
+      errors.push("Category name must be between 2 and 30 characters and can include letters, numbers, spaces, and special characters. It must start with a letter.");
+    }
+
+    // Check for existing category with the same name
+    const existingCategory = await categoryModel.findOne({ name: name.trim(), _id: { $ne: id } });
+    if (existingCategory) {
+      errors.push("Category name already exists");
+    }
+
+    if(file) {
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp', 'image/svg+xml'];
+      if (!allowedTypes.includes(file.mimetype)) {
+        errors.push('Invalid file Type.please upload a valid image file');
+      }
+      const maxSize = 10 * 1024 * 1024; // 10 MB
+      if (file.size > maxSize) {
+        errors.push('File size exceeds the limit of 10 MB');
+      }
+    }
+
+    if (errors.length > 0) {
+      req.flash('error', errors);
+      return res.redirect(`/admin/editCategory/${id}`);
     }
 
     // Prepare the category data to be updated
     const categoryData = {
-      name: req.body.name, // Get the category name from the request body
-      image: req.file ? // Check if a new image file is provided
-        (await cloudinary.uploader.upload(req.file.path, {
-          folder: "Category Image", // Upload to the "Category Image" folder in Cloudinary
-          use_filename: true 
-        })).secure_url : req.body.image // If no new image, use the existing image URL from the request body
+      name: name.trim()
     };
-    console.log(categoryData);
 
-    // Find the category by ID and update it with the new data
-    const updatedcategory = await categoryModel.findByIdAndUpdate(id, categoryData, { new: true });
-
-   
-    if (req.file) {
-      fs.unlinkSync(req.file.path);            //deleting the imagefrom the local file if a new image is uploaded
+    // Handle image upload or removal
+    if (file) {
+      // New image uploaded
+      const result = await cloudinary.uploader.upload(file.path, {
+        folder: "Category Image",
+        use_filename: true
+      });
+      categoryData.image = result.secure_url;
+    } else if (!existingImage) {
+      // Existing image removed and no new image uploaded
+      categoryData.image = null;
     }
+  
+    // Find the category by ID and update it with the new data
+    const updatedCategory = await categoryModel.findByIdAndUpdate(id, categoryData, { new: true });
 
-   
+    if (!updatedCategory) {
+      req.flash('error', 'Category not found');
+      return res.redirect('/admin/category');
+    }  
     res.redirect('/admin/category');
   } catch (error) {
-   
-    console.log(error);
-    res.status(500);
+    console.error("Error updating category:", error);
+    res.status(500).send("Internal server error in edit category")
+  } finally {
+    // Clean up the uploaded file if it exists
+    if (file && fs.existsSync(file.path)) {
+      fs.unlinkSync(file.path);
+    }
   }
 };
 
