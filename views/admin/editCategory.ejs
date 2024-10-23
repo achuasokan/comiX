@@ -5,25 +5,27 @@
   <%- include("./sidebar.ejs")%>
   <!-- Sidebar end -->
 
-  
-<!-- Main Content -->
-
-  
-  <!-- Navbar end -->
-
+  <!-- Main Content -->
   <div class="flex-grow p-6 overflow-y-auto">
-
-      
     <div class="mt-8">
-      <form action="/admin/editCategory/ <%= category._id %>" method="POST" enctype="multipart/form-data" class="bg-[#242526] p-6 rounded-lg shadow-md">
+      <form action="/admin/editCategory/<%= category._id %>" method="POST" enctype="multipart/form-data" class="bg-[#242526] p-6 rounded-lg shadow-md">
+        <%- include('../partials/flashMessage.ejs') %>
         <label for="name" class="block text-sm font-medium text-gray-300 mb-2">Category Name</label>
-        <input type="text" name="name" id="name" required  value="<%=category.name%>" class="input bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-gray-500" />
+        <input type="text" name="name" id="name" required value="<%= category.name %>" class="input bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-gray-500" />
       
         <label for="image" class="block text-sm font-medium text-gray-300 mb-2">Upload Image</label>
-        <input type="file" name="image" id="image" accept="image/*"class="input bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-gray-500" onchange="previewImage(event)" />
+        <input type="file" name="image" id="image" accept="image/*" class="input bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-gray-500" onchange="previewImage(event)" />
         
-        <div id="imagePreview" class="mt-4 mb-4"> <!-- Image preview container -->
-          <img id="preview" src="" alt="Image Preview" class="hidden w-full h-auto rounded-md" />
+        <div id="imagePreviewContainer" class="mt-4 mb-4 flex flex-wrap"> <!-- Image preview container -->
+          <% if (category.image) { %>
+            <div class="relative inline-block m-2">
+              <img src="<%= category.image %>" alt="Category Image" class="w-48 h-48 object-cover rounded">
+              <input type="hidden" name="existingImage" value="<%= category.image %>">
+              <button type="button" onclick="removeImage(this)" class="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 text-xs">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          <% } %>
         </div>
         <div class="clear-both">
           <button type="submit" class="btn-primary mt-4 w-32 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Edit Category</button>
@@ -35,18 +37,36 @@
 
 <script>
 function previewImage(event) {
-  const preview = document.getElementById('preview');
+  const container = document.getElementById('imagePreviewContainer');
+  container.innerHTML = ''; // Clear existing preview
   const file = event.target.files[0];
   const reader = new FileReader();
   
   reader.onload = function(e) {
-    preview.src = e.target.result;
-    preview.classList.remove('hidden'); // Show the image
+    const div = document.createElement('div');
+    div.className = 'relative m-2';
+    div.innerHTML = `
+      <img src="${e.target.result}" alt="Image preview" class="w-48 h-48 object-cover rounded">
+      <button type="button" onclick="removeImage(this)" class="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1">
+        <i class="fas fa-times"></i>
+      </button>
+    `;
+    container.appendChild(div);
   }
   
   if (file) {
     reader.readAsDataURL(file);
   }
+}
+
+function removeImage(button) {
+  const container = button.closest('div');
+  const input = container.querySelector('input[name="existingImage"]');
+  if (input) {
+    input.remove();
+  }
+  container.remove(); // Remove the image preview
+  document.getElementById('image').value = ''; // Clear the file input
 }
 </script>
 
