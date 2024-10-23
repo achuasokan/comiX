@@ -21,18 +21,14 @@
          
           <p id="categoryError" class="text-red-500 text-sm"aria-live="assertive"></p>
 
-          <% if (locals.exists) { %>         
-              <p class="text-red-600 text-sm  "><%= locals.exists %></p>
-          <% } %>
-          <% if (locals.message) { %>         
-              <p class="text-red-600 text-sm  "><%= locals.message %></p>
-          <% } %>
+          <%- include('../partials/flashMessage.ejs') %>
 
           <label for="image" class="block text-sm font-medium text-gray-300 mb-2">Upload Image</label>
           <input type="file" name="image" id="image" accept="image/*" class="input bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-gray-500" onchange="previewImage(event)" />
           
-          <div id="imagePreview" class="mt-4 mb-4"> <!-- Image preview container -->
-            <img id="preview" src="" alt="Image Preview" class="hidden w-full h-auto rounded-md" />
+          <div id="imagePreview" class="mt-4 mb-4 relative">
+            <img id="preview" src="" alt="Image Preview" class="hidden max-w-full max-h-96 object-contain rounded-md" />
+            <button id="removeImage" type="button" class="hidden absolute top-2 right-2 bg-red-500 text-white rounded-full p-1" onclick="removePreviewImage()">×</button>
           </div>
         
           <div class="clear-both">
@@ -47,12 +43,14 @@
 <script>
   function previewImage(event) {
     const preview = document.getElementById('preview');
+    const removeButton = document.getElementById('removeImage');
     const file = event.target.files[0];
     const reader = new FileReader();
     
     reader.onload = function(e) {
       preview.src = e.target.result;
       preview.classList.remove('hidden'); // Show the image
+      removeButton.classList.remove('hidden'); // Show the remove button
     }
     
     if (file) {
@@ -60,6 +58,16 @@
     }
   }
 
+  function removePreviewImage() {
+    const preview = document.getElementById('preview');
+    const removeButton = document.getElementById('removeImage');
+    const fileInput = document.getElementById('image');
+
+    preview.src = '';
+    preview.classList.add('hidden');
+    removeButton.classList.add('hidden');
+    fileInput.value = ''; // Clear the file input
+  }
 
   document.getElementById('Categoryform').addEventListener('submit', function(event) {
     const name=document.getElementById('name').value;
