@@ -1,9 +1,9 @@
 import express from "express";
 
-import isUser  from "../middleware/userMiddleware.js";                                      //  import user middleware
+import isUser  from "../middleware/userMiddleware.js";                                      
 import checkUserSession from '../middleware/checkUserSession.js'
-import passport from "passport";                                                          //  import passport
-import * as userControl from '../controllers/user/authController.js'                         //import auth controller
+import passport from "passport";                                                          
+import * as userControl from '../controllers/user/authController.js'                         
 import * as productControl from '../controllers/user/productController.js'
 import * as passwordControl from '../controllers/user/passwordController.js'
 import * as profileControl from '../controllers/user/profileController.js'
@@ -15,28 +15,28 @@ const router=express.Router()
 
 router.use(checkUserSession)
 
-// //  //  //      User Auth routes  //  //  //  //  //
+//^  //  //  //  //  //  //                User Auth routes                //  //  //  //  //  //  //
 
 router.route('/login') 
-    .get(userControl.getLogin) // Get login page
-    .post(userControl.postLogin); // Post login
+    .get(userControl.getLogin) 
+    .post(userControl.postLogin); 
 
 router.route('/signup') 
-    .get(userControl.getSignup) // Get signup page
-    .post(userControl.postSignup); // Post signup
+    .get(userControl.getSignup) 
+    .post(userControl.postSignup); 
 
 router.get('/home',isUser,userControl.getHome)      //get user home                                           
 
 router.post('/logout',userControl.postLogout)                                                 
 
-// //  //  //      OTP verifying routes  //  //  //  //  //
+//^  //  //  //  //  //  //               OtP verifying Routes             //  //  //  //  //  //  //
 
 router.route('/verify-otp')
     .get(userControl.getverifyOTP)
     .post(userControl.postverifyOTP)
-router.post('/resend-otp',userControl.resendOTP)                                               //post resend otp
+router.post('/resend-otp',userControl.resendOTP)                                               
 
-// //  //  //       Forgot Password routes    //  //  //  //  //
+//^  //  //  //  //  //  //               Forgot Password Routes             //  //  //  //  //  //  //
 
 router.route('/forgotPassword')
     .get(passwordControl.getForgotPassword)
@@ -44,16 +44,16 @@ router.route('/forgotPassword')
 
 router.route('/verifyPasswordOtp')
     .get(passwordControl.getVerifyPasswordOTP)
-    .post(passwordControl.postVerifyPasswordOTP)                                               //post verify otp for reset/forgot password
+    .post(passwordControl.postVerifyPasswordOTP)                                               
 
-router.post('/resendOTP',passwordControl.postresendOTP)                                        //post resend otp for reset/forgot password
+router.post('/resendOTP',passwordControl.postresendOTP)                                        
 
 router.route('/resetPassword')
     .get(passwordControl.getResetPassword)
     .post(passwordControl.postResetPassword)
 
 
-// //  //  //      Google Auth routes  //  //  //  //  //
+//^  //  //  //  //  //  //               Google Auth Routes                 //  //  //  //  //  //  //
 
 router.get('/auth/google',passport.authenticate('google',{scope:['profile','email'] } ) )                 //google login
 
@@ -65,7 +65,7 @@ router.get('/auth/google/callback',passport.authenticate('google',{failureRedire
 
 
 
-// //  //  //      Landing page routes  //  //  //  //  //
+//^  //  //  //  //  //  //               Landing page Routes              //  //  //  //  //  //  //
 
 router.get('/',userControl.getlandingPage)
 
@@ -75,10 +75,11 @@ router.get('/Category/:id',productControl.getProductsByCategory)
 
 router.get('/product/:id',productControl.getProductDetail)
 
-// //  //  //      Product  review Adding routes  //  //  //  //  //
+//^  //  //  //  //  //  //             Product  review Adding Route         //  //  //  //  //  //  //
+
 router.post('/product/:id/review',isUser,productControl.addReview)
 
-// //  //  //      Profile routes  //  //  //  //  //
+//^  //  //  //  //  //  //               Profile  Routes                    //  //  //  //  //  //  //
 
 
 router.route('/profile/personal-info')
@@ -102,7 +103,7 @@ router.route('/profile/change-password')
     .post(isUser,profileControl.postChangePassword)
 
 
-// //  //  //      Wishlist routes  //  //  //  //  //
+//^  //  //  //  //  //  //               Wishlist Routes             //  //  //  //  //  //  //
 
 router.get('/wishlist',isUser,wishlistControl.getWishListPage)
 
@@ -110,7 +111,7 @@ router.post('/wishlist/:productId',isUser,wishlistControl.addToWishlist)
 
 router.post('/wishlist/delete/:id',isUser,wishlistControl.removeFromWishlist)
 
-// //  //  //      Cart routes  //  //  //  //  //
+//^  //  //  //  //  //  //               Cart Routes               //  //  //  //  //  //  //
 
 router.get('/cart',isUser,cartControl.getCartPage)
 
@@ -121,7 +122,7 @@ router.post('/cart/:productId/update',isUser,cartControl.updateCartItemQuantity)
 
 router.post('/cart/delete/:productId',isUser,cartControl.removeCartItem)
 
-// //  //  //      Checkout routes  //  //  //  //  //
+//^  //  //  //  //  //  //               Checkout Routes              //  //  //  //  //  //  //
 
 router.get('/checkout',isUser,checkOutControl.getCheckoutPage)
 
@@ -131,7 +132,7 @@ router.post('/checkout/place-order',isUser,checkOutControl.postOrder)
 
 
 
-// //  //  //      Order History routes  //  //  //  //  //
+//^  //  //  //  //  //  //               Order History Routes             //  //  //  //  //  //  //
 
 router.get('/profile/order',isUser,orderControl.getorderhistoryPage)
 
