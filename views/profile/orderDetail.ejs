@@ -44,10 +44,11 @@
       <% order.items.forEach(item => { %>
         <div class="flex flex-col md:flex-row justify-between items-center bg-gray-800 p-4 rounded-lg mb-4 shadow-md">
           <div class="flex items-center mb-4 md:mb-0">
-            <img src="<%= item.product.image[0] %>" alt="<%= item.product.name %>" class="w-20 h-20 mr-4">
+            <img src="<%= item.product.image[1] %>" alt="<%= item.product.name %>" class="w-20 h-20 mr-4">
             <div class="flex-1">
               <p class="text-lg font-semibold"><%= item.product.name %></p>
-              <p>Price: ₹<%= item.discountPrice %></p>
+              <p><span class="line-through">₹<%= item.price %></span></p>
+              <p>Price:<span class="text-orange-500">₹<%= item.discountPrice %></span></p>
               <p>Quantity: <%= item.quantity %></p>
               <p>Subtotal: ₹<%= item.discountPrice * item.quantity %></p>
             </div>
