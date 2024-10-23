@@ -7,8 +7,9 @@
     <div class="container mx-auto py-6">
         <h1 class="text-2xl font-semibold mb-4 text-gray-200">Add Product</h1>
 
-        <form action="/admin/addProduct" method="POST" enctype="multipart/form-data" id="add-product-form"
+        <form action="/admin/addProduct" method="POST" enctype="multipart/form-data" id="product-form"
             class="bg-[#242526] p-6 rounded shadow-md">
+            <%- include('../partials/flashMessage.ejs') %>
             <div class="mb-4">
                 <label class="block text-gray-300">Product Name</label>
                 <input type="text" id="productName" name="productName" required
@@ -89,110 +90,3 @@
         </form>
     </div>
 </div>
-<script>
-    const form = document.getElementById('add-product-form');
-    const productNameInput = document.getElementById('productName');
-    const descriptionInput = document.getElementById('description');
-    const categoryInput = document.getElementById('category');
-    const priceInput = document.getElementById('price');
-    const stockInput = document.getElementById('stock');
-    const SKUInput = document.getElementById('SKU');
-    
-
-    const productNameError = document.getElementById('productNameError');
-    const descriptionError = document.getElementById('descriptionError');
-    const categoryError = document.getElementById('categoryError');
-    const priceError = document.getElementById('priceError');
-    const stockError = document.getElementById('stockError');
-    const SKUError = document.getElementById('SKUError');
-    
-
-    document.addEventListener('DOMContentLoaded', () => {
-        // Attach input event listeners
-        productNameInput.addEventListener('input', validateProductName);
-        descriptionInput.addEventListener('input', validateDescription);
-        categoryInput.addEventListener('change', validateCategory);
-        priceInput.addEventListener('input', validatePrice);
-        stockInput.addEventListener('input', validateStock);
-        SKUInput.addEventListener('input', validateSKU);
-       
-
-        function validateProductName() {
-    const productName = productNameInput.value.trim();
-    const regex = /^[a-zA-Z0-9\s]+$/; // Allow only letters, numbers, and spaces
-    if (productName.length < 3 || productName.length > 50 || productName === "" || !regex.test(productName)) {
-        productNameError.textContent = 'Product Name must be between 3 and 50 characters and cannot contain special characters..';
-    } else {
-        productNameError.textContent = '';
-    }
-}
-
-        function validateDescription() {
-            const description = descriptionInput.value.trim();
-            if (description.length < 10 || description.length > 1000) {
-                descriptionError.textContent = 'Product description must be between 10 to 1000 characters.';
-            } else {
-                descriptionError.textContent = '';
-            }
-        }
-
-        function validateCategory() {
-            const category = categoryInput.value;
-            if (!category) {
-                categoryError.textContent = 'Please select a category.';
-            } else {
-                categoryError.textContent = '';
-            }
-        }
-
-        function validatePrice() {
-            const price = parseFloat(priceInput.value);
-            if (isNaN(price) || price <= 0) {
-                priceError.textContent = 'Product Price must be greater than zero.';
-            } else {
-                priceError.textContent = '';
-            }
-        }
-
-        function validateStock() {
-            const stock = parseInt(stockInput.value);
-            if (isNaN(stock) || stock < 0) {
-                stockError.textContent = 'Stock should be a number and must be zero or greater.';
-            } else {
-                stockError.textContent = '';
-            }
-        }
-
-        function validateSKU() {
-            const SKU = SKUInput.value.trim();
-            if (!/^[a-zA-Z0-9\-]+$/.test(SKU)) {
-                SKUError.textContent = 'Invalid SKU format.';
-            } else {
-                SKUError.textContent = '';
-            }
-        }
-
-      
-        form.addEventListener('submit', function (event) {
-            // Run all validations on form submit
-            validateProductName();
-            validateDescription();
-            validateCategory();
-            validatePrice();
-            validateStock();
-            validateSKU();
-         
-
-            // Check if there are any errors
-            const hasErrors = productNameError.textContent || descriptionError.textContent || categoryError.textContent ||
-                priceError.textContent || stockError.textContent || SKUError.textContent ||
-
-            console.log('Validation Errors:', hasErrors); // Debugging line
-
-            if (hasErrors) {
-                event.preventDefault();  // Prevent form submission if there are validation errors
-                console.log('Form submission prevented due to validation errors.'); // Debugging line
-            }
-        });
-    });
-</script>
