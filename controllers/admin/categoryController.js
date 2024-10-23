@@ -43,7 +43,7 @@ export const postAddCategory=async (req,res)=>{                                 
   }
 
   if (!file) {
-    errors.push("Category image is required")
+    errors.push("Please upload atleast one image")
   } else {
     const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp', 'image/svg+xml'];
     if (!allowedTypes.includes(file.mimetype)) {
@@ -71,7 +71,7 @@ const result=await cloudinary.uploader.upload(req.file.path,{
   folder:'Category Image',
   use_filename:true
 })
-console.log("cloudinary result",result)
+
 
 
  await categoryModel.create({
@@ -135,7 +135,9 @@ export const postEditCategory = async (req, res) => {
       errors.push("Category name already exists");
     }
 
-    if(file) {
+    if(!file && !existingImage) {
+      errors.push("Please upload atleast one image");
+    } else {
       const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp', 'image/svg+xml'];
       if (!allowedTypes.includes(file.mimetype)) {
         errors.push('Invalid file Type.please upload a valid image file');
@@ -165,7 +167,7 @@ export const postEditCategory = async (req, res) => {
       });
       categoryData.image = result.secure_url;
     } else if (!existingImage) {
-      // Existing image removed and no new image uploaded
+     
       categoryData.image = null;
     }
   
