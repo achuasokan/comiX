@@ -1,4 +1,4 @@
-//importing the app
+//? importing the app
 import app from './app.js'
 
 //port
