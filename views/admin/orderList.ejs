@@ -30,6 +30,7 @@
                   <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Customer Name</th>
                   <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Order ID</th>
                   <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Products</th>
+                  <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Order Date</th>
                   <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Status</th>
                   <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Modify Order Status</th>
                   <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Order Details</th>
@@ -45,10 +46,11 @@
                       <td class="px-6 py-4  whitespace-nowrap font-medium text-center"><%= order.user ? order.user.name : 'Unknown User' %></td>
                       <td class="px-6 py-4  whitespace-nowrap font-medium text-center"><%= order._id %></td>
                       <% if(item.product) { %>
-                        <td class="px-6 py-4  whitespace-nowrap font-medium text-center"><%= item.product.name %></td>
+                        <td class="px-6 py-4  whitespace-nowrap font-medium text-center truncate"><%= item.product.name %></td>
                       <% } else { %>
                         <td class="px-6 py-4  whitespace-nowrap font-medium text-center">No product</td>
                       <% } %>
+                      <td class="px-6 py-4  whitespace-nowrap font-medium text-center"><%= order.orderedAt.toLocaleDateString() %></td>
                       <td class="px-6 py-4  whitespace-nowrap font-medium text-center"><%= item.itemStatus %></td>
                       <td class="px-6 py-4  whitespace-nowrap font-medium text-center">
                         <button class=" bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg change-status-btn" data-order-id="<%= order._id %>" data-item-id="<%= item._id %>">Change Status</button>
