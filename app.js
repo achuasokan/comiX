@@ -28,6 +28,7 @@ const app=express();
 //? importing the routes
 import userRouter from './routes/userRoutes.js'
 import adminRouter from './routes/adminRoutes.js'
+import googleAuthRouter from './routes/googleAuthRoutes.js'
 
 
 
@@ -72,6 +73,7 @@ app.use(passport.session());                                                    
 //? routes
 app.use('/admin',adminRouter)                                                                  //admin routes
 app.use('/',userRouter)                                                                         //user routes
+app.use('/',googleAuthRouter)
 
 
 
