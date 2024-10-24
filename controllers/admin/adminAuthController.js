@@ -1,7 +1,7 @@
 import userModel from '../../models/User.js'
 
 
-// //  //  //   //  //          GET LOGIN Page    //  //  //  //  //  //  //
+//* //  //  //   //  //          GET LOGIN Page    //  //  //  //  //  //  //
 export const getAdminLogin = async (req,res) => {                                                      
   if(req.session.adminID) {                                                                          //if admin is already logged in
     res.redirect( '/admin/dashboard' )                                                                 //redirect to dashboard
@@ -10,7 +10,7 @@ export const getAdminLogin = async (req,res) => {
   }
 }
 
-// //  //  //   //  //          POST LOGIN     //  //  //  //  //  //  //
+//* //  //  //   //  //          POST LOGIN     //  //  //  //  //  //  //
 
 export const postAdminLogin = async (req,res)=>{                                                       
  
@@ -25,13 +25,12 @@ export const postAdminLogin = async (req,res)=>{
 
 
 
-// //  //  //   //  //            LOGOUT       //  //  //  //  //  //  // 
+//* //  //  //   //  //            LOGOUT       //  //  //  //  //  //  // 
 
 export const getLogout=async (req,res) => {                                                   
-  req.session.destroy((message)=>{
-    if(message){
-      console.log(message);
-      
+  req.session.destroy((error)=>{
+    if(error){
+      console.log(error);    
     }else{
       res.redirect('/admin/login')
     }

@@ -2,7 +2,7 @@ import productModel from '../../models/Product.js'
 import categoryModel from '../../models/Category.js'
 import {calculateDiscountPrice} from '../../utils/discountprice.js'
 
-// //  //  //   //  //         GET PRODUCTS BY CATEGORY   //  //  //  //  //  //  //
+//* //  //  //   //  //         GET PRODUCTS BY CATEGORY   //  //  //  //  //  //  //
 export const getProductsByCategory = async (req,res)=> {
   try{
     const categoryId =req.params.id
@@ -81,7 +81,7 @@ export const getProductsByCategory = async (req,res)=> {
   }
 }
 
-// //  //  //   //  //         GET PRODUCT DETAIL   //  //  //  //  //  //  //
+//* //  //  //   //  //         GET PRODUCT DETAIL   //  //  //  //  //  //  //
 export const getProductDetail = async (req,res) => {
   try{
 
@@ -118,7 +118,7 @@ export const getProductDetail = async (req,res) => {
   }
 }
 
-// //  //  //   //  //         ADD REVIEW   //  //  //  //  //  //  //
+//* //  //  //   //  //         ADD REVIEW   //  //  //  //  //  //  //
 export const addReview = async (req,res) => {
   try{
     const productId = req.params.id
@@ -150,7 +150,7 @@ export const addReview = async (req,res) => {
   }
 }
 
-// //  //  //   //  //         GET ALL PRODUCTS PAGE   //  //  //  //  //  //  //
+//* //  //  //   //  //         GET ALL PRODUCTS PAGE   //  //  //  //  //  //  //
 
 export const getAllProductPage = async (req, res) => {
   try {

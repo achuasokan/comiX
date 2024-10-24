@@ -29,7 +29,7 @@ export const getWishListPage = async(req,res) => {
 }
 
 
-// //  //  //   //  //         ADD TO WISHLIST   //  //  //  //  //  //  //
+//* //  //  //   //  //         ADD TO WISHLIST   //  //  //  //  //  //  //
 
 export const addToWishlist = async (req, res) => {
   try {
@@ -57,7 +57,7 @@ export const addToWishlist = async (req, res) => {
   }
 };
 
-// //  //  //   //  //         REMOVE FROM WISHLIST   //  //  //  //  //  //  //
+//* //  //  //   //  //         REMOVE FROM WISHLIST   //  //  //  //  //  //  //
 
 export const removeFromWishlist = async (req, res) => {
   try {

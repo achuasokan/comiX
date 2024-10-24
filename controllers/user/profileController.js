@@ -2,7 +2,7 @@ import userModel from '../../models/User.js'
 import addressModel from "../../models/address.js"
 import bcrypt from 'bcrypt'
 
-// //  //  //   //  //          GET PROFILE PAGE   //  //  //  //  //  //  //
+//* //  //  //   //  //          GET PROFILE PAGE   //  //  //  //  //  //  //
 
 export const getProfilePage=async(req,res)=>{
   try{
@@ -15,7 +15,7 @@ export const getProfilePage=async(req,res)=>{
 } 
 
 
-// //  //  //   //  //          EDIT PROFILE   //  //  //  //  //  //  //
+//* //  //  //   //  //          EDIT PROFILE   //  //  //  //  //  //  //
 
 export const editProfile=async(req,res)=>{
   try{
@@ -40,7 +40,7 @@ export const editProfile=async(req,res)=>{
 }
 
 
-// //  //  //   //  //          GET ADDRESS PAGE   //  //  //  //  //  //  //
+//* //  //  //   //  //          GET ADDRESS PAGE   //  //  //  //  //  //  //
 
 export const getAddressPage = async(req,res) => {
   try{
@@ -57,7 +57,7 @@ export const getAddressPage = async(req,res) => {
 }
 
 
-// //  //  //   //  //          GET Add ADDRESS PAGE   //  //  //  //  //  //  //
+//* //  //  //   //  //          GET Add ADDRESS PAGE   //  //  //  //  //  //  //
 
 export const getAddAddressPage = async(req,res) => {
   try{
@@ -67,7 +67,7 @@ export const getAddAddressPage = async(req,res) => {
   }
 }
 
-// //  //  //   //  //          ADD ADDRESS   //  //  //  //  //  //  //
+//* //  //  //   //  //              ADD ADDRESS       //  //  //  //  //  //  // 
 
 export const postAddAddress = async(req,res) => {
   try{
@@ -116,7 +116,7 @@ export const postAddAddress = async(req,res) => {
 }
 
 
-// //  //  //   //  //          EDIT ADDRESS   //  //  //  //  //  //  //
+//* //  //  //   //  //          EDIT ADDRESS   //  //  //  //  //  //  //
 
 export const getEditAddressPage = async(req,res) => {
   try{
@@ -133,7 +133,7 @@ export const getEditAddressPage = async(req,res) => {
   }
 }
 
-// //  //  //   //  //         POST EDIT ADDRESS   //  //  //  //  //  //  //
+//* //  //  //   //  //         POST EDIT ADDRESS   //  //  //  //  //  //  //
 
 export const postEditAddress = async (req,res) => {
   try {
@@ -174,7 +174,7 @@ export const postEditAddress = async (req,res) => {
 }
 
 
-// //  //  //   //  //          DELETE ADDRESS   //  //  //  //  //  //  //
+//* //  //  //   //  //          DELETE ADDRESS   //  //  //  //  //  //  //
 
 export const deleteAddress = async (req,res) => {
 try{
@@ -192,7 +192,7 @@ try{
 }
   
 }
-// //  //  //   //  //          CHANGE PASSWORD   //  //  //  //  //  //  //
+//* //  //  //   //  //          CHANGE PASSWORD   //  //  //  //  //  //  //
 
 export const getChangePasswordPage = async(req,res) => {
   try{
@@ -205,6 +205,8 @@ export const getChangePasswordPage = async(req,res) => {
   }
 }
 
+
+//* //  //  //   //  //          POST CHANGE PASSWORD      //  //  //  //  //  //  //
 
 export const postChangePassword = async (req,res) => {
   try{

@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt'
 import { generateOTP, sendOTPEmail } from '../../utils/otp.js'
 
 
-// //  //  //   //  //          getting Forgot Password page     //  //  //  //  //  //  //
+//* //  //  //   //  //          getting Forgot Password page     //  //  //  //  //  //  //
 
 export const getForgotPassword = async (req,res) => {
   try{
@@ -16,7 +16,7 @@ export const getForgotPassword = async (req,res) => {
 }
 
 
-// //  //  //   //  //          post Forgot Password page     //  //  //  //  //  //  //
+//* //  //  //   //  //          post Forgot Password page     //  //  //  //  //  //  //
 
 export const postForgotPassword = async (req,res) => {
   try{
@@ -58,7 +58,7 @@ export const postForgotPassword = async (req,res) => {
 }
 
 
-// //  //  //   //  //        Get verify Forgot Password OTP page     //  //  //  //  //  //  //
+//* //  //  //   //  //        Get verify Forgot Password OTP page     //  //  //  //  //  //  //
 
 export const getVerifyPasswordOTP =async (req,res) => {
   try{
@@ -72,7 +72,7 @@ export const getVerifyPasswordOTP =async (req,res) => {
 }
 
 
-// //  //  //   //  //          Post verify Forgot Password OTP page     //  //  //  //  //  //  //
+//* //  //  //   //  //          Post verify Forgot Password OTP page     //  //  //  //  //  //  //
 
 export const postVerifyPasswordOTP =async (req,res) => {
   try{
@@ -110,7 +110,7 @@ export const postVerifyPasswordOTP =async (req,res) => {
 }
 
 
-// //  //  //   //  //          resend OTP          //  //  //  //  //  //  //
+//* //  //  //   //  //          resend OTP          //  //  //  //  //  //  //
 
 export const postresendOTP =async (req,res) => {
   try{
@@ -145,7 +145,7 @@ export const postresendOTP =async (req,res) => {
 }
 
 
-// //  //  //   //  //          Get reset Password page     //  //  //  //  //  //  //
+//* //  //  //   //  //          Get reset Password page     //  //  //  //  //  //  //
 
 export const getResetPassword =async (req,res) => {
   try{
@@ -159,7 +159,7 @@ export const getResetPassword =async (req,res) => {
 }
 
 
-// //  //  //   //  //          post reset Password page         //  //  //  //  //  //  //
+//* //  //  //   //  //          post reset Password page         //  //  //  //  //  //  //
 
 export const postResetPassword =async (req,res) => {
   try{
@@ -190,16 +190,13 @@ export const postResetPassword =async (req,res) => {
 
     const hashedPassword = await bcrypt.hash(newPassword, 10)
 
-    // await userModel.findOneAndUpdate({email},{password:hashedPassword})
-
     // Update the user's password in the database
     await userModel.updateOne({email},{$set:{password:hashedPassword}})
 
     // Remove temporary session data after resetting the password
     delete req.session.tempForgotPassword
 
-    // res.render('user/userLogin',{message:'Password reset successfully. Please login with your new password'})
-   
+  
     // Redirect to the login page with a success message
     req.flash('success','Password reset successfully. Please login with your new password')
     res.redirect('/login')

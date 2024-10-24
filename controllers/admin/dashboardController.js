@@ -1,6 +1,6 @@
 import userModel from "../../models/User.js"
 
-// //  //  //   //  //          GET DASHBOARD PAGE    //  //  //  //  //  //  // 
+//* //  //  //   //  //          GET DASHBOARD PAGE    //  //  //  //  //  //  // 
 
 export const getDashboard=async (req,res) =>{  
                                                    

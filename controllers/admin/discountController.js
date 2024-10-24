@@ -4,7 +4,7 @@ import categoryModel from "../../models/Category.js"
 
 
 
-// //  //  //   //  //          GET   DISCOUNT LIST PAGE   //  //  //  //  //  //  //
+//* //  //  //   //  //          GET   DISCOUNT LIST PAGE   //  //  //  //  //  //  //
 
 export const getDiscountListPage = async (req,res) => {
   try{
@@ -33,7 +33,7 @@ export const getDiscountListPage = async (req,res) => {
 }
 
 
-// //  //  //   //  //          GET  Add DISCOUNT PAGE   //  //  //  //  //  //  //
+//* //  //  //   //  //          GET  Add DISCOUNT PAGE   //  //  //  //  //  //  //
 
 export const addDiscountPage = async (req,res) => {
   try{
@@ -48,7 +48,7 @@ export const addDiscountPage = async (req,res) => {
 }
 
 
-// //  //  //   //  //          POST  Add DISCOUNT   //  //  //  //  //  //  //
+//* //  //  //   //  //          POST  Add DISCOUNT   //  //  //  //  //  //  //
 
 export const addDiscount = async (req,res) => {
   try{
@@ -101,7 +101,7 @@ export const addDiscount = async (req,res) => {
 }
 
 
-//  //  //   //  //          GET  Edit DISCOUNT PAGE   //  //  //  //  //  //  //
+//*  //  //   //  //          GET  Edit DISCOUNT PAGE   //  //  //  //  //  //  //
 
 export const editDiscountPage = async (req,res) => {
   try{
@@ -117,7 +117,7 @@ export const editDiscountPage = async (req,res) => {
 }
 
 
-// // //  //  //   //  //          POST  Edit DISCOUNT   //  //  //  //  //  //  //
+//* // //  //  //   //  //          POST  Edit DISCOUNT   //  //  //  //  //  //  //
 
 export const postEditDiscount = async (req,res) => {
   try{
@@ -149,7 +149,7 @@ export const postEditDiscount = async (req,res) => {
   }
 }
 
-// //  //  //   //  //          POST  Block/Unblock DISCOUNT   //  //  //  //  //  //  //
+//* //  //  //   //  //          POST  Block/Unblock DISCOUNT   //  //  //  //  //  //  //
 
 export const blockDiscount = async (req,res) => {
   try{

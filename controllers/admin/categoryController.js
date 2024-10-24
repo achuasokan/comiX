@@ -3,7 +3,7 @@ import fs from 'fs'
 import cloudinary from '../../config/cloudinary.js'
 import mongoose from 'mongoose'
 
-// //  //  //   //  //          GET CATEGORY PAGE   //  //  //  //  //  //  //
+//* //  //  //   //  //          GET CATEGORY PAGE   //  //  //  //  //  //  //
 
 export const getCategory=async (req,res) => {                                                //admin category page
   try{
@@ -16,7 +16,7 @@ export const getCategory=async (req,res) => {                                   
 }
 
 
-// //  //  //   //  //          GET ADD CATEGORY PAGE   //  //  //  //  //  //  //
+//* //  //  //   //  //          GET ADD CATEGORY PAGE   //  //  //  //  //  //  //
 
 export const getAddCategory=async (req,res)=>{                                              //add category page rendering
   try{
@@ -28,7 +28,7 @@ export const getAddCategory=async (req,res)=>{                                  
 }
 
 
-// //  //  //   //  //          POST ADD CATEGORY   //  //  //  //  //  //  //
+//* //  //  //   //  //          POST ADD CATEGORY   //  //  //  //  //  //  //
 
 export const postAddCategory=async (req,res)=>{                                                     //post add category
   const file = req.file
@@ -92,7 +92,7 @@ const result=await cloudinary.uploader.upload(req.file.path,{
   }
 
 
-// //  //  //   //  //          GET EDIT CATEGORY PAGE    //  //  //  //  //  //  //
+//* //  //  //   //  //          GET EDIT CATEGORY PAGE    //  //  //  //  //  //  //
 
 export const getEditCategory=async(req,res)=>{ 
   try{
@@ -107,7 +107,7 @@ export const getEditCategory=async(req,res)=>{
 }
 
 
-// //  //  //   //  //          POST EDIT CATEGORY     //  //  //  //  //  //  //
+//* //  //  //   //  //          POST EDIT CATEGORY     //  //  //  //  //  //  //
 
 export const postEditCategory = async (req, res) => {
   const file = req.file;
@@ -191,7 +191,7 @@ export const postEditCategory = async (req, res) => {
 };
 
 
-// //  //  //   //  //          DELETE CATEGORY    //  //  //  //  //  //  //
+//* //  //  //   //  //          DELETE CATEGORY    //  //  //  //  //  //  //
 
 export const deleteCategory=async(req,res)=>{
   try{
@@ -204,7 +204,7 @@ export const deleteCategory=async(req,res)=>{
   }
 }
 
-// //  //  //   //  //          BLOCK CATEGORY    //  //  //  //  //  //  //
+//* //  //  //   //  //          BLOCK CATEGORY    //  //  //  //  //  //  //
 
 export const blockCategory=async(req,res)=>{
   try{
@@ -223,7 +223,7 @@ export const blockCategory=async(req,res)=>{
 }
 
 
-// //  //  //   //  //          SEARCH CATEGORY     //  //  //  //  //  //  //
+//* //  //  //   //  //          SEARCH CATEGORY     //  //  //  //  //  //  //
 
 export const searchCategory=async(req,res)=>{
   try{

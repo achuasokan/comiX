@@ -2,7 +2,7 @@ import cartModel from '../../models/Cart.js'
 import productModel from '../../models/Product.js'
 import { calculateDiscountPrice } from '../../utils/discountprice.js'
 
-// //  //  //   //  //         GET CART PAGE   //  //  //  //  //  //  //
+//* //  //  //   //  //         GET CART PAGE   //  //  //  //  //  //  //
 
 export const getCartPage = async (req,res) => {
   try{
@@ -13,7 +13,7 @@ export const getCartPage = async (req,res) => {
       populate: {path: 'category', select: 'name'}
     })
 
-    // if the cart is not found return the cart page with the cart as null means the cart is empty
+   
     if (!cart) {
       return res.render('user/cart',{cart: null})
     }
@@ -31,7 +31,7 @@ export const getCartPage = async (req,res) => {
 }
 
 
-// //  //  //   //  //         ADD TO CART   //  //  //  //  //  //  //
+//* //  //  //   //  //         ADD TO CART   //  //  //  //  //  //  //
 
 export const addToCart = async (req,res) => {
   try {
@@ -44,7 +44,7 @@ export const addToCart = async (req,res) => {
       return res.status(404).json({message: "Product not found"})
     }
 
-    // if the quantity is greater than the stock of the product return the status 400 and send the message not enough stock available
+    
     if(quantity > product.stock) {
       return res.status(400).json({message: "Not enoughsss stock available"})
     }
@@ -65,7 +65,7 @@ export const addToCart = async (req,res) => {
       // increase the quantity of the product
       const newQuantity = cart.items[itemIndex].quantity + quantity
 
-      // if the new quantity is greater than the stock of the product return the status 400 and send the message not enough stock available
+     
       if(newQuantity > product.stock) {
         return res.status(400).send({message: "Not enough stock available"})
       }
@@ -93,7 +93,7 @@ export const addToCart = async (req,res) => {
         discountPrice: discountprice
       })
     }
-// calculate the subtotal and total discount of the cart items in the cart for the cart page for the user
+
     // cart.subtotal = calculateSubtotal(cart.items)
     cart.subtotal = calculateSubtotal(cart.items).subtotal; // Update subtotal
     cart.total = calculateTotal(cart.subtotal, cart.discount)
@@ -107,7 +107,7 @@ export const addToCart = async (req,res) => {
   }
 }
 
-// //  //  //   //  //         UPDATE CART ITEM QUANTITY AJAX  //  //  //  //  //  //  //
+//* //  //  //   //  //         UPDATE CART ITEM QUANTITY AJAX  //  //  //  //  //  //  //
 export const updateCartItemQuantity = async (req, res) => {
   try {
     const userId = req.session.userID
@@ -159,7 +159,7 @@ export const updateCartItemQuantity = async (req, res) => {
 }
 
 
-// // //  //  //   //  //         REMOVE CART ITEM   //  //  //  //  //  //  //
+//* // //  //  //   //  //         REMOVE CART ITEM   //  //  //  //  //  //  //
 
 export const removeCartItem = async (req, res) => {
   try {
@@ -195,7 +195,7 @@ export const removeCartItem = async (req, res) => {
   }
 }
 
-// //  //  //   //  //         CALCULATE SUBTOTAL && TOTAL   //  //  //  //  //  //  //
+//* //  //  //   //  //         CALCULATE SUBTOTAL && TOTAL   //  //  //  //  //  //  //
 
 
 

@@ -3,7 +3,7 @@ import categoryModel from "../../models/Category.js"
 import cloudinary from "../../config/cloudinary.js"
 import fs from "fs"
 
-// //  //  //   //  //          GET PRODUCT LIST PAGE  //  //  //  //  //  //  //
+//* //  //  //   //  //          GET PRODUCT LIST PAGE  //  //  //  //  //  //  //
 export const getProduct=async(req,res)=>{
   try{
     const page=parseInt(req.query.page) || 1;
@@ -32,7 +32,7 @@ export const getProduct=async(req,res)=>{
     res.status(500)
   }
 }
-// //  //  //   //  //          GET ADD PRODUCT PAGE   //  //  //  //  //  //  //
+//* //  //  //   //  //          GET ADD PRODUCT PAGE   //  //  //  //  //  //  //
 export const getAddProduct=async(req,res)=>{
   try{
     const categorylist=await categoryModel.find({isBlocked:false})
@@ -45,7 +45,7 @@ export const getAddProduct=async(req,res)=>{
   }
 }
 
-  // //  //  //   //  //          POST ADD PRODUCT   //  //  //  //  //  //  //
+  //* //  //  //   //  //          POST ADD PRODUCT   //  //  //  //  //  //  //
 
   export const postAddProduct = async (req, res) => {
     const files = req.files || [];
@@ -163,7 +163,7 @@ export const getAddProduct=async(req,res)=>{
 
 
 
-// //  //  //   //  //          soft DELETE PRODUCT   //  //  //  //  //  //  //
+//* //  //  //   //  //          soft DELETE PRODUCT   //  //  //  //  //  //  //
 
 export const softDeleteProduct=async(req,res)=>{
   try{
@@ -182,7 +182,7 @@ export const softDeleteProduct=async(req,res)=>{
 }
 
 
-// //  //  //   //  //         GET EDIT PRODUCT   //  //  //  //  //  //  //
+//* //  //  //   //  //         GET EDIT PRODUCT   //  //  //  //  //  //  //
 export const getEditProduct=async(req,res)=>{
   try{
     const id=req.params.id;
@@ -196,6 +196,7 @@ export const getEditProduct=async(req,res)=>{
   }
 }
 
+//* //  //  //   //  //          POST EDIT PRODUCT   //  //  //  //  //  //  //
 
 export const postEditProduct = async (req, res) => {
   const files = req.files || [];

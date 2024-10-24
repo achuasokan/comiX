@@ -3,7 +3,7 @@ import productModel from '../../models/Product.js'
 import mongoose from 'mongoose'
 
 
-//  //  //   //  //          GET ORDER  HistoryPAGE   //  //  //  //  //  //  //
+//*  //  //   //  //          GET ORDER  HistoryPAGE   //  //  //  //  //  //  //
 
 export const getorderhistoryPage = async (req,res) => {
   try {
@@ -23,7 +23,7 @@ export const getorderhistoryPage = async (req,res) => {
 }
 
 
-//  //  //   //  //          GET ORDER  historypage   //  //  //  //  //  //  //
+//*  //  //   //  //          GET ORDER  historypage   //  //  //  //  //  //  //
 
 export const getOrderDetailpage = async (req,res) => {
   try {
@@ -31,9 +31,6 @@ export const getOrderDetailpage = async (req,res) => {
     const userId = req.session.userID
     const orderId = req.params.orderID
     const itemId = req.params.itemId
-    console.log("itemid from getail :",itemId);
-    console.log("orderidser from getail :",orderId);
-    console.log("userid from getail :",userId);
     
     if (!mongoose.Types.ObjectId.isValid(orderId) || !mongoose.Types.ObjectId.isValid(itemId)) {
       return res.status(400).send('Invalid Order ID or Item ID');
@@ -65,7 +62,7 @@ export const getOrderDetailpage = async (req,res) => {
 }
 
 
-//  //  //   //  //         ORDER  Cancel   //  //  //  //  //  //  //
+//*  //  //   //  //         ORDER  Cancel   //  //  //  //  //  //  //
 
 export const orderCancel = async (req,res) => {
   try {
@@ -117,7 +114,6 @@ export const orderCancel = async (req,res) => {
       console.log('Product not found for item :', item.product._id);
     }
 
-    console.log('Order cancelled successfully');
     res.status(200).json({message: 'Order cancelled successfully'})
   } catch (error) {
     console.log("order cancel error :",error);

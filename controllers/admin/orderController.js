@@ -3,7 +3,7 @@ import productModel from '../../models/Product.js'
 import addressModel from '../../models/address.js'
 import userModel from '../../models/User.js'
 
-//  //  //   //  //          GET ORDER LIST PAGE   //  //  //  //  //  //  //
+//*  //  //   //  //          GET ORDER LIST PAGE   //  //  //  //  //  //  //
 
 export const getOrderListPage = async (req,res) => {
   try {
@@ -45,7 +45,7 @@ export const getOrderListPage = async (req,res) => {
 
 
 
-// //  //  //   //  //          CHANGE ITEM STATUS   //  //  //  //  //  //  //
+//* //  //  //   //  //          CHANGE ITEM STATUS   //  //  //  //  //  //  //
 
 export const changeItemStatus = async (req,res) => {
   try{
@@ -94,7 +94,7 @@ export const changeItemStatus = async (req,res) => {
   }
 }
 
-// //  //  //   //  //        get Order Details   //  //  //  //  //  //  //
+//* //  //  //   //  //        get Order Details   //  //  //  //  //  //  //
 
 export const getOrderDetails = async (req,res) => {
   try{

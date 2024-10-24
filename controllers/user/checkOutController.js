@@ -5,7 +5,7 @@ import productModel from '../../models/Product.js';
 
 
 
-// //  //  //   //  //          get Checkout page     //  //  //  //  //  //  //
+//* //  //  //   //  //          get Checkout page     //  //  //  //  //  //  //
 export const getCheckoutPage = async (req, res) => {
   try {
     // Get the user's cart
@@ -40,7 +40,7 @@ export const getCheckoutPage = async (req, res) => {
 };
 
 
-// //  //  //   //  //         Placing a Order in checkout     //  //  //  //  //  //  //
+//* //  //  //   //  //         Placing a Order in checkout     //  //  //  //  //  //  //
 
 export const postOrder = async (req, res) => {
   try {
@@ -103,7 +103,7 @@ export const postOrder = async (req, res) => {
 };
 
   
-// //  //  //   //  //         Add New Address     //  //  //  //  //  //  //
+//* //  //  //   //  //         Add New Address     //  //  //  //  //  //  //
 export const addNewAddress = async (req, res) => {
   try {
     const { name, buildingName, street, city, state, country, pincode, mobile } = req.body;

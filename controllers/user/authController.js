@@ -7,7 +7,7 @@ import productModel from '../../models/Product.js'
 import  {calculateDiscountPrice  } from '../../utils/discountprice.js'
 
 
-// //  //  //   //  //          getting Login page     //  //  //  //  //  //  //
+//* //  //  //   //  //          getting Login page     //  //  //  //  //  //  //
 
 export const  getLogin=async(req,res)=>{  
  
@@ -19,7 +19,7 @@ export const  getLogin=async(req,res)=>{
   }
 }
 
-// //  //  //   //  //          POST LOGIN     //  //  //  //  //  //  //
+//* //  //  //   //  //          POST LOGIN     //  //  //  //  //  //  //
 
 export const postLogin=async(req,res)=>{                                                     
   try{
@@ -71,7 +71,7 @@ res.redirect('/home')
   }
 }
 
-  // //  //  //   //  //      GET user Home Page            //  //  //  //  //  //  //
+  //* //  //  //   //  //      GET user Home Page            //  //  //  //  //  //  //
 
 export const getHome=async (req,res)=> {                                     
   try{
@@ -83,7 +83,7 @@ export const getHome=async (req,res)=> {
   }
 }
 
-// //  //  //   //  //          getting Signup page     //  //  //  //  //  //  //
+//* //  //  //   //  //          getting Signup page     //  //  //  //  //  //  //
 
 export const getSignup=async (req,res)=> {                                
   try{
@@ -94,7 +94,7 @@ export const getSignup=async (req,res)=> {
   }
 }
 
-// //  //  //   //  //          POST SIGNUP          //  //  //  //  //  //  //
+//* //  //  //   //  //          POST SIGNUP          //  //  //  //  //  //  //
 
 export const postSignup=async(req,res)=>{                                           
   try{
@@ -155,7 +155,7 @@ export const postSignup=async(req,res)=>{
   }
 }
 
-// //  //  //   //  //        Get  VERIFY OTP          //  //  //  //  //  //  //
+//* //  //  //   //  //        Get  VERIFY OTP          //  //  //  //  //  //  //
 
 export const getverifyOTP=(req,res)=>{
   try{
@@ -169,7 +169,7 @@ export const getverifyOTP=(req,res)=>{
 }
 
 
-// //  //  //   //  //        Post   VERIFY OTP          //  //  //  //  //  //  //
+//* //  //  //   //  //        Post   VERIFY OTP          //  //  //  //  //  //  //
 
 export const postverifyOTP=async (req,res)=>{                                                         
   try{
@@ -218,7 +218,7 @@ export const postverifyOTP=async (req,res)=>{
   }
 }
 
-// //  //  //   //  //          resend OTP          //  //  //  //  //  //  //
+//* //  //  //   //  //          resend OTP          //  //  //  //  //  //  //
 
 export const resendOTP=async (req,res)=>{                                                         
   try{
@@ -261,7 +261,7 @@ export const resendOTP=async (req,res)=>{
   }
 }
 
-// //  //  //   //  //          logout          //  //  //  //  //  //  //
+//* //  //  //   //  //          logout          //  //  //  //  //  //  //
 
 export const postLogout=async (req,res) => {                                    //logout
   req.session.destroy((error)=>{                                               //destroy session
@@ -275,7 +275,7 @@ export const postLogout=async (req,res) => {                                    
 }
 
 
-// //  //  //   //  //          get home page          //  //  //  //  //  //  //
+//* //  //  //   //  //          get home page          //  //  //  //  //  //  //
 
 export const getlandingPage=async(req,res)=>{
 

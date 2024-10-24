@@ -1,5 +1,6 @@
 import userModel from '../../models/User.js'
 
+//* //  //  //   //  //          GET USER LIST PAGE   //  //  //  //  //  //  //
 export const getUserList=async (req,res)=> {
   try{
     const page=parseInt(req.query.page) || 1
@@ -23,6 +24,8 @@ export const getUserList=async (req,res)=> {
   }
 }
 
+
+//* //  //  //   //  //          BLOCK USER   //  //  //  //  //  //  //
 export const blockUser=async (req,res)=>{                                                     //block user
   try{
     const userId=req.params.id                                                                //get user id from url
@@ -41,6 +44,7 @@ export const blockUser=async (req,res)=>{                                       
   }
 }
 
+//* //  //  //   //  //          SEARCH USER   //  //  //  //  //  //  //
 export const searchUser=async(req,res)=>{
   try{
     const {search=""}=req.query
