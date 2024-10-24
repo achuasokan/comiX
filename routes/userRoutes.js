@@ -1,8 +1,7 @@
 import express from "express";
 
 import isUser  from "../middleware/userMiddleware.js";                                      
-import checkUserSession from '../middleware/checkUserSession.js'
-import passport from "passport";                                                          
+import checkUserSession from '../middleware/checkUserSession.js'                                                         
 import * as userControl from '../controllers/user/authController.js'                         
 import * as productControl from '../controllers/user/productController.js'
 import * as passwordControl from '../controllers/user/passwordController.js'
@@ -51,18 +50,6 @@ router.post('/resendOTP',passwordControl.postresendOTP)
 router.route('/resetPassword')
     .get(passwordControl.getResetPassword)
     .post(passwordControl.postResetPassword)
-
-
-//^  //  //  //  //  //  //               Google Auth Routes                 //  //  //  //  //  //  //
-
-router.get('/auth/google',passport.authenticate('google',{scope:['profile','email'] } ) )                 //google login
-
-router.get('/auth/google/callback',passport.authenticate('google',{failureRedirect:'/login'}),    
-(req,res)=>{
-  res.redirect('/home')
-})
-
-
 
 
 //^  //  //  //  //  //  //               Landing page Routes              //  //  //  //  //  //  //
