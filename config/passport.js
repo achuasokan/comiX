@@ -11,28 +11,28 @@ passport.use(new GoogleStrategy({                                               
   callbackURL: process.env.GOOGLE_CALLBACK_URL                                            //  google callback url
 
 },
-async(acessToken,refreshToken,profile,done)=>{                                                                // google callback
+async(accessToken,refreshToken,profile,done)=>{                                                                // google callback
   try{
-    console.log(1);
-    let user=await userModel.findOne({email:profile.emails[0].value})                     // find user
-    console.log(`user found ${user}`);
+    const user = await userModel.findOne({ email: profile.emails[0].value })
 
-    if(!user){
-      console.log(`entered not user`);
-      user=await userModel.create({                                                       // create user
-        googleId:profile.id,
-        name:profile.displayName,                                                         // user name
-        email:profile.emails[0].value                                                     // user email
-      });
-      console.log(`user created`,user);
+    if(user) {
+      if(!user.googleId) {
+        user.googleId = profile.id;
+        await user.save();
+      }
+      done(null, user)
+    } else {
+      const newUser = await userModel.create({
+        googleId: profile.id,
+        name: profile.displayName,
+        email: profile.emails[0].value,
+      })
+      done(null, newUser)
     }
-    done(null,user)
-  }catch(error){
-    done(error,null)
+  }catch (error) {
+    done(error, null)
   }
-}
-
-));
+}));
 
 passport.serializeUser((user,done)=>{                                                         // serialize user
   done(null,user.id)
