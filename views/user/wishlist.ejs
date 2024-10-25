@@ -16,10 +16,10 @@
                 <p class="text-gray-400 mb-1"><%= product.category.name %></p>
                 
                 <div class="flex items-center gap-4 w-full mt-2">
-                  <% if (product.discount > 0) { %>
-                    <!-- <span class="text-lg text-white font-bold">₹<%= product.discount %></span> -->
+                  <% if (product.discountedPrice < product.price) { %>
+                    <span class="text-lg text-white font-bold">₹<%= product.discountedPrice %></span>
                     <p class="text-sm font-semibold text-white line-through">₹<%= product.price %></p>
-                    <span class="text-sm text-yellow-500 font-bold"><%= product.discount %>% OFF</span>
+                    <span class="text-sm text-yellow-500 font-bold"><%= Math.round(((product.price - product.discountedPrice) / product.price) * 100) %> % OFF</span>
                   <% } else { %>
                     <p class="text-lg font-semibold text-white">₹<%= product.price %></p>
                   <% } %>
@@ -31,11 +31,11 @@
                 <!-- Form for deleting the product -->
                 <form action="/wishlist/delete/<%= product._id %>" method="POST" class="inline">
                   <button type="button" class="text-red-500 hover:text-red-700" onclick="openModal('<%= product._id %>')">
-                    <i class="fas fa-trash"></i> <!-- Font Awesome icon for delete -->
+                    <i class="fas fa-trash"></i> 
                   </button>
                 </form>
                 <button onclick="addToCart('<%= product._id %>')"  class="text-black">
-                  <i class="fas fa-cart-plus"></i>
+                  <i class="fas fa-cart-plus text-yellow-500" ></i>
                 </button>
                 
               </div>
