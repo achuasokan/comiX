@@ -43,7 +43,7 @@ export const getProductsByCategory = async (req,res)=> {
     //find the products by category id and populate the category details
     const product = await productModel
     .find({category: categoryId,isDeleted:false})
-    .populate('category')
+    .populate('category', 'name')
     .sort(sortCriteria)
     .skip(skip)
     .limit(limit)
@@ -89,7 +89,7 @@ export const getProductDetail = async (req,res) => {
     const productId=req.params.id
 
     //find the product by its id and populate the category details
-    const product = await productModel.findById(productId).populate('category').populate('reviews.userId', 'name')
+    const product = await productModel.findById(productId).populate('category', 'name').populate('reviews.userId', 'name')
 
     //if the product is not found, return a 404 error
     if(!product){
@@ -100,7 +100,7 @@ export const getProductDetail = async (req,res) => {
     product.discountedPrice = await calculateDiscountPrice(product)
 
     //find related products by category and limit the results to 4 and also not showing the current product card on the list
-    const relatedProducts = await productModel.find({category:product.category, _id:{$ne:productId}}).populate('category').limit(4)
+    const relatedProducts = await productModel.find({category:product.category, _id:{$ne:productId}}).populate('category', 'name').limit(4)
 
     for(let products of relatedProducts) {
       products.discountedPrice = await calculateDiscountPrice(products)
@@ -179,7 +179,7 @@ export const getAllProductPage = async (req, res) => {
     // Fetch all products based on the filter
     const products = await productModel
       .find(filterOption)
-      .populate("category")
+      .populate("category", "name")
       .lean();
 
     // Calculate discounted price for all products
