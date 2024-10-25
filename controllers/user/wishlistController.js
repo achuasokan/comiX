@@ -1,6 +1,5 @@
 import wishListModel from '../../models/wishlist.js'
-import userModel from '../../models/User.js'
-import productModel from '../../models/Product.js'
+import { calculateDiscountPrice } from '../../utils/discountprice.js'
 
 
 
@@ -14,11 +13,15 @@ export const getWishListPage = async(req,res) => {
     const wishlist = await wishListModel.findOne({ user: userId })
       .populate({
         path: 'productsId',
-        populate: { path: 'category', select: 'name' } 
+        populate: {path: 'category', select: 'name' }
       });
   //if the wishlist is not found, render the wishlist page with an empty wishlist
       if(!wishlist){
         return res.render('user/wishlist',{wishlist:{productsId:[]}})
+      }
+
+      for (let product of wishlist.productsId) {
+        product.discountedPrice = await calculateDiscountPrice(product);
       }
   
     res.render('user/wishlist', { wishlist });
