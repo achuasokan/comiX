@@ -11,9 +11,9 @@ export const getCheckoutPage = async (req, res) => {
     // Get the user's cart
     const cart = await cartModel.findOne({ user: req.session.userID }).populate('items.product');
 
-    if(!cart || cart.items.length === 0){
-      return res.status(400).json({error:'Your cart is empty. Please add items to your cart before proceeding to checkout.'})
-    }
+    // if(!cart || cart.items.length === 0){
+    //   return res.status(400).json({error:'Your cart is empty. Please add items to your cart before proceeding to checkout.'})
+    // }
     
     const outOfStockItems = cart.items.filter(item => item.product.stock < item.quantity)
     if(outOfStockItems.length > 0){      
