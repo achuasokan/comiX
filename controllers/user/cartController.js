@@ -66,9 +66,9 @@ export const addToCart = async (req,res) => {
       const newQuantity = cart.items[itemIndex].quantity + quantity
 
      
-      if(newQuantity > product.stock) {
-        return res.status(400).send({message: "Not enough stock available"})
-      }
+      // if(newQuantity > product.stock) {
+      //   return res.status(400).send({message: "Not enough stock available"})
+      // }
 
       if (newQuantity > 5) {
         return res.status(400).json({ message: " You cannot add more than 5 of the same item to your cart." });
