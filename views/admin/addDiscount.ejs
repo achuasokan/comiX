@@ -24,7 +24,8 @@
 
      <div class="mb-4">
        <label class="block text-gray-300">Discount Value:</label>
-       <input type="number" id="discountValue" name="discountValue" required class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4" >
+       <input type="text" id="discountValue" name="discountValue" required class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4" >
+       <p id="discountValueError" class="text-red-500 text-sm" aria-live="assertive"></p>
      </div>
 
      <div id="productSelect" class="mb-4 hidden">
@@ -57,9 +58,55 @@
 </div>
 <script>
  // Toggle between product and category options based on discount type
- document.querySelector('select[name="discountType"]').addEventListener('change', function() {
+document.addEventListener('DOMContentLoaded', () => {
+
+  const form = document.getElementById('add-discount-form');
+  if(form) {
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+      const isValid = validateForm();
+      if(isValid) {
+        this.submit();
+      } else {
+        console.log('Form submission prevented due to validation errors.');
+      }
+    })
+
+    document.getElementById('discountValue').addEventListener('input', () => validateField('discountValue'))
+  }
+
+  function validateForm(){
+    const fields = ['discountValue'];
+    let isvalid = true;
+
+    fields.forEach(field => {
+      if(!validateField(field)) {
+        isvalid = false;
+      }
+    })
+    return isvalid;
+  }
+
+  function validateField(fieldname) {
+    const field = document.getElementById(fieldname)
+    const errorElement = document.getElementById(`${fieldname}Error`)
+    let isValid = true;
+
+    switch(fieldname) {
+      case 'discountValue':
+        const discountValue = field.value.trim();
+        isValid = /^\d+$/.test(discountValue) && parseInt(discountValue) >= 1;
+        errorElement.textContent = isValid ? '' : 'Discount value should be a number and must be greater than zero';
+    }
+    return isValid;
+  }
+
+
+  document.querySelector('select[name="discountType"]').addEventListener('change', function() {
    const discountType = this.value;
    document.getElementById('productSelect').style.display = (discountType === 'product') ? 'block' : 'none';
    document.getElementById('categorySelect').style.display = (discountType === 'category') ? 'block' : 'none';
  });
+})
+
  </script>
