@@ -24,7 +24,7 @@ export const getWishListPage = async(req,res) => {
         product.discountedPrice = await calculateDiscountPrice(product);
       }
   
-    res.render('user/wishlist', { wishlist });
+    res.render('user/wishlist',{ wishlist });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal server error" });
@@ -52,7 +52,8 @@ export const addToWishlist = async (req, res) => {
       { upsert: true } // Create a new wishlist if one doesn't exist
     );
 
-    res.redirect('/wishlist'); 
+    //  
+    res.status(200).json({message: 'Added to your wishlist'});
   } catch (error) {
     console.log(error);
     res.status(500).send('Error adding product to wishlist');
@@ -64,7 +65,7 @@ export const addToWishlist = async (req, res) => {
 export const removeFromWishlist = async (req, res) => {
   try {
     const userId = req.session.userID; 
-    const product = req.params.id; 
+    const product = req.params.productId; 
 
     
     await wishListModel.updateOne(
@@ -72,7 +73,8 @@ export const removeFromWishlist = async (req, res) => {
       { $pull: { productsId: product } } // Remove the product from the wishlist
     );
 
-    res.redirect('/wishlist'); 
+    // res.redirect('/wishlist'); 
+    res.status(200).json({message: 'Removed from your wishlist'});
   } catch (error) {
     console.log(error);
     res.status(500).send('Error removing product from wishlist');
