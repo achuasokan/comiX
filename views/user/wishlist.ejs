@@ -7,7 +7,7 @@
       <div class="max-w-6xl mx-auto px-4">
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           <% wishlist.productsId.forEach(product => { %>
-            <div class="bg-gray-900 p-4 rounded-lg shadow-lg transition-transform transform hover:scale-105 flex flex-col justify-between h-full">
+            <div id="product-<%= product._id %>" class="bg-gray-900 p-4 rounded-lg shadow-lg transition-transform transform hover:scale-105 flex flex-col justify-between h-full">
               <div class="flex flex-col items-start">
                 <a href="/product/<%= product._id %>" class="w-full">
                   <img src="<%= product.image[1] %>" alt="<%= product.name %>" class="w-full h-40 object-cover rounded-lg mb-2">
@@ -29,11 +29,11 @@
               <!-- Action Buttons -->
               <div class="flex justify-between mt-4">
                 <!-- Form for deleting the product -->
-                <form action="/wishlist/delete/<%= product._id %>" method="POST" class="inline">
+               
                   <button type="button" class="text-red-500 hover:text-red-700" onclick="openModal('<%= product._id %>')">
                     <i class="fas fa-trash"></i> 
                   </button>
-                </form>
+                
                 <button onclick="addToCart('<%= product._id %>')"  class="text-black">
                   <i class="fas fa-cart-plus text-yellow-500" ></i>
                 </button>
@@ -81,11 +81,33 @@
   }
 
   document.getElementById('confirmDelete').onclick = function() {
-    // Create a form dynamically to submit the delete request
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = '/wishlist/delete/' + productIdToDelete;
-    document.body.appendChild(form);
-    form.submit(); // Submit the form
+  fetch(`/wishlist/delete/${productIdToDelete}`, {
+    method: 'DELETE'
+  })
+.then(response => response.json())
+.then(data => {
+  if (data.message) {
+    document.getElementById(`product-${productIdToDelete}`).remove();
+    closeModal();
+    showToast(data.message, 'green');
+  //  location.reload()
+  } else {
+    throw new Error('Failed to remove product from wishlist');
+  }
+})
+.catch(error => {
+  console.error('Error removing product from wishlist:', error);
+  showToast('An error occurred while removing the product');
+})
   };
+
+  function showToast(message, color) {
+    Toastify({
+      text: message,
+      duration: 3000,
+      gravity: 'bottom',
+      position: 'center',
+      backgroundColor: color,
+    }).showToast();
+  }
 </script>
