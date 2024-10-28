@@ -96,7 +96,7 @@ router.get('/wishlist',isUser,wishlistControl.getWishListPage)
 
 router.post('/wishlist/:productId',isUser,wishlistControl.addToWishlist)
 
-router.post('/wishlist/delete/:id',isUser,wishlistControl.removeFromWishlist)
+router.delete('/wishlist/delete/:productId',isUser,wishlistControl.removeFromWishlist)
 
 //^  //  //  //  //  //  //               Cart Routes               //  //  //  //  //  //  //
 
