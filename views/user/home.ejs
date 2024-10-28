@@ -73,8 +73,8 @@
                         
                         <div class="ml-auto flex items-center gap-3">
                           <% if(user) { %>
-                            <form action="/wishlist/<%= products._id %>" method="POST">
-                              <button type="submit" class="text-black">
+                            <form action="/wishlist/<%= products._id %>" method="POST" class="wishlist-form">
+                              <button type="submit" class="text-black wishlist-button" data-product-id="<%= products._id %>" data-in-wishlist="<%=products.Wishlist %>">
                                 <i class="fas fa-heart"></i>
                               </button>
                             </form>
