@@ -54,22 +54,35 @@ export const addDiscount = async (req,res) => {
   try{
     
     const {discountType, discountValue,product,category} =req.body
+
+    const errors = [];
+
+    const discountValues = parseInt(discountValue);
+    if(isNaN(discountValues) || discountValues <= 0 || discountValues.toString().length !== discountValue) {
+      errors.push('Discount value must be a number greater than zero.')
+    }
+
+    
     
     if(discountType === 'product'){
       const existingDiscount = await discountModel.findOne({product})
       if(existingDiscount){
-        req.flash('error', 'A discount already exists for this product.')
-        return res.status(400).redirect(`/admin/addDiscount`)
+       errors.push('A discount already exists for this product.')
       }
     }
 
     if(discountType === 'category'){
       const existingDiscount = await discountModel.findOne({category})
       if(existingDiscount){
-        req.flash('error', 'A discount already exists for this category.')
-        return res.status(400).redirect(`/admin/addDiscount`)
+       errors.push('A discount already exists for this category.')
       }
     }
+
+    if(errors.length > 0) {
+      req.flash('error', errors)
+      return res.status(400).redirect('/admin/addDiscount')
+    }
+
 
     const newDiscount = new discountModel({
       discountType,
@@ -140,9 +153,7 @@ export const postEditDiscount = async (req,res) => {
       await categoryModel.findByIdAndUpdate(category, { discount: discountId });
     }
 
-   
     res.redirect("/admin/discounts")
-
   }catch(error) {
     console.log("error in editDiscount", error);
     res.status(500).send("Internal server error")
