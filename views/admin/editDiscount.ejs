@@ -8,37 +8,40 @@
 <h1 class="text-2xl font-semibold mb-4 text-gray-200">Edit Discount</h1>
 <form action="/admin/editDiscount/<%=discount._id%>" method="POST" id="edit-discount-form" class="bg-[#242526] p-6 rounded shadow-md">
 
+  <%- include('../partials/flashMessage.ejs') %>
+
  <div class="mb-4">
    <label class="block text-gray-300">Discount Type:</label>
-   <select id="discountTypes" name="discountType" value="<%=discount.discountType %>"class="input w-full bg-[#1f1f1f] text-white border border-gray-600 rounded-md p-2 mb-4">
+   <select id="discountTypes" name="discountType" class="input w-full bg-[#1f1f1f] text-white border border-gray-600 rounded-md p-2 mb-4">
      <option value="">Select Option</option>
-     <option value="product">Product</option>
-     <option value="category">Category</option>
+     <option value="product" <%= discount.discountType === 'product' ? 'selected' : '' %>>Product</option>
+     <option value="category" <%= discount.discountType === 'category' ? 'selected' : '' %>>Category</option>
    </select>
  </div>
 
  <div class="mb-4">
    <label class="block text-gray-300">Discount Value:</label>
-   <input type="number" id="discountValue" name="discountValue" value="<%=discount.discountValue %>" required class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4" >
+   <input type="text" id="discountValue" name="discountValue" value="<%=discount.discountValue %>" required class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4" >
+   <p id="discountValueError" class="text-red-500 text-sm"aria-live="assertive"></p>
  </div>
 
- <div id="productSelect" class="mb-4 hidden">
+ <div id="productSelect" class="mb-4 <%= discount.discountType === 'product' ? '' : 'hidden' %>">
    <label class="block text-gray-300">Product:</label>
-   <select id="product" name="product" value="<%=discount.product %>" class="input w-full bg-[#1f1f1f] text-white border border-gray-600 rounded-md p-2 mb-4">
+   <select id="product" name="product" class="input w-full bg-[#1f1f1f] text-white border border-gray-600 rounded-md p-2 mb-4">
      <option value="">Select Option</option>
      <% productList.forEach((product) => { %>
-       <option value="<%= product._id %>"><%= product.name %></option>
-       <% }); %>
+       <option value="<%= product._id %>" <%= discount.product && discount.product._id.toString() === product._id.toString() ? 'selected' : '' %>><%= product.name %></option>
+     <% }); %>
    </select>
  </div>
 
- <div id="categorySelect" class="mb-4 hidden">
+ <div id="categorySelect" class="mb-4 <%= discount.discountType === 'category' ? '' : 'hidden' %>">
    <label class="block text-gray-300">Category:</label>
-   <select id="category" name="category" value="<%=discount.category %>" class="input w-full bg-[#1f1f1f] text-white border border-gray-600 rounded-md p-2 mb-4">
+   <select id="category" name="category" class="input w-full bg-[#1f1f1f] text-white border border-gray-600 rounded-md p-2 mb-4">
      <option value="">Select Option</option>
      <% categoryList.forEach((category) => { %>
-       <option value="<%= category._id %>"><%= category.name %></option>
-       <% }); %>
+       <option value="<%= category._id %>" <%= discount.category && discount.category._id.toString() === category._id.toString() ? 'selected' : '' %>><%= category.name %></option>
+     <% }); %>
    </select>
  </div>
 
@@ -51,9 +54,55 @@
 
 <script>
 // Toggle between product and category options based on discount type
+document.addEventListener('DOMContentLoaded', () => {   
+
+const form = document.getElementById('edit-discount-form');
+if(form) {
+  form.addEventListener('submit', function(event) {
+    event.preventDefault();
+    const isValid = validateForm();
+    if(isValid) {
+      this.submit();
+    } else {
+      console.log('Form submission prevented due to validation errors.');
+    }
+  });
+
+
+  document.getElementById('discountValue').addEventListener('input', () => validateField('discountValue'))
+}
+
+function validateForm() {
+  const fields = ['discountValue'];
+  let isValid = true;
+
+  fields.forEach(field => {
+    if(!validateField(field)) {
+      isValid = false;
+    }
+  });
+  return isValid;
+}
+
+function validateField(fieldName) {
+  const field = document.getElementById(fieldName);
+  const errorElement = document.getElementById(`${fieldName}Error`);
+  let isValid = true;
+
+  switch(fieldName) {
+    case 'discountValue':
+      const discountValue = field.value.trim();
+      isValid=/^\d+$/.test(discountValue) && parseInt(discountValue) >=1;
+      errorElement.textContent =isValid ? '' : 'Discount value should be a number and must be greater than zero'
+  }
+  return isValid;
+}
+
 document.querySelector('select[name="discountType"]').addEventListener('change', function() {
- const discountType = this.value;
- document.getElementById('productSelect').style.display = (discountType === 'product') ? 'block' : 'none';
- document.getElementById('categorySelect').style.display = (discountType === 'category') ? 'block' : 'none';
+  const discountType = this.value;
+  document.getElementById('productSelect').style.display = (discountType === 'product') ? 'block' : 'none';
+  document.getElementById('categorySelect').style.display = (discountType === 'category') ? 'block' : 'none';
 });
+});
+
 </script>
