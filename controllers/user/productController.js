@@ -177,10 +177,13 @@ export const getAllProductPage = async (req, res) => {
     }
 
     // Fetch all products based on the filter
-    const products = await productModel
+    let products = await productModel
       .find(filterOption)
-      .populate("category", "name")
+      .populate("category")
       .lean();
+
+       products = products.filter(document => !document.category.isBlocked);
+      
 
     // Calculate discounted price for all products
     for (let product of products) {
