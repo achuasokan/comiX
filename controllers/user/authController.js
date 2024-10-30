@@ -285,7 +285,9 @@ export const getlandingPage=async(req,res)=>{
     const categorylist=await categoryModel.find({isBlocked:false}).sort({createdAt:-1})
 
     //find the latest product and populate the category details and sort them by createdAt in descending order and limit the result to 12
-    const latestproduct=await productModel.find({isDeleted:false}).populate('category','name').sort({createdAt:-1}).limit(12)
+    let latestproduct=await productModel.find({isDeleted:false}).populate('category').sort({createdAt:-1}).limit(12)
+
+    latestproduct = latestproduct.filter(document => !document.category.isBlocked);
 
     for (let product of latestproduct) {
       product.discountedPrice = await calculateDiscountPrice(product);
