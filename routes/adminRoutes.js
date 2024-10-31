@@ -7,6 +7,7 @@ import * as userController from '../controllers/admin/userController.js'
 import adminMiddleware from '../middleware/adminMiddleware.js'                                     
 import * as discountController from "../controllers/admin/discountController.js"
 import * as orderController from '../controllers/admin/orderController.js'
+import * as couponController from '../controllers/admin/couponController.js'
 import upload from '../middleware/multerMiddleware.js'
 
 const router=express.Router()
@@ -47,13 +48,15 @@ router.get('/editCategory/:id',adminMiddleware.isAdmin,categoryController.getEdi
 
 router.post('/editCategory/:id',upload.single('image'),adminMiddleware.isAdmin,categoryController.postEditCategory)
 
-router.post('/blockcategory/:id',adminMiddleware.isAdmin,categoryController.blockCategory)
+router.post('/blockCategory/:id',adminMiddleware.isAdmin,categoryController.blockCategory)
 
 router.get('/searchCategory',adminMiddleware.isAdmin,categoryController.searchCategory)
 
+router.delete('/deleteCategory/:id',adminMiddleware.isAdmin,categoryController.deleteCategory)
 
 
-//^  //  //  //  //  //  //                Productroutes                //  //  //  //  //  //  //
+
+//^  //  //  //  //  //  //                ProductRoutes                //  //  //  //  //  //  //
 
 router.get('/products',adminMiddleware.isAdmin,productController.getProduct)
 
@@ -94,6 +97,27 @@ router.get('/orders',adminMiddleware.isAdmin,orderController.getOrderListPage)
 router.post('/orders/:orderId/:itemId/change-status',adminMiddleware.isAdmin,orderController.changeItemStatus)
 
 router.get('/orders/:orderId/details',adminMiddleware.isAdmin,orderController.getOrderDetails)
+
+
+
+//^  //  //  //  //  //  //                 Coupon routes                    //  //  //  //  //  //  //
+
+router.get('/coupons',adminMiddleware.isAdmin,couponController.getCouponListPage)
+
+router.route('/addCoupon')
+    .get(adminMiddleware.isAdmin,couponController.addCouponPage)
+    .post(adminMiddleware.isAdmin,couponController.postAddCoupon)
+
+router.get('/editCoupon/:id',adminMiddleware.isAdmin,couponController.getEditCouponPage)
+
+router.post('/editCoupon/:id',adminMiddleware.isAdmin,couponController.postEditCoupon)
+
+router.post('/deleteCoupon/:id',adminMiddleware.isAdmin,couponController.deleteCoupon)
+
+
+
+
+
 
 export default router
 
