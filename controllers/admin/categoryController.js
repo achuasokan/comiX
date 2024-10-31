@@ -7,8 +7,8 @@ import mongoose from 'mongoose'
 
 export const getCategory=async (req,res) => {                                                //admin category page
   try{
-    const categorylist=await categoryModel.find({})                                       //get all category from database
-    res.render('admin/category',{categorylist})                                                        //render category page
+    const categoryList=await categoryModel.find({})                                       //get all category from database
+    res.render('admin/category',{categoryList})                                                        //render category page
   }catch(message){
     console.log(message);
     res.status(500)  
@@ -43,7 +43,7 @@ export const postAddCategory=async (req,res)=>{                                 
   }
 
   if (!file) {
-    errors.push("Please upload atleast one image")
+    errors.push("Please upload at least one image")
   } else {
     const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp', 'image/svg+xml'];
     if (!allowedTypes.includes(file.mimetype)) {
@@ -136,7 +136,7 @@ export const postEditCategory = async (req, res) => {
     }
 
     if(!file && !existingImage) {
-      errors.push("Please upload atleast one image");
+      errors.push("Please upload at least one image");
     } else {
       const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp', 'image/svg+xml'];
       if (!allowedTypes.includes(file.mimetype)) {
@@ -195,12 +195,12 @@ export const postEditCategory = async (req, res) => {
 
 export const deleteCategory=async(req,res)=>{
   try{
-    const id=req.query.id
-    const categorydelete=await categoryModel.deleteOne({_id:id})
-    res.redirect('/admin/category')
+    const id=req.params.id
+    const categoryDelete=await categoryModel.deleteOne({_id:id})
+    res.status(200).json({message:"Category deleted successfully"})
   }catch(error){
     console.log(error);
-    
+    res.status(500).json({message:"Internal server error in delete category"})
   }
 }
 
@@ -228,8 +228,8 @@ export const blockCategory=async(req,res)=>{
 export const searchCategory=async(req,res)=>{
   try{
     const {search=""}=req.query
-    const categorylist=await categoryModel.find({name:{$regex:"^"+search,$options:"i"}})
-    res.render("admin/category",{categorylist})
+    const categoryList=await categoryModel.find({name:{$regex:"^"+search,$options:"i"}})
+    res.render("admin/category",{categoryList})
   }catch(error){
     console.log(error);
     res.status(500).send("Internal Server Error")
