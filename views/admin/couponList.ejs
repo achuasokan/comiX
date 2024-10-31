@@ -1,0 +1,92 @@
+<div class="bg-[#18191a] text-gray-200 m-0 p-0 flex flex-col md:flex-row min-h-screen">
+<!--Sidebar  -->
+<%- include('./sidebar.ejs') %>
+<!--Sidebar end  -->
+
+
+
+
+<!-- Main content -->
+<div class="flex flex-col flex-grow w-full md:w-auto">
+  <!-- Navbar -->
+  <nav class="bg-[#18191a] h-11 shadow-md flex items-center justify-center px-6 sticky top-0 ">
+    <form action="/admin/Coupons" method="GET" class="relative w-2/5">
+      <input type="text" name="search" placeholder="Search orders" class="bg-[#242526] text-gray-200 text-sm px-4 py-2 rounded-full w-full pr-10 focus:outline-none focus:ring-2 focus:ring-gray-500">
+      <button class="absolute right-2 top-1/2 transform -translate-y-1/2" aria-label="Search">
+        <i class="fas fa-search text-gray-400"></i>
+      </button>
+    </form>
+   </nav>
+   <!-- Navbar end -->
+
+
+   <div class="flex-grow p-6 overflow-y-auto">
+    <div class="flex justify-end items-center">
+      <a href="/admin/addCoupon" class="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-1 px-2 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110">  
+          Add New Coupon      
+      </a>
+    </div>
+    <div class="mt-8">
+      <h2 class="text-2xl font-bold text-white mb-6">Coupons</h2>
+      <div class="bg-[#242526] rounded-lg shadow-lg overflow-x-auto">
+        <table class="min-w-full text-sm text-left text-gray-300">
+          <!-- table head -->
+          <thead class="text-xs bg-[#1f1f1f] text-orange-500 text-center">
+            <tr>
+              <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">SI</th>
+              <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Coupon Code</th>
+              <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Discount Type</th>
+              <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Discount Value</th>
+              <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Min Spend</th>
+              <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tacking-wider">Usage Limit</th>
+              <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Usage Count</th>
+              <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Start Date</th>
+              <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Expiry Date</th>
+              <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Product/Category</th>
+              
+              <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- table body -->
+             <% couponList.forEach((coupons,index) => { %>
+              <tr class="border-b border-[#3a3a3a] hover:bg-[#2a2a2a] transition-colors duration-200">
+                <td class="px-6 py-4 whitespace-nowrap font-medium text-center"><%=index + 1%></td>
+                <td class="px-6 py-4 whitespace-nowrap font-medium text-center"><%=coupons.couponCode%></td>
+                <td class="px-6 py-4 whitespace-nowrap font-medium text-center"><%=coupons.discountType%></td>
+                <td class="px-6 py-4 whitespace-nowrap font-medium text-center"><%=coupons.discountValue%></td>
+                <td class="px-6 py-4 whitespace-nowrap font-medium text-center"><%=coupons.minSpend%></td>
+                <td class="px-6 py-4 whitespace-nowrap font-medium text-center"><%=coupons.usageLimit%></td>
+                <td class="px-6 py-4 whitespace-nowrap font-medium text-center"><%=coupons.usedCount%></td>
+                <td class="px-6 py-4 whitespace-nowrap font-medium text-center"><%=coupons.startDate.toLocaleDateString()%></td>
+                <td class="px-6 py-4 whitespace-nowrap font-medium text-center"><%=coupons.expiryDate.toLocaleDateString()%></td>
+                <td class="px-6 py-4 whitespace-nowrap font-medium text-center truncate <%= coupons.applicableType === 'category' ? 'text-blue-600' : '' %> <%= coupons.applicableType === 'all' ? 'text-green-500' : '' %>">
+                  <%= 
+                    coupons.applicableType === 'product' && coupons.applicableProduct ? coupons.applicableProduct.name : 
+                    coupons.applicableType === 'category' && coupons.applicableCategory ? coupons.applicableCategory.name : 
+                    coupons.applicableType === 'all' ? 'All Products' : 'N/A' 
+                  %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap font-medium text-center flex items-center justify-center space-x-1">
+                  <a href="/admin/editCoupon/<%=coupons._id %>">
+                    <button class="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded-lg" type="button">Edit</button>
+                  </a>
+                  <form action="/admin/deleteCoupon/<%=coupons._id %>" method="POST">
+                    <button class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-lg">Delete</button>
+                  </form>
+                </td>
+               </tr>
+             <% }) %>
+            
+          </tbody>
+        </table>
+      </div>
+    </div>
+   </div>
+
+</div>
+<!-- last body ended -->
+</div>
+
+
+
