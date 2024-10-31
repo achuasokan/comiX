@@ -56,7 +56,7 @@
           </thead>
 
           <tbody>
-            <%categorylist.forEach((category,index)=>{%>
+            <%categoryList.forEach((category,index)=>{%>
 
             <tr class="border-b border-[#3a3a3a] hover:bg-[#2a2a2a] transition-colors duration-200 text-center">
               <td class="px-6 py-4 font-medium text-lg"><%=index+1%></td>
@@ -75,6 +75,8 @@
                       <%= category.isBlocked ? 'Unblock' : 'Block' %>
                     </button>
                   </form>
+
+                  <button class="min-w-[80px] px-4 py-2 font-medium text-white bg-gradient-to-r from-blue-500 to-orange-600 hover:from-blue-600 hover:to-red-700 rounded-lg transition duration-200" onclick="confirmDelete('<%= category._id %>')">Delete</button>
                 </div> 
               </td>
             </tr>
@@ -94,5 +96,44 @@
 </div>
 
 </div>
-
-  
+<script>
+  function confirmDelete(id) {
+      Swal.fire({
+          title: 'Are you sure?',
+          text: 'You want to delete this category',
+          iconHtml:'<i class="fas fa-trash-alt text-red-500"></i>',
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6", 
+          cancelButtonColor: "#d33",
+          confirmButtonText: 'Yes, delete it!',
+          cancelButtonText: 'No, keep it',
+          customClass: {
+            popup: 'bg-gray-900 text-white rounded-lg shadow-lg md:p-6', 
+            title: 'md:text-xl text-lg font-bold', 
+            content: 'md:text-xl text-sm mb-4',
+            confirmButton: 'bg-green-600 text-white rounded-lg px-4 py-2 hover:bg-green-700 transition duration-200 ease-in-out', 
+            cancelButton: 'bg-red-600 text-white rounded-lg px-4 py-2 hover:bg-red-700 transition duration-200 ease-in-out', 
+          }
+      }).then((result) => {
+          if (result.isConfirmed) {
+              fetch(`/admin/deleteCategory/${id}`, {
+                  method: 'DELETE',
+                  headers: {
+                      'Content-Type': 'application/json'
+                  }
+              })
+              .then(response => {
+                  if (response.ok) {
+                          location.reload();
+                  } else {
+                      Swal.fire('Error!', 'Error deleting category.', 'error');
+                  }
+              })
+              .catch(error => {
+                  console.error("Error deleting category", error);
+                  Swal.fire('Error!', 'An error occurred while deleting the category.', 'error');
+              });
+          }
+      });
+  }
+  </script>
