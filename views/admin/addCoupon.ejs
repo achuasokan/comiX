@@ -1,0 +1,210 @@
+<div class="bg-[#18191a] text-gray-200 m-0 p-0 flex flex-col md:flex-row min-h-screen">
+   <!-- Sidebar -->
+   <%- include("./sidebar.ejs") %>
+   <!-- Sidebar end -->
+
+   <div class="container mx-auto py-6">
+    <h1 class="text-2xl font-semibold mb-4 text-gray-200">Add Coupon</h1>
+    <form action="/admin/addCoupon" method="POST" class="bg-[#242526] p-6 rounded shadow-md" id="coupon-form">
+      <%- include('../partials/flashMessage.ejs') %>
+
+      <div class="mb-4">
+        <label class="block text-gray-300">Coupon Code</label>
+        <input type="text" id="couponCode" name="couponCode" required class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4">
+        <p id="couponCodeError" class="text-red-500 text-sm"aria-live="assertive"></p>
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-300">Discount Type</label>
+        <select id="discountType" name="discountType" required class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4">
+          <option value="">Select Discount Type</option>
+          <option value="fixed">Fixed</option>
+          <option value="percentage">Percentage</option>
+        </select>
+        <p id="discountTypeError" class="text-red-500 text-sm"aria-live="assertive"></p>
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-300">Discount Value</label>
+        <input type="number" id="discountValue" name="discountValue" required class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4" min="1">
+        <p id="discountValueError" class="text-red-500 text-sm"aria-live="assertive"></p>
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-300">Min Spend</label>
+        <input type="number" id="minSpend" name="minSpend" required class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4" min="1">
+        <p id="minSpendError" class="text-red-500 text-sm"aria-live="assertive"></p>
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-300">Usage Limit</label>
+        <input type="number" id="usageLimit" name="usageLimit" required class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4" min="1">
+        <p id="usageLimitError" class="text-red-500 text-sm"aria-live="assertive"></p>
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-300">Start Date</label>
+          <input type="date" id="startDate" name="startDate" required class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4">
+        <p id="startDateError" class="text-red-500 text-sm"aria-live="assertive"></p>
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-300">Expiry Date</label>
+          <input type="date" id="expiryDate" name="expiryDate" required class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4">
+        <p id="expiryDateError" class="text-red-500 text-sm"aria-live="assertive"></p>
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-300">Applicable To</label>
+        <select id="applicableType" name="applicableType" required class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4">
+          <option value="">Select Applicable Type</option>
+          <option value="all">All</option>
+          <option value="product">Product</option>
+          <option value="category">Category</option>
+        </select>
+        <p id="applicableTypeError" class="text-red-500 text-sm" aria-live="assertive"></p>
+      </div>
+
+      <div id="productSelect" class="mb-4 hidden">
+        <label class="block text-gray-300">Product:</label>
+        <select id="product" name="product" class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4">
+          <option value="">Select Product</option>
+          <% products.forEach(product => { %>
+            <option value="<%= product._id %>"><%= product.name %></option>
+          <% }) %>
+        </select>
+      </div>
+
+      <div id="categorySelect" class="mb-4 hidden">
+        <label class="block text-gray-300">Category:</label>
+        <select id="category" name="category" class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4">
+          <option value="">Select Category</option>
+          <% categories.forEach(category => { %>
+            <option value="<%= category._id %>"><%= category.name %></option>
+          <% }) %>
+        </select>
+      </div>
+      <button type="submit" class="bg-primary text-white px-4 py-2 rounded">Add Coupon</button>
+
+    </form>
+   </div>
+</div>
+<!-- <script>
+  document.addEventListener('DOMContentLoaded', () => {
+
+    // Form validation
+    const form = document.getElementById('coupon-form');
+
+    if(form){
+      form.addEventListener('submit', function(event) {
+        event.preventDefault()
+
+        const isValid = validateForm()
+        if(isValid){
+          this.submit()
+        } else {
+          console.log('Form submission prevented due to validation errors.');
+        }
+      })
+      document.getElementById('couponCode').addEventListener('input', () => validateField('couponCode'))
+      document.getElementById('discountType').addEventListener('change', () => validateField('discountType'))
+      document.getElementById('discountValue').addEventListener('input', () => validateField('discountValue'))
+      document.getElementById('minSpend').addEventListener('input', () => validateField('minSpend'))
+      document.getElementById('usageLimit').addEventListener('input', () => validateField('usageLimit'))
+      document.getElementById('startDate').addEventListener('input', () => validateField('startDate'))
+      document.getElementById('expiryDate').addEventListener('input', () => validateField('expiryDate'))
+      document.getElementById('applicableType').addEventListener('change', () => validateField('applicableType'))
+    }
+
+    function validateForm(){
+      const fields = ['couponCode','discountType','discountValue','minSpend','usageLimit','startDate','expiryDate','applicableType']
+      let isValid = true;
+
+      fields.forEach(field => {
+        if(!validateField(field)) {
+          isValid = false;
+        }
+      })
+      return isValid;
+    }
+
+    function validateField(fieldName) {
+      const field = document.getElementById(fieldName)
+      const errorElement = document.getElementById(`${fieldName}Error`)
+      let isValid = true;
+
+      switch(fieldName) {
+        case 'couponCode':
+          const couponCodeRegex = /^[A-Z][A-Z0-9 ]{4,9}$/;
+          isValid = couponCodeRegex.test(field.value.trim());
+          errorElement.textContent = isValid ? '' : 'Coupon code must be uppercase letters.';
+          break;
+
+       case 'discountType':
+        isValid = field.value !== '';
+        errorElement.textContent = isValid ? '' : 'Please select a discount type.';
+        break;
+
+        case 'discountValue':
+          const discountType = document.getElementById('discountType').value;
+          const discountValue = parseFloat(field.value);
+
+          if (discountType === 'fixed') {
+            isValid = !isNaN(discountValue) && discountValue > 0 && Number.isInteger(discountValue);
+            errorElement.textContent = isValid ? '' : 'Discount value for fixed type must be a whole number greater than zero.';
+          } else if (discountType === 'percentage') {
+            isValid = !isNaN(discountValue) && discountValue >= 1 && discountValue <= 100 && Number.isInteger(discountValue);
+            errorElement.textContent = isValid ? '' : 'Discount value for percentage type must be a whole number between 1 and 100.';
+          } else {
+            errorElement.textContent = 'Please select a discount type.';
+            isValid = false;
+          }
+          break;
+
+        case 'minSpend':
+          const minSpend = parseInt(field.value, 10);
+          isValid = !isNaN(minSpend) && minSpend > 0;
+          errorElement.textContent = isValid ? '' : 'Minimum spend must be a whole number greater than zero.';
+          break;
+
+        case 'usageLimit':
+          const usageLimit = parseInt(field.value, 10);
+          isValid = !isNaN(usageLimit) && usageLimit > 0;
+          errorElement.textContent = isValid ? '' : 'Usage limit must be a whole number greater than zero.';
+          break;
+
+        case 'startDate':
+          const currentDate = new Date();
+          const startDate = new Date(field.value);
+          isValid = !isNaN(startDate) && startDate >= new Date(currentDate.setHours(0, 0, 0, 0));
+          errorElement.textContent = isValid ? '' : 'Start date must be today or a future date.';
+          break;
+
+        case 'expiryDate':
+          const expiryDate = new Date(field.value);
+          const startDateValue = new Date(document.getElementById('startDate').value);
+          isValid = !isNaN(expiryDate) && expiryDate > startDateValue;
+          errorElement.textContent = isValid ? '' : 'Expiry date must be a date after start date.';
+          break;
+
+        case 'applicableType':
+          isValid = field.value !== '';
+          errorElement.textContent = isValid ? '' : 'Please select an applicable type.';
+          break;
+          
+      }
+      return isValid;
+    }
+
+    // Toggle between product and category options based on applicable type
+    const applicableTypeSelect = document.getElementById('applicableType');
+    const productSelect = document.getElementById('productSelect');
+    const categorySelect = document.getElementById('categorySelect');
+
+    applicableTypeSelect.addEventListener('change', function() {
+      const applicableType = this.value;
+      productSelect.style.display = (applicableType === 'product') ? 'block' : 'none';
+      categorySelect.style.display = (applicableType === 'category') ? 'block' : 'none';
+    });
+  });
+</script> -->
