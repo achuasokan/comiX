@@ -1,33 +1,34 @@
 import userModel from "../models/User.js";
-export const checkUserSession = async (req, res, next) => {
 
+export const checkUserSession = async (req, res, next) => {
   try {
-    if (req.session.userID) { 
-      const user = await userModel.findById(req.session.userID);
-      if (!user) {
-        req.session.destroy()
-        req.flash('error','Your account has been blocked. Please contact Support.')
-        return res.redirect('/login');
-      }
-      if (user.isBlocked) {
-        req.flash('error','Your account has been blocked. Please contact Support.')
+    const userId = req.session.userID;
+
+    if (userId) {
+      const user = await userModel.findById(userId);
+
+      //~ If user is not found or is blocked, destroy the session and redirect to login page
+      if (!user || user.isBlocked) {
+        req.flash('error', 'Your account has been blocked. Please contact Support.');
         req.session.destroy((error) => {
           if (error) {
             console.log("Error destroying session", error);
           }
-          return res.redirect('/login');// Redirect to login page
+          return res.redirect('/login');
         });
       } else {
-        // Set user details in res.locals
-        res.locals.user = req.session.userID;
+
+        //~ Set user details in res.locals
+        res.locals.user = userId;
         res.locals.name = req.session.name;
-       return next();
+        return next();
       }
     } else {
-      // If not logged in, set user to null
+      
+      //~ If not logged in, set user to null
       res.locals.user = null;
       res.locals.name = null;
-       return next();
+      return next();
     }
   } catch (error) {
     console.log("Error in check user session", error);
@@ -36,7 +37,3 @@ export const checkUserSession = async (req, res, next) => {
 };
 
 export default checkUserSession;
-
-
-
-
