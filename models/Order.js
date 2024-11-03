@@ -27,6 +27,12 @@ const orderSchema = new mongoose.Schema({
       discountAmount: {
         type: Number,
       },
+      couponCode: {
+        type: String,
+      },
+      couponDiscountAmount: {
+        type: Number,
+      },
       itemTotal: {
         type: Number,
         required: true
@@ -72,6 +78,17 @@ const orderSchema = new mongoose.Schema({
   },
   deliveredAt: {
     type: Date,
+  },
+  couponCode: {
+    type: String,
+  },
+  couponDiscountAmount: {
+    type: Number,
+    default: 0,
+  },
+  totalDiscount: {
+    type: Number,
+    default: 0,
   },
 }, { timestamps: true });
 
