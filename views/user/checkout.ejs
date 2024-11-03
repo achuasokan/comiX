@@ -12,11 +12,13 @@
           <% cart.items.forEach(item => { %>
             <div class="flex justify-between border-b pb-4 mb-4">
               <div class="flex">
-                <img src="<%= item.product.image[0] %>" class="w-20 h-20 mr-4">
+                <img src="<%= item.product.image[1] %>" class="w-20 h-20 mr-4">
                 <div>
-                  <p class="text-lg font-semibold"><%= item.product.name %></p>
-                  <p class="text-gray-400">Price: ₹<%= item.price %></p>
+                  <p class="text-lg font-semibold text-orange-500"><%= item.product.name %></p>
+                  <p class="text-md text-gray-400"><%= item.product.category.name %></p>
+                  <p class="text-gray-400 ">Price: <span class="line-through">₹<%= item.price %></span></p>
                   <p class="text-gray-400">Discounted Price: ₹<%= item.discountPrice %> x <%= item.quantity %></p>
+                 
                 </div>
               </div>
               <p class="text-lg">₹<%= item.discountPrice * item.quantity %></p>
@@ -68,8 +70,9 @@
         </form>
 
         <!-- Checkout Form -->
-        <form action="/checkout/place-order" method="POST">
+        
           <!-- Address Section -->
+           
           <div class="mb-6 mt-4">
             <h2 class="text-2xl font-bold mb-4">Shipping Address</h2>
             <div class="space-y-4">
@@ -100,7 +103,7 @@
           </div>
 
           <!-- Place Order Button -->
-          <button type="submit" class="w-full bg-green-600 text-white py-3 rounded-lg">Place Order</button>
+          <button id="placeOrderBtn" type="submit" class="w-full bg-green-600 text-white py-3 rounded-lg">Place Order</button>
         </form>
       </div>
 
@@ -164,6 +167,54 @@
     newAddressForm.reset();
   });
 
+  //handle Address selection
+  document.querySelectorAll('.address-radio').forEach(radio => {
+    radio.addEventListener('change', () => {
+     
+    })
+  })
+
+  //handle Payment Method selection
+  document.querySelectorAll('.payment-radio').forEach(radio => {
+    radio.addEventListener('change', () => {
+   
+    })
+  })
+
+  //Place Order Button
+  document.getElementById('placeOrderBtn').addEventListener('click', async () => {
+    const selectedAddress = document.querySelector('input[name="addressId"]:checked');
+    const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
+    if(!selectedAddress) {
+      alert('Please select an address before placing the order.');
+      return;
+    }
+    if(!selectedPaymentMethod) {
+      alert('Please select a payment method before placing the order.');
+      return;
+    }
+
+    //submit the form
+    const response = await fetch(
+      '/checkout/place-order',
+      {
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json'
+        },
+        body:JSON.stringify({
+          addressId:selectedAddress.value,
+          paymentMethod:selectedPaymentMethod.value
+        })
+      })
+    const data = await response.json();
+    if(data.success) {
+      window.location.href = '/checkout/order-confirmation';
+    } else {
+      alert(data.message);
+    }
+  })
+
   document.getElementById('applyCouponBtn').addEventListener('click', async () => {
     const couponCode = document.getElementById('couponCode').value;
     const response = await fetch('/checkout/apply-coupon', {
@@ -177,6 +228,7 @@
     document.getElementById('couponMessage').innerText = data.message;
 
     if (data.success) {
+      document.getElementById('couponMessage').classList.remove('text-red-400');
       document.getElementById('couponMessage').classList.add('text-green-400');
       document.getElementById('removeCouponBtn').classList.remove('hidden');
       document.getElementById('applyCouponBtn').classList.add('hidden');
@@ -189,6 +241,7 @@
       // const currentTotal = parseFloat(totalAmountElement.innerText.replace('₹', ''));
       totalAmountElement.innerText = `₹${Math.floor(data.newTotal)}`;
     } else {
+      document.getElementById('couponMessage').classList.remove('text-green-400');
       document.getElementById('couponMessage').classList.add('text-red-400');
 
     }
@@ -213,7 +266,7 @@
     if(data.success) {
       document.getElementById('applyCouponBtn').classList.remove('hidden');
       document.getElementById('removeCouponBtn').classList.add('hidden');
-      document.getElementById('couponMessage').classList.add('text-green-400');
+      document.getElementById('couponMessage').classList.add('text-red-400');
 
       // update coupon discount
       document.querySelector('.text-red-500').innerText = `-₹${Math.floor(data.couponDiscount)}`
