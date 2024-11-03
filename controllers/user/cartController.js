@@ -173,6 +173,11 @@ export const removeCartItem = async (req, res) => {
       cart.subtotal = subtotal;
       cart.total = calculateTotal(subtotal, cart.discount);
 
+       // Clear coupon if cart is empty
+       if (cart.items.length === 0) {
+        cart.couponCode = null;
+        cart.couponDiscount = 0;
+      }
       await cart.save()
 
       res.json({
