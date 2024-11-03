@@ -2,6 +2,7 @@ import cartModel from '../../models/Cart.js';
 import addressModel from '../../models/address.js';
 import orderModel from '../../models/Order.js';
 import productModel from '../../models/Product.js';
+import couponModel from '../../models/Coupon.js';
 
 
 
@@ -25,6 +26,10 @@ export const getCheckoutPage = async (req, res) => {
     // calculate the subtotal and total discount of the cart items in the cart for the checkout page for the user for the order 
     const { subtotal, totalDiscount } = calculateSubtotal(cart.items);
     
+    // Recalculate total based on the current cart state
+    const total = cart.subtotal - (cart.couponDiscount || 0); 
+
+   
     // Render the checkout page
     res.render('user/checkout', {
       cart,
@@ -32,6 +37,7 @@ export const getCheckoutPage = async (req, res) => {
       totalDiscount,
       originalPrice: subtotal + totalDiscount,
       user: req.session.userID,
+      total
     });
   } catch (error) {
     console.error('Error loading checkout page:', error);
@@ -147,6 +153,118 @@ const calculateTotal = (subtotal, discount) => {
   return subtotal - discountAmount;
 }
 
+// //* //  //  //   //  //         Apply Coupon     //  //  //  //  //  //  //
 
 
+export const applyCoupon = async (req,res) => {
+  const { couponCode } = req.body;
+  console.log("couponCode", couponCode);
+  const userId = req.session.userID;
+  console.log("userId", userId);
+  try {
+    //~ finding the coupon in the database
+    const coupon = await couponModel.findOne({couponCode})
+    console.log("coupon", coupon);
+    if(!coupon) {
+      return res.status(400).json({message:"Invalid coupon code"})
+    }
+
+    //~ finding the cart of the user
+    const cart = await cartModel.findOne({user:userId}).populate('items.product')
+    console.log("cart", cart);
+    if(!cart)  {
+      return res.status(400).json({message:"Cart not found"})
+    }
+
+    //~ checking coupon validity dates
+    // const currentDate = new Date("2024-11-03T10:00:00Z"); 
+    const currentDate = new Date(); 
+    console.log("currentDate", currentDate);
+    console.log("coupon.startDate", coupon.startDate);
+    console.log("coupon.expiryDate", coupon.expiryDate);
+    if (currentDate < coupon.startDate || currentDate > coupon.expiryDate) {
+      return res.status(400).json({message:"Coupon is not valid for the current date"})
+    }
+
+    //~ checking applicability of the coupon based (product/category/all)
+    const isApplicable = coupon.applicableType === 'all' || 
+    (coupon.applicableType === 'category' && cart.items.some(item => item.product.category.equals(coupon.applicableCategory))) ||
+    (coupon.applicableType === 'product' && cart.items.some(item => item.product._id.equals(coupon.applicableProduct)))
+
+    if(!isApplicable) {
+      return res.status(400).json({message:"Coupon is not applicable for the products in your cart"})
+    }
+
+    //~ calculating the discount amount
+    let discountAmount = 0;
+    if(coupon.discountType === 'percentage') {
+      discountAmount = (cart.subtotal * coupon.discountValue) / 100;
+    } else if (coupon.discountType === 'fixed') {
+      discountAmount = coupon.discountValue;
+    }
+
+    //~ checking the minimum spend of the coupon
+    if(cart.subtotal < coupon.minSpend) {
+      return res.json({success: false, message: `Minimum spend of ₹${coupon.minSpend} required to use this coupon`})
+    }
+
+    //~ checking the usage limit of the coupon
+    if(coupon.usageLimit && coupon.usedCount >= coupon.usageLimit) {
+      return res.json({success: false, message: `Coupon limit reached`})
+    }
+
+    //~ updating the cart with the coupon code, discount and total
+    cart.couponCode = coupon.couponCode;
+    cart.couponDiscount = discountAmount;
+    cart.total = cart.subtotal  - discountAmount;
+    await cart.save();
+
+    //~ updating the coupon used count
+    coupon.usedCount += 1;
+    await coupon.save();
+
+    //~ sending the response to the client
+    res.json({
+      success: true, 
+      discountAmount: discountAmount, 
+      newTotal: cart.total,
+      message: `Coupon applied successfully`
+    })
+  }catch (error) {
+    console.log("error in apply coupon", error);
+    res.status(500).send("Internal server error in apply coupon");
+    
+  }
+}
+
+
+//* //  //  //   //  //         Remove Coupon     //  //  //  //  //  //  //
+
+export const removeCoupon = async (req,res) => {
+  const userId = req.session.userID;
+
+  try{
+    const cart = await cartModel.findOne({user:userId})
+    if(!cart || !cart.couponCode) {
+      return res.status(400).json({message:"No coupon applied"})
+    }
+
+    cart.couponCode = null;
+    cart.couponDiscount = 0;
+    console.log("Subtotal before removing coupon:", cart.subtotal);
+    cart.total = cart.subtotal;
+    console.log("Total after removing coupon:", cart.total);
+    await cart.save();
+
+    res.json({
+      message:"Coupon removed successfully", 
+      success:true,
+      newTotal:cart.total,
+      couponDiscount:cart.couponDiscount
+    })
+  }catch(error){
+    console.log("error in remove coupon", error);
+    res.status(500).send("Internal server error in remove coupon");
+  }
+}
 
