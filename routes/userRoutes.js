@@ -117,6 +117,11 @@ router.post('/checkout/add-address',isUser,checkOutControl.addNewAddress)
 
 router.post('/checkout/place-order',isUser,checkOutControl.postOrder)
 
+router.post('/checkout/apply-coupon',isUser,checkOutControl.applyCoupon)
+
+// router.post('/checkout/remove-coupon',isUser,checkOutControl.removeCoupon)
+
+router.post('/checkout/remove-coupon',isUser,checkOutControl.removeCoupon)
 
 
 //^  //  //  //  //  //  //               Order History Routes             //  //  //  //  //  //  //
