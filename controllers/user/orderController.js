@@ -5,7 +5,7 @@ import mongoose from 'mongoose'
 
 //*  //  //   //  //          GET ORDER  HistoryPAGE   //  //  //  //  //  //  //
 
-export const getorderhistoryPage = async (req,res) => {
+export const getOrderHistoryPage = async (req,res) => {
   try {
     const userId = req.session.userID 
     const orders = await orderModel.find( {user:userId} )
@@ -23,9 +23,9 @@ export const getorderhistoryPage = async (req,res) => {
 }
 
 
-//*  //  //   //  //          GET ORDER  historypage   //  //  //  //  //  //  //
+//*  //  //   //  //          GET ORDER  HistoryPage   //  //  //  //  //  //  //
 
-export const getOrderDetailpage = async (req,res) => {
+export const getOrderDetailPage = async (req,res) => {
   try {
 
     const userId = req.session.userID
