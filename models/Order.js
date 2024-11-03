@@ -24,9 +24,7 @@ const orderSchema = new mongoose.Schema({
       discountPrice: {
         type: Number,
       },
-      discountAmount: {
-        type: Number,
-      },
+      
       couponCode: {
         type: String,
       },
@@ -36,6 +34,12 @@ const orderSchema = new mongoose.Schema({
       itemTotal: {
         type: Number,
         required: true
+      },
+      discountAmount: {
+        type: Number,
+      },
+      totalDiscount: {
+        type: Number,
       },
       itemStatus: {
         type: String,
