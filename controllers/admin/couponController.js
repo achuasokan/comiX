@@ -136,7 +136,7 @@ export const postAddCoupon = async (req,res) => {
     const newCoupon = new couponModel({
       couponCode,
       discountType,
-      discountValue,
+      discountValue:discountValues,
       minSpend,
       usageLimit,
       startDate,
@@ -291,7 +291,7 @@ export const postEditCoupon = async (req,res) => {
     const updatedCoupon = await couponModel.findByIdAndUpdate(couponId,{
       couponCode,
       discountType,
-      discountValue,
+      discountValue:discountValues,
       minSpend,
       usageLimit,
       startDate,
