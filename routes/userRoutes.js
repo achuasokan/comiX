@@ -119,16 +119,15 @@ router.post('/checkout/place-order',isUser,checkOutControl.postOrder)
 
 router.post('/checkout/apply-coupon',isUser,checkOutControl.applyCoupon)
 
-// router.post('/checkout/remove-coupon',isUser,checkOutControl.removeCoupon)
-
 router.post('/checkout/remove-coupon',isUser,checkOutControl.removeCoupon)
 
+router.get('/checkout/order-confirmation',isUser,checkOutControl.orderConfirmation)
 
 //^  //  //  //  //  //  //               Order History Routes             //  //  //  //  //  //  //
 
-router.get('/profile/order',isUser,orderControl.getorderhistoryPage)
+router.get('/profile/order',isUser,orderControl.getOrderHistoryPage)
 
-router.get('/order-detail/:orderID/:itemId',isUser,orderControl.getOrderDetailpage)
+router.get('/order-detail/:orderID/:itemId',isUser,orderControl.getOrderDetailPage)
 
 router.post('/order/cancel-item/:orderID/:itemId',isUser,orderControl.orderCancel)
 
