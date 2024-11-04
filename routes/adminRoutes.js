@@ -1,10 +1,10 @@
 import express from 'express'
+import adminMiddleware from '../middleware/adminMiddleware.js'   
 import * as adminController from '../controllers/admin/adminAuthController.js'                      
 import * as dashboardController from '../controllers/admin/dashboardController.js'                  
 import * as categoryController from '../controllers/admin/categoryController.js'                    
 import * as productController from '../controllers/admin/productController.js'                      
-import * as userController from '../controllers/admin/userController.js'                            
-import adminMiddleware from '../middleware/adminMiddleware.js'                                     
+import * as userController from '../controllers/admin/userController.js'                                                              
 import * as discountController from "../controllers/admin/discountController.js"
 import * as orderController from '../controllers/admin/orderController.js'
 import * as couponController from '../controllers/admin/couponController.js'
@@ -69,6 +69,8 @@ router.post("/softDeleteProduct/:id",adminMiddleware.isAdmin,productController.s
 router.get('/editProduct/:id',adminMiddleware.isAdmin,productController.getEditProduct)
 
 router.post('/editProduct/:id',upload.array('image',5),adminMiddleware.isAdmin,productController.postEditProduct)
+
+router.delete('/deleteProduct/:id',adminMiddleware.isAdmin,productController.deleteProduct)
 
 
 
