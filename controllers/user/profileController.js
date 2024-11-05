@@ -1,7 +1,7 @@
 import userModel from '../../models/User.js'
 import addressModel from "../../models/address.js"
 import bcrypt from 'bcrypt'
-
+import couponModel from '../../models/Coupon.js'
 //* //  //  //   //  //          GET PROFILE PAGE   //  //  //  //  //  //  //
 
 export const getProfilePage=async(req,res)=>{
@@ -253,5 +253,17 @@ export const postChangePassword = async (req,res) => {
   }catch(error)  {
     console.log("error in post change password",error);
     res.status(500).send("internal server error in post change password")
+  }
+}
+
+//* //  //  //   //  //          GET Coupon Page    //  //  //  //  //  //  //
+
+export const getCouponPage = async (req,res) => {
+  try {
+    const couponsList = await couponModel.find({}).populate('applicableCategory').populate('applicableProduct')
+    res.render('profile/coupons',{couponsList})
+  }catch (error) {
+    console.error("error in get coupon page",error);
+    res.status(500).send("internal server error in get coupon page")
   }
 }
