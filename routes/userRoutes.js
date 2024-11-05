@@ -123,6 +123,10 @@ router.post('/checkout/remove-coupon',isUser,checkOutControl.removeCoupon)
 
 router.get('/checkout/order-confirmation',isUser,checkOutControl.orderConfirmation)
 
+router.post('/checkout/update-address',isUser,checkOutControl.updateSelectedAddress)
+
+router.post('/checkout/update-payment-method',isUser,checkOutControl.updatePaymentMethod)
+
 //^  //  //  //  //  //  //               Order History Routes             //  //  //  //  //  //  //
 
 router.get('/profile/order',isUser,orderControl.getOrderHistoryPage)
@@ -130,5 +134,7 @@ router.get('/profile/order',isUser,orderControl.getOrderHistoryPage)
 router.get('/order-detail/:orderID/:itemId',isUser,orderControl.getOrderDetailPage)
 
 router.post('/order/cancel-item/:orderID/:itemId',isUser,orderControl.orderCancel)
+
+router.post('/order/return-item/:orderID/:itemId',orderControl.requestReturn);
 
     export default router
