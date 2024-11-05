@@ -318,3 +318,38 @@ export const orderConfirmation = async (req,res) => {
 }
 
 
+//* //  //  //   //  //         Updating selected Address     //  //  //  //  //  //  //
+
+export const updateSelectedAddress = async (req,res) => {
+  try {
+    const {addressId} = req.body;
+    const userId = req.session.userID;
+
+    const address = await addressModel.findOne({_id:addressId, userId:userId});
+    if(!address) {
+      return res.status(400).json({message:"Invalid address"})
+    }
+  res.status(200).json({success:true, message:"Address selected successfully"})
+  } catch (error) {
+    console.log("error in update selected address", error);
+    res.status(500).send("Internal server error in update selected address");
+  }
+}
+
+
+//* //  //  //   //  //         Payment Method selection     //  //  //  //  //  //  //
+
+export const updatePaymentMethod = async (req,res) => {
+  try {
+    const {paymentMethod} = req.body;
+    const userId = req.session.userID;
+
+    if(!['COD','Razorpay','Wallet'].includes(paymentMethod)) {
+      return res.status(400).json({message:"Invalid payment method"})
+    }
+   res.status(200).json({success:true, message:"Payment method selected successfully"})
+  } catch (error) {
+    console.log('error in update payment method', error);
+    res.status(500).send('Internal server error in update payment method');
+  }
+}
