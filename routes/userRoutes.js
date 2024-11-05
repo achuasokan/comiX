@@ -89,6 +89,8 @@ router.route('/profile/change-password')
     .get(isUser,profileControl.getChangePasswordPage)
     .post(isUser,profileControl.postChangePassword)
 
+router.get('/profile/coupons',isUser,profileControl.getCouponPage)    
+
 
 //^  //  //  //  //  //  //               Wishlist Routes             //  //  //  //  //  //  //
 
