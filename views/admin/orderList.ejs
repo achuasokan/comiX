@@ -34,33 +34,62 @@
                   <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Status</th>
                   <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Modify Order Status</th>
                   <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Order Details</th>
+                  <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Return</th>
                 </tr>
                </thead>
                <tbody>
                 <!-- body -->
                 <% let serialNumber = startIndex; %>
                  <% orderlist.forEach(order => { %>
-                  <% order.items.forEach(item => { %>
-                    <tr class="border-b border-[#3a3a3a] hover:bg-[#2a2a2a] transition-colors duration-200">
-                      <td class="px-6 py-4  whitespace-nowrap font-medium text-lg"><%= serialNumber++ %></td>
-                      <td class="px-6 py-4  whitespace-nowrap font-medium text-center"><%= order.user ? order.user.name : 'Unknown User' %></td>
-                      <td class="px-6 py-4  whitespace-nowrap font-medium text-center"><%= order._id %></td>
-                      <% if(item.product) { %>
-                        <td class="px-6 py-4  whitespace-nowrap font-medium text-center truncate"><%= item.product.name %></td>
-                      <% } else { %>
-                        <td class="px-6 py-4  whitespace-nowrap font-medium text-center">No product</td>
-                      <% } %>
-                      <td class="px-6 py-4  whitespace-nowrap font-medium text-center"><%= order.orderedAt.toLocaleDateString() %></td>
-                      <td class="px-6 py-4  whitespace-nowrap font-medium text-center"><%= item.itemStatus %></td>
-                      <td class="px-6 py-4  whitespace-nowrap font-medium text-center">
-                        <button class=" bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg change-status-btn" data-order-id="<%= order._id %>" data-item-id="<%= item._id %>">Change Status</button>
-                      </td>
-                      <td class="px-6 py-4  whitespace-nowrap font-medium text-center">
-                        <button class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg view-details-btn" data-order-id="<%= order._id %>">View Details</button>
-                      </td>
-                    </tr>
-
-                  <% }) %>
+                  <tr class="border-b border-[#3a3a3a] hover:bg-[#2a2a2a] transition-colors duration-200">
+                    <td class="px-6 py-4 whitespace-nowrap font-semibold text-lg"><%= serialNumber++ %></td>
+                    <td class="px-6 py-4 whitespace-nowrap font-semibold text-center text-md text-blue-500 truncate"><%= order.user ? order.user.name : 'Unknown User' %></td>
+                    <td class="px-6 py-4 whitespace-nowrap font-semibold text-center truncate text-blue-500 truncate"><%= order._id %></td>
+                    <td class="px-6 py-4 whitespace-nowrap font-semibold text-center text-blue-500">
+                      <% order.items.forEach(item => { %>
+                        <div class="mb-2 truncate text-md ">
+                          <span><%= item.product ? item.product.name : 'No product' %></span>
+                        </div>
+                      <% }) %>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap font-medium text-center text-blue-500"><%= order.orderedAt.toLocaleDateString() %></td>
+                    <td class="px-6 py-4 whitespace-nowrap font-medium text-center">
+                      <% order.items.forEach(item => { %>
+                        <div class="mb-2">
+                          <span class="<%= item.itemStatus === 'Pending' ? 'text-yellow-500' : 
+                                         item.itemStatus === 'Confirmed' ? 'text-blue-500' : 
+                                         item.itemStatus === 'Shipped' ? 'text-orange-500' : 
+                                         item.itemStatus === 'Delivered' ? 'text-green-500' : 
+                                         item.itemStatus === 'Cancelled' ? 'text-red-500' : '' %>">
+                            <%= item.itemStatus %>
+                          </span>
+                        </div>
+                      <% }) %>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap font-medium text-center">
+                      <% order.items.forEach(item => { %>
+                        <div class="mb-2">
+                          <button class="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded-lg change-status-btn" data-order-id="<%= order._id %>" data-item-id="<%= item._id %>">Status</button>
+                        </div>
+                      <% }) %>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap font-medium text-center">
+                      <button class="bg-green-500 hover:bg-green-600 text-white px-2 py-2 rounded-lg view-details-btn " data-order-id="<%= order._id %>">View</button>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap font-medium text-center">
+                      <% order.items.forEach(item => { %>
+                        <% if(item.returnRequested) { %>
+                          <div class="mb-2">
+                            <button class="bg-red-500 hover:bg-red-600 text-white px-1 py-1 rounded-lg return-details-btn" data-order-id="<%= order._id %>" data-item-id="<%= item._id %>">Requested</button>
+                          </div>
+                        <% } else { %>
+                          <div class="mb-2">
+                           <!-- <p class="text-red-500">No return Requested</p> -->
+                          </div>
+                        <% } %>
+                      <% }) %>
+                    </td>
+                  </tr>
                  <% }) %>
                  <!-- body ended -->
                </tbody>
@@ -94,6 +123,28 @@
   </div>
  </div>
  <!-- modal ended -->
+
+
+  <!-- Modal for return request details -->
+<div id="returnRequestModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 hidden">
+  <div class="bg-[#1f1f1f] text-white p-4 rounded-lg relative w-3/4 max-w-2xl h-auto overflow-hidden">
+    <button class="absolute top-2 right-2 text-white text-2xl hover:text-gray-300" id="closeReturnModal">&times;</button>
+    <div id="returnRequestContent" style="overflow-y: scroll; max-height: 70vh; -ms-overflow-style: none; scrollbar-width: none;">
+      <!-- Return request details will be populated here -->
+    </div>
+    <div class="mt-4">
+      <label for="returnStatusSelect" class="block text-sm font-medium">Change Return Status:</label>
+      <select id="returnStatusSelect" class="mt-1 block w-full bg-[#242526] text-gray-200 border border-gray-600 rounded-md p-2">
+        <option value="Pending">Pending</option>
+        <option value="Approved">Approved</option>
+        <option value="Rejected">Rejected</option>
+        <option value="Refunded">Refunded</option>
+      </select>
+      <button id="changeReturnStatusBtn" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg mt-4">Submit</button>
+    </div>
+  </div>
+</div>
+  
 
  <script>
   // //  //  //   //  //          CHANGE ITEM STATUS button click handler   //  //  //  //  //  //  //
@@ -182,4 +233,142 @@
   document.getElementById('closeModal').addEventListener('click', () => {
     document.getElementById('orderDetailsModal').classList.add('hidden')
   })
+
+  // //  //  //   //  //          RETURN REQUEST button click handler   //  //  //  //  //  //  //
+
+  // Return request details button click handler
+const returnDetailsButtons = document.querySelectorAll('.return-details-btn');
+returnDetailsButtons.forEach(button => {
+    button.addEventListener('click', async (e) => {
+        const orderId = e.target.getAttribute('data-order-id');
+        const itemId = e.target.getAttribute('data-item-id');
+
+        try {
+            const response = await fetch(`/admin/orders/${orderId}/${itemId}/return-details`);
+            const result = await response.json();
+
+            // Populate the modal with return request details
+            document.getElementById('returnRequestContent').innerHTML = `
+                <h3 class="text-lg font-bold">Return Request Details</h3>
+                <p><strong>User:</strong> ${result.user.name}</p>
+                <p><strong>Product:</strong> ${result.product.name}</p>
+                <img src="${result.product.image[1]}" alt="${result.product.name}" class="w-32 h-32 object-cover mb-2">
+                <p><strong>Return Reason:</strong> ${result.returnReason}</p>
+                <p><strong>Current Status:</strong> ${result.returnStatus}</p>
+            `;
+
+            // Show the modal
+            document.getElementById('returnRequestModal').classList.remove('hidden');
+
+            // Set the current status as the previous status
+            const previousStatus = result.returnStatus;
+
+            // Disable the "Pending" option in the dropdown
+            const returnStatusSelect = document.getElementById('returnStatusSelect');
+            returnStatusSelect.value = previousStatus;
+            Array.from(returnStatusSelect.options).forEach(option => {
+                if (option.value === "Pending") {
+                    option.disabled = true; // Always disable "Pending"
+                }
+            });
+
+            // Disable the current status option in the dropdown
+            if (previousStatus) {
+                Array.from(returnStatusSelect.options).forEach(option => {
+                    if (option.value === previousStatus) {
+                        option.disabled = true; // Disable the current status
+                    }
+                });
+            }
+
+            // Track selected statuses
+            const selectedStatuses = new Set();
+
+            // Set up the change return status button
+            document.getElementById('changeReturnStatusBtn').onclick = async () => {
+                const selectedStatus = document.getElementById('returnStatusSelect').value;
+                selectedStatuses.add(selectedStatus); // Add selected status to the set
+
+                try {
+                    const updateResponse = await fetch(`/admin/orders/${orderId}/${itemId}/change-return-status`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ returnStatus: selectedStatus })
+                    });
+
+                    const updateResult = await updateResponse.json();
+                    console.log("update result :", updateResult);
+                    if (updateResult.success) {
+                        // Update the UI or show a success message
+                        Toastify({
+                            text: `Return status changed to: ${updateResult.newStatus}`,
+                            duration: 3000,
+                            gravity: "top",
+                            position: 'right',
+                            backgroundColor: "green",
+                        }).showToast();
+                        // Optionally, close the modal
+                        document.getElementById('returnRequestModal').classList.add('hidden');
+                    } else {
+                        // Show failure notification
+                        Toastify({
+                            text: `${updateResult.message}`,
+                            duration: 3000,
+                            gravity: "top",
+                            position: 'right',
+                            backgroundColor: "red",
+                        }).showToast();
+                    }
+                } catch (error) {
+                    console.log("Error changing return status:", error);
+                    // Show error notification
+                    Toastify({
+                        text: "An error occurred while changing the return status.",
+                        duration: 3000,
+                        gravity: "top",
+                        position: 'right',
+                        backgroundColor: "red",
+                    }).showToast();
+                }
+            };
+
+            // Handle the change in return status
+            returnStatusSelect.addEventListener('change', (event) => {
+                const selectedStatus = event.target.value;
+
+                // Disable all options first
+                Array.from(returnStatusSelect.options).forEach(option => {
+                    option.disabled = true; // Disable all options
+                });
+
+                // Always keep "Pending" disabled
+                returnStatusSelect.querySelector('option[value="Pending"]').disabled = true;
+
+                // Disable the current status
+                returnStatusSelect.querySelector(`option[value="${previousStatus}"]`).disabled = true;
+
+                // Enable remaining options based on selected statuses
+                const allStatuses = ["Approved", "Returned", "Rejected", "Refunded"];
+                allStatuses.forEach(status => {
+                    if (!selectedStatuses.has(status) && status !== "Pending") {
+                        const option = returnStatusSelect.querySelector(`option[value="${status}"]`);
+                        if (option) {
+                            option.disabled = false; // Enable remaining statuses
+                        }
+                    }
+                });
+            });
+
+        } catch (error) {
+            console.log("Error fetching return request details:", error);
+        }
+    });
+});
+
+// Close modal
+document.getElementById('closeReturnModal').addEventListener('click', () => {
+    document.getElementById('returnRequestModal').classList.add('hidden');
+});
 </script>
