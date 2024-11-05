@@ -32,6 +32,7 @@ export const getCheckoutPage = async (req, res) => {
     // calculate the subtotal and total discount of the cart items in the cart for the checkout page for the user for the order 
     const { subtotal, totalDiscount } = calculateSubtotal(cart.items);
     
+    const coupons = await couponModel.find({}).populate('applicableCategory').populate('applicableProduct');
     
 
    
@@ -42,7 +43,7 @@ export const getCheckoutPage = async (req, res) => {
       totalDiscount,
       originalPrice: subtotal + totalDiscount,
       user: req.session.userID,
-      
+      coupons
     });
   } catch (error) {
     console.error('Error loading checkout page:', error);
@@ -184,7 +185,8 @@ export const applyCoupon = async (req, res) => {
     }
 
     //~ Checking coupon validity dates
-    const currentDate = new Date("2024-11-04T10:00:00Z"); // Use the current date
+    // const currentDate = new Date("2024-11-04T10:00:00Z"); // Use the current date
+    const currentDate = new Date();
     if (currentDate < coupon.startDate || currentDate > coupon.expiryDate) {
       return res.status(400).json({ message: "Coupon is not valid for the current date" });
     }
