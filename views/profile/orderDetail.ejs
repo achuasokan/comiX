@@ -87,7 +87,9 @@
     </div>
 
     <!-- Optional: Cancel Order Button -->
-    <% if (item.itemStatus !== 'Cancelled' && item.itemStatus !== 'Delivered' && (order.orderStatus === 'Pending' || order.orderStatus === 'Confirmed')  ) { %>
+     <% if (item.itemStatus === 'Delivered') { %>
+     <button class="return-order-btn bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700" data-order-id="<%= order._id %>" data-item-id="<%= item._id %>">Return Order</button>
+     <% } else if (item.itemStatus !== 'Cancelled' && item.itemStatus !== 'Delivered' && (order.orderStatus === 'Pending' || order.orderStatus === 'Confirmed')  ) { %>
       <button class="cancel-order-btn bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700" data-order-id="<%= order._id %>" data-item-id="<%= item._id %>">Cancel Order</button>
     <% } %>
   </div>
@@ -166,5 +168,74 @@
         );
       });
     }
-  });
+  const returnButtons = document.querySelectorAll('.return-order-btn');
+
+    returnButtons.forEach(button => {
+      button.addEventListener('click', function(e) {
+        e.preventDefault();
+        const orderId = this.getAttribute('data-order-id');
+        const itemId = this.getAttribute('data-item-id');
+
+        Swal.fire({
+          title: 'Return Reason',
+          input: 'textarea',
+          inputPlaceholder: 'Please enter your reason for returning the item...',
+          showCancelButton: true,
+          confirmButtonText: 'Submit',
+          cancelButtonText: 'Cancel',
+          customClass: {
+            popup: 'bg-gray-900 text-white rounded-lg shadow-lg p-6',
+            title: 'text-xl font-bold',
+            input: 'text-base mb-4',
+            confirmButton: 'bg-green-600 text-white rounded-lg px-4 py-2 hover:bg-green-700 transition duration-200 ease-in-out',
+            cancelButton: 'bg-red-600 text-white rounded-lg px-4 py-2 hover:bg-red-700 transition duration-200 ease-in-out'
+          }
+        }).then((result) => {
+          if (result.isConfirmed) {
+            const returnReason = result.value;
+            submitReturnRequest(orderId, itemId, returnReason);
+          }
+        });
+      });
+    });
+
+    function submitReturnRequest(orderId, itemId, returnReason) {
+      fetch(`/order/return-item/${orderId}/${itemId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ returnReason }),
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        Swal.fire({
+          title: 'Success!',
+          text: 'Your return request has been submitted.',
+          icon: 'success',
+          customClass: {
+            popup: 'bg-gray-900 text-white rounded-lg shadow-lg p-6',
+            title: 'text-2xl font-bold',
+            confirmButton: 'bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700',
+          }
+        }).then(() => {
+          window.location.reload();
+        });
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        Swal.fire(
+          'Error!',
+          'There was a problem submitting your return request.',
+          'error'
+        );
+      });
+    }
+  })
+  
 </script>
