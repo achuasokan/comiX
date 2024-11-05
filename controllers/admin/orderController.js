@@ -120,3 +120,80 @@ export const getOrderDetails = async (req,res) => {
     res.status(500).send('Internal Server Error');
   }
 }
+
+
+//* //  //  //   //  //       return request details   //  //  //  //  //  //  //
+export const getReturnRequestDetails = async (req, res) => {
+  try {
+    const orderId = req.params.orderId;
+    const itemId = req.params.itemId;
+
+    const order = await orderModel.findOne({ _id: orderId, 'items._id': itemId })
+      .populate('user', 'name')
+      .populate('items.product');
+
+    if (!order) {
+      return res.status(404).json({ message: 'Order or item not found' });
+    }
+
+    const item = order.items.id(itemId);
+    res.json({
+      user: order.user,
+      product: item.product,
+      returnReason: item.returnReason,
+      returnStatus: item.returnStatus,
+    });
+  } catch (error) {
+    console.log("Error fetching return request details:", error);
+    res.status(500).send('Internal Server Error');
+  }
+};
+
+
+//* //  //  //   //  //      CHANGE RETURN STATUS   //  //  //  //  //  //  //
+
+export const changeReturnStatus = async (req, res) => {
+  try {
+    const orderId = req.params.orderId;
+    const itemId = req.params.itemId;
+    const { returnStatus } = req.body;
+
+ 
+
+    const order = await orderModel.findOne({
+      _id: orderId,
+      'items._id': itemId
+    });
+
+    if (!order) {
+      return res.status(404).json({ success: false, message: "Order or item not found" });
+    }
+
+    const item = order.items.id(itemId);
+    if (!item) {
+      return res.status(404).json({ success: false, message: "Item not found" });
+    }
+
+  
+    item.returnStatus = returnStatus;
+
+    if(returnStatus === 'Approved') {
+      item.itemStatus = 'Returned';
+    } else if(returnStatus === 'Rejected') {
+      item.itemStatus = 'Rejected';
+    } else if(returnStatus === 'Refunded') {
+      item.itemStatus = 'Refunded';
+    } else {
+      item.itemStatus = 'Return Requested';
+    }
+
+    await order.save();
+
+    res.status(200).json({ success: true, newStatus: returnStatus });
+  } catch (error) {
+    console.log("Error changing return status:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+
