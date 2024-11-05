@@ -100,6 +100,8 @@ router.post('/orders/:orderId/:itemId/change-status',adminMiddleware.isAdmin,ord
 
 router.get('/orders/:orderId/details',adminMiddleware.isAdmin,orderController.getOrderDetails)
 
+router.get('/orders/:orderId/:itemId/return-details',adminMiddleware.isAdmin,orderController.getReturnRequestDetails)
+router.post('/orders/:orderId/:itemId/change-return-status',adminMiddleware.isAdmin,orderController.changeReturnStatus)
 
 
 //^  //  //  //  //  //  //                 Coupon routes                    //  //  //  //  //  //  //
