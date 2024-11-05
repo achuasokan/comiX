@@ -57,25 +57,29 @@
         <div class="flex flex-col items-end">
           <p class="text-sm text-gray-400">
             <% if (item.itemStatus === 'Pending') { %>
-            <span class="text-yellow-500">Pending on <%= order.orderedAt.toLocaleDateString() %></span>
+            <span class="text-yellow-500">Your order is pending right now it will be confirmed soon on <%= order.orderedAt.toLocaleDateString() %></span>
 
             <% } else if (item.itemStatus === 'Shipped') { %>
-            <span class="text-green-500">Shipped on <%= order.updatedAt.toLocaleDateString() %></span>
+            <span class="text-green-500">Your item has been shipped on <%= order.updatedAt.toLocaleDateString() %></span>
 
             <% } else if (item.itemStatus === 'Confirmed') { %>
-            <span class="text-green-500">Confirmed on <%= order.updatedAt.toLocaleDateString() %></span>
+            <span class="text-green-500">Your order has been confirmed on <%= order.updatedAt.toLocaleDateString() %></span>
 
             <% } else if (item.itemStatus === 'Delivered') { %>
-            <span class="text-green-500">Delivered on <%= order.updatedAt.toLocaleDateString() %></span>
+            <span class="text-green-500">Your item has been delivered on <%= order.updatedAt.toLocaleDateString() %></span>
 
             <% } else if (item.itemStatus === 'Cancelled') { %>
-            <span class="text-red-500">Cancelled on <%= order.updatedAt.toLocaleDateString() %></span>
+            <span class="text-red-500">Your order has been cancelled on <%= order.updatedAt.toLocaleDateString() %></span>
 
             <% } else if (item.itemStatus === 'Returned') { %>
-            <span class="text-red-500">Returned on <%= order.updatedAt.toLocaleDateString() %></span>
+            <span class="text-red-500"> Your item has been returned on <%= order.updatedAt.toLocaleDateString() %></span>
             
             <% } else if (item.itemStatus === 'Refunded') { %>
-            <span class="text-red-500">Refunded on <%= order.updatedAt.toLocaleDateString() %></span>
+            <span class="text-orange-500">Your item has been refunded on <%= order.updatedAt.toLocaleDateString() %></span>
+            <% } else if (item.itemStatus === 'Return Requested') { %>
+            <span class="text-yellow-500">Your item return request has been sent on <%= order.updatedAt.toLocaleDateString() %></span>
+            <% } else if (item.itemStatus === 'Rejected') { %>
+            <span class="text-red-500"> Your item return request has been rejected by admin on <%= order.updatedAt.toLocaleDateString() %></span>
             <% } %>
           </p>
         </div>
