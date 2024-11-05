@@ -75,22 +75,26 @@
            
           <div class="mb-6 mt-4">
             <h2 class="text-2xl font-bold mb-4">Shipping Address</h2>
-            <div class="space-y-4">
-              <% addresses.forEach(address => { %>
+            <form id="addressSelectionForm">
+              <div class="space-y-4">
+                <% addresses.forEach(address => { %>
                 <div class="p-4 bg-gray-900 shadow-lg rounded-lg">
                   <input type="radio" name="addressId" value="<%= address._id %>" class="mr-2" required>
                   <p><%= address.name %>, <%= address.buildingName %>, <%= address.street %>, <%= address.city %>, <%= address.state %>, <%= address.country %>, <%= address.pincode %></p>
                   <p class="text-gray-400"><%= address.mobile %></p>
                 </div>
               <% }) %>
-            </div>
+              </div>
+              <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded mt-4">Select Address</button>
+            </form>
           </div>
 
           <!-- Payment Methods -->
-          <div class="mb-6">
+          <div id="paymentSection" class="mb-6 hidden">
             <h2 class="text-2xl font-bold mb-4">Payment Method</h2>
-            <div class="space-y-4">
-              <div class="bg-gray-900 p-4 shadow-lg rounded-lg">
+            <form id="paymentMethodForm"> 
+              <div class="space-y-4">
+                <div class="bg-gray-900 p-4 shadow-lg rounded-lg">
                 <input type="radio" name="paymentMethod" value="COD" class="mr-2" required> Cash on Delivery
               </div>
               <div class="bg-gray-900 p-4 shadow-lg rounded-lg">
@@ -100,10 +104,12 @@
                 <input type="radio" name="paymentMethod" value="Wallet" class="mr-2"> Wallet
               </div>
             </div>
+            <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded mt-4">Select Payment Method</button>
+            </form>
           </div>
 
           <!-- Place Order Button -->
-          <button id="placeOrderBtn" type="submit" class="w-full bg-green-600 text-white py-3 rounded-lg">Place Order</button>
+          <button id="placeOrderBtn" type="submit" class="w-full bg-green-600 text-white py-3 rounded-lg hidden">Place Order</button>
         </form>
       </div>
 
@@ -168,18 +174,43 @@
   });
 
   //handle Address selection
-  document.querySelectorAll('.address-radio').forEach(radio => {
-    radio.addEventListener('change', () => {
-     
+  document.getElementById('addressSelectionForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const selectedAddress = document.querySelector('input[name="addressId"]:checked').value;
+    const response = await fetch('/checkout/update-address', {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json'
+      },
+      body:JSON.stringify({addressId:selectedAddress})
     })
+    const result = await response.json();
+    if(result.success) {
+     document.getElementById('paymentSection').classList.remove('hidden');
+    } else {
+      // alert(result.message);
+    }
   })
 
   //handle Payment Method selection
-  document.querySelectorAll('.payment-radio').forEach(radio => {
-    radio.addEventListener('change', () => {
-   
+  document.getElementById('paymentMethodForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+    const response = await fetch('/checkout/update-payment-method', {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json'
+      },
+      body:JSON.stringify({paymentMethod:selectedPaymentMethod})
     })
+    const result = await response.json();
+    if(result.success) {
+      document.getElementById('placeOrderBtn').classList.remove('hidden');
+    } else {
+      // alert(result.message);
+    }
   })
+
 
   //Place Order Button
   document.getElementById('placeOrderBtn').addEventListener('click', async () => {
@@ -215,6 +246,7 @@
     }
   })
 
+  // apply coupon code
   document.getElementById('applyCouponBtn').addEventListener('click', async () => {
     const couponCode = document.getElementById('couponCode').value;
     const response = await fetch('/checkout/apply-coupon', {
@@ -253,6 +285,7 @@
     }
   });
 
+  // remove coupon code
   document.getElementById('removeCouponBtn').addEventListener('click', async () => {
     const response = await fetch('/checkout/remove-coupon', {method:'POST',
       headers:{
