@@ -70,10 +70,6 @@ export const orderCancel = async (req,res) => {
     const userId = req.session.userID
     const orderId = req.params.orderID
     const itemId = req.params.itemId
-    console.log("cancel itemId :",itemId);
-    console.log("cancel orderId :",orderId);
-    console.log("cancel userId :",userId);
-
     const order = await orderModel.findOne({ _id: orderId, user: userId})
 
     if(!order){
@@ -120,3 +116,39 @@ export const orderCancel = async (req,res) => {
     res.status(500).send('Internal Server Error');
   }
 }
+
+
+//*  //  //   //  //         RETURN ORDER   //  //  //  //  //  //  //
+export const requestReturn = async (req, res) => {
+  try {
+    const userId = req.session.userID;
+    const orderId = req.params.orderID;
+    const itemId = req.params.itemId;
+    const { returnReason } = req.body;
+
+    const order = await orderModel.findOne({ _id: orderId, user: userId });
+
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    const item = order.items.id(itemId);
+    if (!item) {
+      return res.status(404).json({ message: 'Item not found' });
+    }
+
+    // Update the item with return request details
+    item.returnRequested = true;
+    item.itemStatus = 'Return Requested';
+    item.returnReason = returnReason;
+    item.returnDate = new Date();
+    await order.save();
+
+    // Notify admin (you can implement your notification logic here)
+
+    res.status(200).json({ message: 'Return request submitted successfully' });
+  } catch (error) {
+    console.log("Error in requesting return:", error);
+    res.status(500).send('Internal Server Error');
+  }
+};
