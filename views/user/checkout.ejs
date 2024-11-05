@@ -150,6 +150,32 @@
               <button id="removeCouponBtn" class="bg-red-600 text-white py-2 px-4 rounded hidden">Remove</button>
           </div>
           <p id="couponMessage" class="text-green-400 mt-2"></p>
+
+          <!-- Dropdown for Available Coupons -->
+          <div class="mt-6">
+            <button id="toggleCouponsBtn" class="bg-gray-800 text-white py-2 px-4 rounded">Available Coupons</button>
+            <ul id="couponsList" class="hidden bg-gray-900 p-4 rounded-lg mt-2 space-y-2">
+              <% coupons.forEach(coupon => { %>
+                <li class="flex flex-col p-2 border-b border-gray-700">
+                  <div class="flex justify-between items-center">
+                    <span class="font-semibold text-orange-400"><%= coupon.couponCode %></span>
+                    <span class="text-orange-400">
+                      <%= coupon.discountType === 'percentage' ? `${coupon.discountValue}% off` : `₹${coupon.discountValue} off` %>
+                    </span>
+                  </div>
+                  <p class="text-blue-500 text-sm">
+                    <%= coupon.applicableType === 'all' ? 'Applicable for all products' : 
+                        coupon.applicableProduct ? `Product: ${coupon.applicableProduct.name}` : '' %>
+                  </p>
+                  <% if (coupon.applicableType === 'category') { %>
+                    <p class="text-green-500 text-sm">
+                      Category: <%= coupon.applicableCategory ? coupon.applicableCategory.name : 'N/A' %>
+                    </p>
+                  <% } %>
+                </li>
+              <% }) %>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
@@ -312,4 +338,10 @@
     }
    
   })
+
+  // Toggle Coupons List
+  document.getElementById('toggleCouponsBtn').addEventListener('click', () => {
+    const couponsList = document.getElementById('couponsList');
+    couponsList.classList.toggle('hidden');
+  });
 </script>
