@@ -70,7 +70,6 @@ router.get('/editProduct/:id',adminMiddleware.isAdmin,productController.getEditP
 
 router.post('/editProduct/:id',upload.array('image',5),adminMiddleware.isAdmin,productController.postEditProduct)
 
-router.delete('/deleteProduct/:id',adminMiddleware.isAdmin,productController.deleteProduct)
 
 
 
