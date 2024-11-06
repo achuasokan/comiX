@@ -329,19 +329,6 @@ export const postEditProduct = async (req, res) => {
 };
 
 
-//* //  //  //   //  //          Delete  PRODUCT   //  //  //  //  //  //  //
-
-
-export const deleteProduct = async (req,res) => {
-  try {
-    const productId = req.params.id
-    const deleteProduct = await productModel.deleteOne({_id:productId})
-    res.status(200).json({message:"product deleted successful"})
-  } catch (error) {
-    console.log("error in deleting product",error);
-    res.status(500).json('internal server error')
-  }
-}
 
 
 
