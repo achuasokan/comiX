@@ -2,7 +2,7 @@ import userModel from '../../models/User.js'
 import addressModel from "../../models/address.js"
 import bcrypt from 'bcrypt'
 import couponModel from '../../models/Coupon.js'
-import walletModel from '../../models/wallet.js'
+
 //* //  //  //   //  //          GET PROFILE PAGE   //  //  //  //  //  //  //
 
 export const getProfilePage=async(req,res)=>{
