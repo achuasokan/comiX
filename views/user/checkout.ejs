@@ -79,7 +79,7 @@
               <div class="space-y-4">
                 <% addresses.forEach(address => { %>
                 <div class="p-4 bg-gray-900 shadow-lg rounded-lg">
-                  <input type="radio" name="addressId" value="<%= address._id %>" class="mr-2" required>
+                  <input type="radio" name="addressId" value="<%= address._id %>" class="mr-2" >
                   <p><%= address.name %>, <%= address.buildingName %>, <%= address.street %>, <%= address.city %>, <%= address.state %>, <%= address.country %>, <%= address.pincode %></p>
                   <p class="text-gray-400"><%= address.mobile %></p>
                 </div>
@@ -95,7 +95,7 @@
             <form id="paymentMethodForm"> 
               <div class="space-y-4">
                 <div class="bg-gray-900 p-4 shadow-lg rounded-lg">
-                <input type="radio" name="paymentMethod" value="COD" class="mr-2" required> Cash on Delivery
+                <input type="radio" name="paymentMethod" value="COD" class="mr-2" > Cash on Delivery
               </div>
               <div class="bg-gray-900 p-4 shadow-lg rounded-lg">
                 <input type="radio" name="paymentMethod" value="Razorpay" class="mr-2"> Razorpay
@@ -183,8 +183,10 @@
 
   <%- include('../partials/footer') %>
 </div>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <script>
+  const razorpayKey = "<%= razorpayKey %>";
   // Show/Hide new address form
   const newAddressBtn = document.getElementById('newAddressBtn');
   const newAddressForm = document.getElementById('newAddressForm');
@@ -202,7 +204,24 @@
   //handle Address selection
   document.getElementById('addressSelectionForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const selectedAddress = document.querySelector('input[name="addressId"]:checked').value;
+    const selectedAddressElement = document.querySelector('input[name="addressId"]:checked')
+     if(!selectedAddressElement) {
+      Swal.fire({
+        title:'warning',
+        icon:'warning',
+        text:'Please select an address before proceeding',
+       customClass:{
+        confirmButton:'bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600',
+        popup:'bg-gray-900 text-white rounded-lg shadow-lg p-6',
+        text:'text-green-400 font-bold text-2xl',
+        title:'text-green-400 font-bold text-2xl'
+       },
+       buttonsStyling:false
+      })
+      return;
+     }
+
+     const selectedAddress = selectedAddressElement.value;
     const response = await fetch('/checkout/update-address', {
       method:'POST',
       headers:{
@@ -214,14 +233,43 @@
     if(result.success) {
      document.getElementById('paymentSection').classList.remove('hidden');
     } else {
-      // alert(result.message);
+      Swal.fire({
+        title:'warning',
+        icon:'warning',
+        text:result.message,
+        confirmButtonText:'ok',
+        customClass:{
+          confirmButton:'bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600',
+          popup:'bg-gray-900 text-white rounded-lg shadow-lg p-6',
+          text:'text-green-400 font-bold text-2xl',
+          title:'text-green-400 font-bold text-2xl'
+         },
+         buttonsStyling:false
+      })
     }
   })
 
   //handle Payment Method selection
   document.getElementById('paymentMethodForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+    const selectedPaymentMethodElement = document.querySelector('input[name="paymentMethod"]:checked')
+    if(!selectedPaymentMethodElement) {
+      Swal.fire({
+        title:'warning',
+        icon:'warning',
+        text:'Please select a payment method before proceeding',
+        confirmButtonText:'ok',
+          customClass:{
+            confirmButton:'bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600',
+            popup:'bg-gray-900 text-white rounded-lg shadow-lg p-6',
+            text:'text-green-400 font-bold text-2xl',
+            title:'text-green-400 font-bold text-2xl'
+          },
+          buttonsStyling:false
+      })
+      return;
+    }
+    const selectedPaymentMethod = selectedPaymentMethodElement.value;
     const response = await fetch('/checkout/update-payment-method', {
       method:'POST',
       headers:{
@@ -233,7 +281,19 @@
     if(result.success) {
       document.getElementById('placeOrderBtn').classList.remove('hidden');
     } else {
-      // alert(result.message);
+      Swal.fire({
+        title:'warning',
+        icon:'warning',
+        text:result.message,
+        confirmButtonText:'ok',
+        customClass:{
+          confirmButton:'bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600',
+          popup:'bg-gray-900 text-white rounded-lg shadow-lg p-6',
+          text:'text-green-400 font-bold text-2xl',
+          title:'text-green-400 font-bold text-2xl'
+         },
+         buttonsStyling:false
+      })
     }
   })
 
@@ -243,34 +303,131 @@
     const selectedAddress = document.querySelector('input[name="addressId"]:checked');
     const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
     if(!selectedAddress) {
-      alert('Please select an address before placing the order.');
+      Swal.fire({
+        title:'warning',
+        icon:'warning',
+        text:'Please select an address before placing the order.',
+        confirmButtonText:'ok',
+        customClass:{
+          confirmButton:'bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600',
+          popup:'bg-gray-900 text-white rounded-lg shadow-lg p-6',
+          text:'text-green-400 font-bold text-2xl',
+          title:'text-green-400 font-bold text-2xl'
+         },
+         buttonsStyling:false
+      })
       return;
     }
     if(!selectedPaymentMethod) {
-      alert('Please select a payment method before placing the order.');
+      Swal.fire({
+        title:'warning',
+        icon:'warning',
+        text:'Please select a payment method before placing the order.',
+        confirmButtonText:'ok',
+        customClass:{
+          confirmButton:'bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600',
+          popup:'bg-gray-900 text-white rounded-lg shadow-lg p-6',
+          text:'text-green-400 font-bold text-2xl',
+          title:'text-green-400 font-bold text-2xl'
+         },
+         buttonsStyling:false
+      })
       return;
     }
 
-    //submit the form
-    const response = await fetch(
-      '/checkout/place-order',
-      {
-        method:'POST',
-        headers:{
-          'Content-Type':'application/json'
-        },
-        body:JSON.stringify({
-          addressId:selectedAddress.value,
-          paymentMethod:selectedPaymentMethod.value
+    // Prepare data for the request
+    const orderData = {
+      addressId: selectedAddress.value,
+      paymentMethod: selectedPaymentMethod.value
+    };
+
+    try {
+      // Submit the form using Axios
+      const response = await axios.post('/checkout/place-order', orderData);
+      const data = response.data;
+
+      if (data.success && selectedPaymentMethod.value === 'Razorpay') {
+        const options = {
+          key: razorpayKey,
+          amount: data.amount,
+          currency: 'INR',
+          name: "comiX",
+          image: "img/comiX.png",
+          description: "test transaction by Achu A",
+          order_id: data.orderId,
+          handler: async function (response) {
+            const paymentResponse = await axios.post('/checkout/verify-payment', {
+              orderId: data.orderId,
+              paymentId: response.razorpay_payment_id,
+              signature: response.razorpay_signature,
+              address: selectedAddress.value,
+              paymentMethod: selectedPaymentMethod.value
+            });
+
+            const paymentData = paymentResponse.data;
+            if (paymentData.success) {
+              window.location.href = '/checkout/order-confirmation';
+            } else {
+              Swal.fire({
+                title:'warning',
+                icon:'warning',
+                text:paymentData.message,
+                confirmButtonText:'ok',
+                customClass:{
+                  confirmButton:'bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600',
+                  popup:'bg-gray-900 text-white rounded-lg shadow-lg p-6',
+                  text:'text-green-400 font-bold text-2xl',
+                  title:'text-green-400 font-bold text-2xl'
+                 },
+                 buttonsStyling:false
+              })
+            }
+          },
+          prefill: {
+            name: "Achu A",
+            email: "achua@gmail.com",
+            contact: "546546465"
+          },
+          theme: {
+            color: "#000000"
+          }
+        };
+        const razorpay = new Razorpay(options);
+        razorpay.open();
+      } else if (data.success) {
+        window.location.href = '/checkout/order-confirmation';
+      } else {
+        Swal.fire({
+          title:'warning',
+          icon:'warning',
+          text:data.message,
+          confirmButtonText:'ok',
+          customClass:{
+            confirmButton:'bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600',
+            popup:'bg-gray-900 text-white rounded-lg shadow-lg p-6',
+            text:'text-green-400 font-bold text-2xl',
+            title:'text-green-400 font-bold text-2xl'
+           },
+           buttonsStyling:false
         })
+      }
+    } catch (error) {
+      console.error('Error placing order:', error);
+      Swal.fire({
+        title:'warning',
+        icon:'warning',
+        text:'An error occurred while placing the order. Please try again.',
+        confirmButtonText:'ok',
+        customClass:{
+          confirmButton:'bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600',
+          popup:'bg-gray-900 text-white rounded-lg shadow-lg p-6',
+          text:'text-green-400 font-bold text-2xl',
+          title:'text-green-400 font-bold text-2xl'
+         },
+         buttonsStyling:false
       })
-    const data = await response.json();
-    if(data.success) {
-      window.location.href = '/checkout/order-confirmation';
-    } else {
-      alert(data.message);
     }
-  })
+  });
 
   // apply coupon code
   document.getElementById('applyCouponBtn').addEventListener('click', async () => {
