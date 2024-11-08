@@ -20,7 +20,6 @@
     <div class="bg-gray-900 p-6 rounded-lg mb-6">
       <p><strong>Order ID:</strong> <%= order._id %></p>
       <p><strong>Order Date:</strong> <%= order.createdAt.toLocaleDateString() %></p>
-      <p><strong>Status:</strong> <span class="<%= order.orderStatus === 'Cancelled' ? 'text-red-500' : 'text-green-500' %>"><%= order.orderStatus %></span></p>
       <p><strong>Payment Method:</strong> <%= order.paymentMethod %></p>
     </div>
 
@@ -51,6 +50,7 @@
               <p>Price:<span class="text-orange-500">₹<%= item.discountPrice %></span></p>
               <p>Quantity: <%= item.quantity %></p>
               <p>Subtotal: ₹<%= item.discountPrice * item.quantity %></p>
+              <p>Total: ₹<%= item.itemTotal %></p>
             </div>
           </div>
           <div class="ml-4">
@@ -89,8 +89,8 @@
     <!-- Optional: Cancel Order Button -->
      <% if (item.itemStatus === 'Delivered') { %>
      <button class="return-order-btn bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700" data-order-id="<%= order._id %>" data-item-id="<%= item._id %>">Return Order</button>
-     <% } else if (item.itemStatus !== 'Cancelled' && item.itemStatus !== 'Delivered' && (order.orderStatus === 'Pending' || order.orderStatus === 'Confirmed')  ) { %>
-      <button class="cancel-order-btn bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700" data-order-id="<%= order._id %>" data-item-id="<%= item._id %>">Cancel Order</button>
+     <% } else if (item.itemStatus !== 'Cancelled' && item.itemStatus !== 'Delivered' && item.itemStatus !== 'Returned' && item.itemStatus !== 'Return Requested' ) { %>
+      <button class="cancel-order-btn bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700" data-order-id="<%= order._id %>" data-item-id="<%= item._id %>"data-product-id="<%= item.product._id %>">Cancel Order</button>
     <% } %>
   </div>
 
@@ -106,6 +106,7 @@
         e.preventDefault();
         const orderId = this.getAttribute('data-order-id');
         const itemId = this.getAttribute('data-item-id');
+        const productId = this.getAttribute('data-product-id');
 
         Swal.fire({
           title: 'Are you sure?',
@@ -124,14 +125,14 @@
           }
         }).then((result) => {
           if (result.isConfirmed) {
-            cancelOrder(orderId, itemId);
+            cancelOrder(orderId, itemId,productId);
           }
         });
       });
     });
 
-    function cancelOrder(orderId, itemId) {
-      fetch(`/order/cancel-item/${orderId}/${itemId}`, {
+    function cancelOrder(orderId, itemId,productId) {
+      fetch(`/order/cancel-item/${orderId}/${itemId}/${productId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
