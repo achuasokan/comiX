@@ -10,6 +10,7 @@ import * as wishlistControl from '../controllers/user/wishlistController.js'
 import * as cartControl from '../controllers/user/cartController.js'
 import * as checkOutControl from '../controllers/user/checkOutController.js'
 import * as orderControl from '../controllers/user/orderController.js'
+import * as walletControl from '../controllers/user/walletController.js'
 const router=express.Router()
 
 router.use(checkUserSession)
@@ -89,7 +90,13 @@ router.route('/profile/change-password')
     .get(isUser,profileControl.getChangePasswordPage)
     .post(isUser,profileControl.postChangePassword)
 
-router.get('/profile/coupons',isUser,profileControl.getCouponPage)    
+router.get('/profile/coupons',isUser,profileControl.getCouponPage)
+
+
+//^  //  //  //  //  //  //               Wallet Routes               //  //  //  //  //  //  //
+
+router.get('/profile/wallet',isUser,walletControl.getWalletPage)
+
 
 
 //^  //  //  //  //  //  //               Wishlist Routes             //  //  //  //  //  //  //
@@ -129,14 +136,18 @@ router.post('/checkout/update-address',isUser,checkOutControl.updateSelectedAddr
 
 router.post('/checkout/update-payment-method',isUser,checkOutControl.updatePaymentMethod)
 
+router.post('/checkout/verify-payment',isUser,checkOutControl.verifyPayment)
+
 //^  //  //  //  //  //  //               Order History Routes             //  //  //  //  //  //  //
 
 router.get('/profile/order',isUser,orderControl.getOrderHistoryPage)
 
 router.get('/order-detail/:orderID/:itemId',isUser,orderControl.getOrderDetailPage)
 
-router.post('/order/cancel-item/:orderID/:itemId',isUser,orderControl.orderCancel)
+router.post('/order/cancel-item/:orderID/:itemId/:productId',isUser,orderControl.orderCancel)
 
 router.post('/order/return-item/:orderID/:itemId',orderControl.requestReturn);
+
+
 
     export default router
