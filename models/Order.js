@@ -93,7 +93,7 @@ const orderSchema = new mongoose.Schema({
   orderStatus: {
     type: String,
     enum: ['Pending', 'Confirmed', 'Shipped', 'Delivered', 'Cancelled', 'Returned', 'Return Requested', 'Approved', 'Rejected', 'Refunded'],
-    default: 'Pending',
+    
   },
   orderedAt: {
     type: Date,
@@ -105,7 +105,7 @@ const orderSchema = new mongoose.Schema({
   couponCode: {
     type: String,
   },
-  couponDiscountAmount: {
+  couponDiscountAmountAll: {
     type: Number,
     default: 0,
   },
