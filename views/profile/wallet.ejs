@@ -1,0 +1,79 @@
+<%- include('../partials/header.ejs') %>
+<div class="bg-gray-900 text-white flex">
+
+  <!-- Sidebar for profile -->
+  <%- include('./profileSidebar.ejs') %>
+  <!-- Sidebar end -->
+
+  <div class="flex-1 p-8">
+    <h1 class="text-4xl font-bold mb-6 text-center text-gradient">My Wallet</h1>
+
+    <!-- Wallet Balance Section -->
+    <div class="flex justify-center mb-6">
+      <div class="bg-gradient-to-r from-teal-400 to-blue-500 p-8 rounded-lg shadow-lg text-center transform transition-transform hover:scale-105">
+        <h2 class="text-xl font-semibold">Current Balance</h2>
+        <p class="text-5xl mt-2 font-bold">₹<%= wallet.balance.toFixed(2) %></p>
+      </div>
+    </div>
+
+    <!-- Add Money Button -->
+    <div class="flex justify-center mb-6">
+      <button id="addMoneyBtn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg transition duration-200">
+        Add Money
+      </button>
+    </div>
+
+    <!-- Add Money Input Field -->
+    <div id="addMoneyInput" class="hidden mb-6 flex justify-center">
+      <input type="number" id="amount" placeholder="Enter amount" class="p-2 rounded-lg border border-gray-300" />
+      <button id="confirmAdd" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg ml-2">
+        Confirm
+      </button>
+    </div>
+
+    <!-- Transaction History Section -->
+    <h2 class="text-2xl font-semibold mb-4 text-center">Transaction History</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <% if (wallet.transaction && wallet.transaction.length > 0) { %>
+        <% wallet.transaction.forEach(transaction => { %>
+          <div class="bg-gray-800 rounded-lg p-4 shadow-lg">
+            <div class="flex justify-between">
+              <span class="font-semibold"><%= new Date(transaction.transactionDate).toLocaleDateString() %></span>
+              <span class="font-semibold"><%= transaction.transactionType %></span>
+            </div>
+            <div class="mt-2">
+              <span class="text-lg">Amount: ₹<%= transaction.walletAmount.toFixed(2) %></span>
+            </div>
+            <div class="mt-2">
+              <span class="text-sm">Order ID: <%= transaction.order_id || 'N/A' %></span>
+            </div>
+          </div>
+        <% }); %>
+      <% } else { %>
+        <p class="text-center">No transactions found.</p>
+      <% } %>
+    </div>
+  </div>
+  
+</div>
+
+<script>
+  document.getElementById('addMoneyBtn').addEventListener('click', function() {
+    document.getElementById('addMoneyInput').classList.toggle('hidden');
+  });
+
+  document.getElementById('confirmAdd').addEventListener('click', function() {
+    const amount = document.getElementById('amount').value;
+    if (amount) {
+      // Add your logic to handle adding money here
+      alert(`You are adding $${amount} to your wallet.`);
+      // Reset the input field
+      document.getElementById('amount').value = '';
+      document.getElementById('addMoneyInput').classList.add('hidden');
+    } else {
+      alert('Please enter a valid amount.');
+    }
+  });
+</script>
+
+<%- include('../partials/footer.ejs') %>
