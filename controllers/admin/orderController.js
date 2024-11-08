@@ -2,6 +2,7 @@ import orderModel from '../../models/Order.js'
 import productModel from '../../models/Product.js'
 import addressModel from '../../models/address.js'
 import userModel from '../../models/User.js'
+import walletModel from '../../models/wallet.js'
 
 //*  //  //   //  //          GET ORDER LIST PAGE   //  //  //  //  //  //  //
 
@@ -80,12 +81,6 @@ export const changeItemStatus = async (req,res) => {
       { $set: {"items.$.itemStatus": newStatus}},{new: true}
     );
 
-    const allItemStatus = updatedOrder.items.map((itm) => itm.itemStatus);
-    if(allItemStatus.every((status) => status === newStatus)) {
-      updatedOrder.orderStatus = newStatus;
-      await updatedOrder.save()
-    }
-
     res.status(200).json({success:true, newStatus})
 
   } catch (error) {
@@ -158,12 +153,10 @@ export const changeReturnStatus = async (req, res) => {
     const itemId = req.params.itemId;
     const { returnStatus } = req.body;
 
- 
-
     const order = await orderModel.findOne({
       _id: orderId,
       'items._id': itemId
-    });
+    }).populate('items.product')
 
     if (!order) {
       return res.status(404).json({ success: false, message: "Order or item not found" });
@@ -174,11 +167,40 @@ export const changeReturnStatus = async (req, res) => {
       return res.status(404).json({ success: false, message: "Item not found" });
     }
 
-  
     item.returnStatus = returnStatus;
 
     if(returnStatus === 'Approved') {
       item.itemStatus = 'Returned';
+
+      const product = item.product
+      if (product) {
+        product.stock += item.quantity
+        await product.save()
+      }
+
+      const refundAmount = item.itemTotal
+      let wallet = await walletModel.findOne({ user:order.user })
+      if(!wallet) {
+        wallet = new walletModel({
+          user:order.user,
+          balance:refundAmount,
+          transaction:[{
+            walletAmount:refundAmount,
+            transactionType:'Credited',
+            order_id:orderId,
+            transactionDate:Date.now()
+          }]
+        })
+      } else {
+        wallet.balance += refundAmount
+        wallet.transaction.push({
+          walletAmount:refundAmount,
+          transactionType:'Credited',
+          order_id:orderId,
+          transactionDate:Date.now()
+        })
+      }
+      await wallet.save()
     } else if(returnStatus === 'Rejected') {
       item.itemStatus = 'Rejected';
     } else if(returnStatus === 'Refunded') {
