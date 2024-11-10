@@ -49,17 +49,17 @@
           </select>
         </div>
         <div>
-          <button class="bg-blue-500 text-white px-4 py-2 rounded-md mr-2" onclick="applyDateRange()">Export as PDF</button>
-          <button class="bg-green-500 text-white px-4 py-2 rounded-md">Export as Excel</button>
+          <button class="bg-blue-500 text-white px-4 py-2 rounded-md mr-2" onclick="downloadReport('pdf')">Export as PDF</button>
+          <button class="bg-green-500 text-white px-4 py-2 rounded-md" onclick="downloadReport('excel')">Export as Excel</button>
         </div>
       </div>
 
       <!-- Custom Date Range Inputs -->
       <div id="customDateRange" class="<%= filterType === 'custom' ? '' : 'hidden' %> mt-4">
         <label class="text-white">Start Date:</label>
-        <input type="date" class="bg-[#242526] text-gray-200 rounded-md p-2 mr-4" id="startDate" onchange="enableEndDate()" max="">
+        <input type="date" class="bg-[#242526] text-gray-200 rounded-md p-2 mr-4" id="startDate" onchange="enableEndDate()" value="<%= startDate %>" max="">
         <label class="text-white">End Date:</label>
-        <input type="date" class="bg-[#242526] text-gray-200 rounded-md p-2" id="endDate" disabled>
+        <input type="date" class="bg-[#242526] text-gray-200 rounded-md p-2" id="endDate" value="<%= endDate %>" disabled>
         <button class="bg-blue-500 text-white px-4 py-2 rounded-md ml-4" onclick="applyDateRange()">Apply</button>
       </div>
 
@@ -87,7 +87,7 @@
               <% order.items.forEach(item => { %>
                 <% if (item.itemStatus === 'Delivered') { %>
                   <tr class="border-b border-[#3a3a3a] hover:bg-[#2a2a2a] transition-colors duration-200">
-                    <td class="px-6 py-4 whitespace-nowrap font-semibold text-lg"><%= serialNumber++ %></td>
+                    <td class="px-6 py-4 whitespace-nowrap font-semibold text-lg text-purple-500"><%= serialNumber++ %></td>
                     <td class="px-6 py-4 whitespace-nowrap font-semibold text-center text-md text-blue-500 truncate"><%= order.user.name %></td>
                     <td class="px-6 py-4 whitespace-nowrap font-semibold text-center text-md text-blue-500 truncate"><%= order._id %></td>
                     <td class="px-6 py-4 whitespace-nowrap font-semibold text-center text-md text-blue-500 truncate">
@@ -197,7 +197,67 @@
       let url = `?page=1&filterType=${filterType}&startDate=${startDate}&endDate=${endDate}`;
       window.location.href = url;
     } else {
-      alert('Please select both start and end dates for the custom range.');
+      Swal.fire({
+        icon: 'warning',
+        title: 'Please select both start and end dates for the custom range.',
+        confirmButtonText: 'OK',
+        customClass: {
+          confirmButton: 'bg-blue-500 text-white',
+        },
+      })
     }
   }
+
+  // Download Report
+  function downloadReport(format) {
+    const filterType = document.getElementById('filter').value;
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+
+    let url = `/admin/salesReport/generate-${format}?filterType=${filterType}`;
+
+    if(filterType === 'custom') {
+      url += `&startDate=${startDate}&endDate=${endDate}`;
+    }
+
+    axios({
+      url: url,
+      method: 'GET',
+      responseType: 'blob',
+    }).then((response) => {
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      
+      // Get the filename from the Content-Disposition header if available
+      const contentDisposition = response.headers['content-disposition'];
+      let filename;
+      
+      if (contentDisposition) {
+        const filenameMatch = contentDisposition.match(/filename=(.*)/);
+        filename = filenameMatch ? filenameMatch[1] : `ComiX_sales_report_${Date.now()}.${format === 'excel' ? 'xlsx' : 'pdf'}`;
+      } else {
+        filename = `ComiX_sales_report_${Date.now()}.${format === 'excel' ? 'xlsx' : 'pdf'}`;
+      }
+      
+      link.setAttribute('download', filename);
+      document.body.appendChild(link);
+      link.click();
+      
+      // Clean up
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    }).catch((error) => {
+      console.log("Error in downloadReport", error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Download Failed',
+        text: 'Failed to download the report. Please try again.',
+        confirmButtonText: 'OK',
+        customClass: {
+          confirmButton: 'bg-blue-500 text-white',
+        },
+      });
+    });
+}
 </script>
