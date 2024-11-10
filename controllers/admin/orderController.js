@@ -76,9 +76,14 @@ export const changeItemStatus = async (req,res) => {
 
     const newStatus = status[currentStatusIndex + 1]
 
+    const updateFields= { "items.$.itemStatus": newStatus };
+    if (newStatus === 'Delivered') {
+      updateFields.paymentStatus = 'Completed'
+    }
+
     const updatedOrder = await orderModel.findOneAndUpdate(
       { _id: orderId, 'items._id': itemId },
-      { $set: {"items.$.itemStatus": newStatus}},{new: true}
+      { $set: updateFields},{new: true}
     );
 
     res.status(200).json({success:true, newStatus})
