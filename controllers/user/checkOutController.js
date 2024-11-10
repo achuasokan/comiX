@@ -30,7 +30,7 @@ export const getCheckoutPage = async (req, res) => {
     if(outOfStockItems.length > 0){      
       return res.status(400).json({error:'Some of the items in your cart are out of stock.Please update your cart before proceeding to checkout.'})
     }
-    // Get the user's saved addresses
+    
     const addresses = await addressModel.find({ userId: req.session.userID });
     
     // calculate the subtotal and total discount of the cart items in the cart for the checkout page for the user for the order 
@@ -66,8 +66,7 @@ export const postOrder = async (req, res) => {
     const { addressId, paymentMethod } = req.body;
     console.log('in post order', addressId);
 
-
-    const cart = await cartModel.findOne({ user: req.session.userID }).populate('items.product');
+    const cart = await cartModel.findOne({ user: userId }).populate('items.product');
     
     if (!cart || cart.items.length === 0) {
       return res.redirect('/cart');
@@ -83,31 +82,29 @@ export const postOrder = async (req, res) => {
       const discountAmount = (item.product.price - (item.discountPrice || item.product.price)) * item.quantity;
       const totalDiscount = discountAmount + (item.couponDiscountAmount || 0);
       return {
-        product: item.product._id,
-        quantity: item.quantity,
-        price: item.price,
-        discountPrice: item.discountPrice,
-        itemTotal: itemTotal ,
-        discountAmount: discountAmount,
-        totalDiscount: totalDiscount > 0 ? totalDiscount : item.product.price,
-        couponCode: item.couponCode || null, // Store coupon code if applicable
-        couponDiscountAmount: item.couponDiscountAmount || 0 // Store item-specific discount amount
+        product: item.product._id, 
+        quantity: item.quantity, 
+        price: item.product.price, 
+        discountPrice: item.discountPrice, 
+        itemTotal: itemTotal, 
+        discountAmount: discountAmount, 
+        couponCode: item.couponCode || null, 
+        couponDiscountAmount: item.couponDiscountAmount || 0, 
+        totalDiscount: totalDiscount > 0 ? totalDiscount : 0 
       };
     });
 
     const newOrder = new orderModel({
-      user: req.session.userID,
-      items,
-      address: address._id,
-      subtotal: cart.subtotal,
-      total: cart.total,
-      paymentMethod: paymentMethod,
-      couponCode: cart.couponCode || null, // Store order-level coupon code
-      totalDiscount: cart.couponDiscount || 0 // Store total discount for the order
+      user: userId, 
+      items, 
+      address: address._id, 
+      subtotal: cart.subtotal, 
+      total: cart.total, 
+      paymentMethod: paymentMethod, 
+      couponCode: cart.couponCode || null, 
+      couponDiscountAmountAll: cart.couponDiscount || 0, 
+      totalDiscount: items.reduce((acc, item) => acc + item.totalDiscount, 0) 
     });
-
-
-
 
     // Handle Razorpay Payment
     if (paymentMethod === 'Razorpay') {
@@ -115,43 +112,60 @@ export const postOrder = async (req, res) => {
         amount: cart.total * 100,
         currency: 'INR',
         receipt: `receipt_${newOrder._id}`,
-      }
+      };
 
       const razorpayOrder = await razorpay.orders.create(options);
       console.log("razorpayOrder", razorpayOrder);
       res.status(200).json({ success: true, orderId: razorpayOrder.id });
 
-    } else if (paymentMethod === 'Wallet'){
+    } else if (paymentMethod === 'Wallet') {
+      const wallet = await walletModel.findOne({ user: userId });
 
-      const wallet = await walletModel.findOne({user:userId})
-
-      if(!wallet || wallet.balance < cart.total) {
-        return res.status(400).json({success:false, message:"Insufficient balance in wallet"})
+      if (!wallet || wallet.balance < cart.total) {
+        return res.status(400).json({ success: false, message: "Insufficient balance in wallet" });
       }
 
-      wallet.balance -= cart.total
+      wallet.balance -= cart.total;
       wallet.transaction.push({
         walletAmount: cart.total,
-        transactionType:'Debited',
-        order_id:newOrder._id,
-        transactionDate:Date.now()
-      })
+        transactionType: 'Debited',
+        order_id: newOrder._id,
+        transactionDate: Date.now()
+      });
 
-      await wallet.save()
-      newOrder.paymentStatus = 'Completed'
+      await wallet.save();
+      newOrder.paymentStatus = 'Completed';
       await newOrder.save();
       await updateStock(items);
-      await clearCart(req.session.userID);
-      res.status(200).json({ success: true, message: "Order placed successfully" , order: newOrder});
+      await clearCart(userId);
 
-    } else if (paymentMethod === 'COD'){
+      //~ if coupon is applied then update the used count of the coupon
+      if(cart.couponCode) {
+        const coupon = await couponModel.findOne({couponCode:cart.couponCode})
+        if(coupon) {
+          coupon.usedCount += 1;
+          await coupon.save();
+        }
+      }
+      res.status(200).json({ success: true, message: "Order placed successfully", order: newOrder });
+
+    } else if (paymentMethod === 'COD') {
       await newOrder.save();
       await updateStock(items);
-      await clearCart(req.session.userID);
-      res.status(200).json({ success: true, message: "Order placed successfully" , order: newOrder});
+      await clearCart(userId);
+
+      //~ if coupon is applied then update the used count of the coupon
+      if(cart.couponCode) {
+        const coupon = await couponModel.findOne({couponCode:cart.couponCode})
+        if(coupon) {
+          coupon.usedCount += 1;
+          await coupon.save();
+        }
+      }
+      res.status(200).json({ success: true, message: "Order placed successfully", order: newOrder });
 
     } else {
-      res.status(400).json({success:false, message:"Invalid payment method"})
+      res.status(400).json({ success: false, message: "Invalid payment method" });
     }
 
   } catch (error) {
@@ -202,7 +216,15 @@ export const verifyPayment = async (req,res) => {
     await updateStock(items);
     await clearCart(req.session.userID);
 
-  
+    //~ if coupon is applied then update the used count of the coupon
+    if(cart.couponCode) {
+      const coupon = await couponModel.findOne({couponCode:cart.couponCode})
+      if(coupon) {
+        coupon.usedCount += 1;
+        await coupon.save();
+      }
+    }
+
     if(signature === generatedSignature) {
       res.status(200).json({success:true, message:"Payment verified successfully", order:newOrder})
     } else {
@@ -264,8 +286,8 @@ export const applyCoupon = async (req, res) => {
     }
 
     //~ Checking coupon validity dates
-    // const currentDate = new Date("2024-11-04T10:00:00Z"); // Use the current date
-    const currentDate = new Date();
+    const currentDate = new Date("2024-11-10T10:00:00Z"); // Use the current date
+    // const currentDate = new Date();
     if (currentDate < coupon.startDate || currentDate > coupon.expiryDate) {
       return res.status(400).json({ message: "Coupon is not valid for the current date" });
     }
@@ -285,8 +307,8 @@ export const applyCoupon = async (req, res) => {
     let discountAmount = 0;
     if (coupon.discountType === 'percentage') {
       discountAmount = applicableItems.reduce((total, item) => {
-        const calculatedDiscount = (item.price * coupon.discountValue / 100);
-        const applicableDiscount = Math.min(calculatedDiscount, item.price);
+        const calculatedDiscount = (item.discountPrice * coupon.discountValue / 100);
+        const applicableDiscount = Math.min(calculatedDiscount, item.discountPrice);
         // Store coupon details in the item
         item.couponCode = coupon.couponCode; // Store coupon code
         item.couponDiscountAmount = applicableDiscount * item.quantity; // Store discount amount for this item
@@ -328,9 +350,7 @@ export const applyCoupon = async (req, res) => {
     cart.total = cart.subtotal - discountAmount;
     await cart.save();
 
-    //~ Updating the coupon used count
-    coupon.usedCount += 1;
-    await coupon.save();
+    
 
     //~ Sending the response to the client
     res.json({
@@ -363,6 +383,12 @@ export const removeCoupon = async (req,res) => {
       coupon.usedCount -= 1;
       await coupon.save();
     }
+
+    // Remove coupon details from items array
+    cart.items.forEach(item => {
+      item.couponCode = null; 
+      item.couponDiscountAmount = 0; 
+    });
 
     cart.couponCode = null;
     cart.couponDiscount = 0;
@@ -445,10 +471,10 @@ const calculateSubtotal = (items) => {
   items.forEach(item => {
     const itemTotal = (item.discountPrice || 0) * (item.quantity || 0);
     subtotal += itemTotal;
-    totalDiscount += (item.price - item.discountPrice) * item.quantity; // Calculate total discount
+    totalDiscount += (item.price - item.discountPrice) * item.quantity; 
   });
 
-  return { subtotal, totalDiscount }; // Return both subtotal and total discount
+  return { subtotal, totalDiscount }; 
 }
 
 //* //  //  //   //  //         Calculate Total     //  //  //  //  //  //  //
