@@ -8,6 +8,7 @@ import * as userController from '../controllers/admin/userController.js'
 import * as discountController from "../controllers/admin/discountController.js"
 import * as orderController from '../controllers/admin/orderController.js'
 import * as couponController from '../controllers/admin/couponController.js'
+import * as salesReportController from '../controllers/admin/salesReportController.js'
 import upload from '../middleware/multerMiddleware.js'
 
 const router=express.Router()
@@ -116,6 +117,11 @@ router.get('/editCoupon/:id',adminMiddleware.isAdmin,couponController.getEditCou
 router.post('/editCoupon/:id',adminMiddleware.isAdmin,couponController.postEditCoupon)
 
 router.post('/deleteCoupon/:id',adminMiddleware.isAdmin,couponController.deleteCoupon)
+
+
+//^  //  //  //  //  //  //                Sales Report routes                //  //  //  //  //  //  //
+
+router.get('/salesReport',adminMiddleware.isAdmin,salesReportController.getSalesReportPage)
 
 
 
