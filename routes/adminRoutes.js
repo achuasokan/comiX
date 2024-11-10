@@ -122,7 +122,8 @@ router.post('/deleteCoupon/:id',adminMiddleware.isAdmin,couponController.deleteC
 //^  //  //  //  //  //  //                Sales Report routes                //  //  //  //  //  //  //
 
 router.get('/salesReport',adminMiddleware.isAdmin,salesReportController.getSalesReportPage)
-
+router.get('/salesReport/generate-pdf',adminMiddleware.isAdmin,salesReportController.generatePDFReport)
+router.get('/salesReport/generate-excel',adminMiddleware.isAdmin,salesReportController.generateExcelReport) 
 
 
 
