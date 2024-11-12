@@ -16,7 +16,8 @@ export const getUserList=async (req,res)=> {
       usersdata,
       currentPage: page,
       totalPages,
-      startIndex
+      startIndex,
+      title:"Customers"
     })                                                    //render customers page
   }catch(message){
     console.log(message);
@@ -49,7 +50,7 @@ export const searchUser=async(req,res)=>{
   try{
     const {search=""}=req.query
     const usersdata=await userModel.find({name:{$regex:"^"+search,$options:"i"}})
-    res.render('admin/userList',{usersdata})
+    res.render('admin/userList',{usersdata,title:"Customers"})
   }catch(error){
     console.log(error);
     res.status(500).send("Internal server error")

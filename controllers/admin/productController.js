@@ -24,7 +24,8 @@ export const getProduct=async(req,res)=>{
       productList,
       currentPage: page,
       totalPages,
-      startIndex
+      startIndex,
+      title:"Products"
     })
 
   }catch(error){
@@ -37,7 +38,7 @@ export const getAddProduct=async(req,res)=>{
   try{
     const categorylist=await categoryModel.find({isBlocked:false})
     
-    res.render('admin/addProducts',{categorylist})
+    res.render('admin/addProducts',{categorylist,title:"Add Product"})
 
   }catch(error){
     console.log(error);
@@ -190,7 +191,7 @@ export const getEditProduct=async(req,res)=>{
     const id=req.params.id;
     const categorylist=await categoryModel.find({isBlocked:false})
     const products=await productModel.findById(id).populate('category')
-    res.render("admin/editProduct",{products,categorylist})
+    res.render("admin/editProduct",{products,categorylist,title:"Edit Product"})
 
   }catch(error){
     console.log(error);

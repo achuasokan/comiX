@@ -24,7 +24,8 @@ export const getDiscountListPage = async (req,res) => {
       discountList,
       currentPage: page,
       totalPages,
-      startIndex
+      startIndex,
+      title:"Discounts"
     })
   } catch(error) {
     console.log("error in getDiscountListPage", error);
@@ -40,7 +41,7 @@ export const addDiscountPage = async (req,res) => {
     
     const productList = await productModel.find({isDeleted: false})
     const categoryList = await categoryModel.find({isBlocked: false})
-    res.render("admin/addDiscount", {productList, categoryList})
+    res.render("admin/addDiscount", {productList, categoryList,title:"Add Discount"})
   }catch(error) {
     console.log("error in addDiscountPage", error);
     res.status(500).send("Internal server error")
@@ -122,7 +123,7 @@ export const editDiscountPage = async (req,res) => {
     const discount = await discountModel.findById(discountId)
     const productList = await productModel.find({isDeleted: false})
     const categoryList = await categoryModel.find({isBlocked: false})
-    res.render("admin/editDiscount", {discount, productList, categoryList})
+    res.render("admin/editDiscount", {discount, productList, categoryList,title:"Edit Discount"})
   }catch(error) {
     console.log("error in editDiscountPage", error);
     res.status(500).send("Internal server error")
