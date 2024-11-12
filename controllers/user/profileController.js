@@ -9,7 +9,7 @@ export const getProfilePage=async(req,res)=>{
   try{
     // get user from database
     const user=await userModel.findById(req.session.userID)
-    res.render('profile/personal-Info',{user,title:"Personal Info"})
+    res.render('profile/personal-Info',{user,title:"Personal Information"})
   }catch(error){
     console.log(error);
   }

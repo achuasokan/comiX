@@ -17,7 +17,7 @@ export const getOrderHistoryPage = async (req,res) => {
       populate:{path:'category',select:'name'}
     })
     .sort({createdAt:-1}).exec()
-    res.render('profile/orderHistory',{orders,title:"Order History"})
+    res.render('profile/orderHistory',{orders,title:"Orders"})
   } catch (error) {
     console.log("get order history page error :",error);
     res.status(500).send('Internal Server Error');
