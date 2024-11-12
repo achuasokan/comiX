@@ -286,8 +286,8 @@ export const applyCoupon = async (req, res) => {
     }
 
     //~ Checking coupon validity dates
-    const currentDate = new Date("2024-11-10T10:00:00Z"); // Use the current date
-    // const currentDate = new Date();
+    // const currentDate = new Date("2024-11-10T10:00:00Z"); // Use the current date
+    const currentDate = new Date();
     if (currentDate < coupon.startDate || currentDate > coupon.expiryDate) {
       return res.status(400).json({ message: "Coupon is not valid for the current date" });
     }
