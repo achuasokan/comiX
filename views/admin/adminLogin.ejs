@@ -5,11 +5,7 @@
       <div class="login-section h-[480px] w-[400px] p-10 border border-[#0e066b] shadow-lg rounded-2xl">
         <h1 class="title text-4xl font-bold text-[#00C9FFFF] shadow-md mb-5 text-center">Admin Login</h1>
         
-        <% if (typeof message !== 'undefined') { %>
-          <div class="mb-4 p-3 bg-red-500/20 border border-red-500/50 rounded-lg backdrop-blur-sm">
-            <p class="text-red-400 text-sm text-center"><%= message %></p>
-          </div>
-        <% } %>
+        <%- include('../partials/flashMessage.ejs') %>
         <form class="form-box flex flex-col box-border" method="post" action="/admin/login">
           <div class="input-field relative my-[30px]">
             <input type="email"  name="email" id="email" required spellcheck="false" class="peer w-full h-[45px] rounded-md text-xl px-4 border-2 border-white bg-transparent outline-none text-white focus:border-[#23cd48] placeholder-transparent" />
