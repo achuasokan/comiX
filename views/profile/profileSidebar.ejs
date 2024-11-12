@@ -1,31 +1,31 @@
 <div class="bg-[#121213] text-white flex flex-col items-center p-6 w-80 h-full sticky top-0">
     <div class="w-full space-y-6">
         <h2 class="text-lg font-bold">My Account</h2>
-        <a href="/profile/personal-info" class="flex items-center bg-[#1f1f1f] transition duration-200 py-3 px-8 rounded-lg hover:bg-[#3a3a3a] hover:text-yellow-400">
+        <a href="/profile/personal-info" class="flex items-center bg-[#1f1f1f] transition duration-200 py-3 px-8 rounded-lg hover:bg-gradient-to-r hover:from-red-600 hover:to-yellow-400 hover:text-black <%= locals.title === 'Personal Information' ? 'bg-gradient-to-r from-red-600 to-yellow-400 text-black' : '' %>">
             <i class="fas fa-user mr-2"></i>
             <span >Personal Information</span>
         </a>
-        <a href="/profile/address" class="flex items-center bg-[#1f1f1f] transition duration-200 py-3 px-8 rounded-lg hover:bg-[#3a3a3a] hover:text-yellow-400">
+        <a href="/profile/address" class="flex items-center bg-[#1f1f1f] transition duration-200 py-3 px-8 rounded-lg hover:bg-gradient-to-r hover:from-red-600 hover:to-yellow-400 hover:text-black <%= locals.title === 'Address' || locals.title === 'Add Address' || locals.title === 'Edit Address' ? 'bg-gradient-to-r from-red-600 to-yellow-400 text-black' : '' %>">
             <i class="fas fa-map-marker-alt mr-2"></i>
             <span >Address</span>
         </a>
-        <a href="/profile/order" class="flex items-center bg-[#1f1f1f] transition duration-200 py-3 px-8 rounded-lg hover:bg-[#3a3a3a] hover:text-yellow-400">
+        <a href="/profile/order" class="flex items-center bg-[#1f1f1f] transition duration-200 py-3 px-8 rounded-lg hover:bg-gradient-to-r hover:from-red-600 hover:to-yellow-400 hover:text-black <%= locals.title === 'Orders' ? 'bg-gradient-to-r from-red-600 to-yellow-400 text-black' : '' %>">
             <i class="fas fa-box mr-2"></i>
             <span>Orders</span>
         </a>
-        <a href="/profile/wallet" class="flex items-center bg-[#1f1f1f] transition duration-200 py-3 px-8 rounded-lg hover:bg-[#3a3a3a] hover:text-yellow-400">
+        <a href="/profile/wallet" class="flex items-center bg-[#1f1f1f] transition duration-200 py-3 px-8 rounded-lg hover:bg-gradient-to-r hover:from-red-600 hover:to-yellow-400 hover:text-black <%= locals.title === 'Wallet' ? 'bg-gradient-to-r from-red-600 to-yellow-400 text-black' : '' %>">
             <i class="fas fa-wallet mr-2"></i>
             <span >Wallet</span>
         </a>
-        <a href="/profile/coupons" class="flex items-center bg-[#1f1f1f] transition duration-200 py-3 px-8 rounded-lg hover:bg-[#3a3a3a] hover:text-yellow-400">
+        <a href="/profile/coupons" class="flex items-center bg-[#1f1f1f] transition duration-200 py-3 px-8 rounded-lg hover:bg-gradient-to-r hover:from-red-600 hover:to-yellow-400 hover:text-black <%= locals.title === 'Coupons' ? 'bg-gradient-to-r from-red-600 to-yellow-400 text-black' : '' %>">
             <i class="fas fa-ticket-alt mr-2"></i>
             <span >Coupons</span>
         </a>
-        <a href="/profile/change-password" class="flex items-center bg-[#1f1f1f] transition duration-200 py-3 px-8 rounded-lg hover:bg-[#3a3a3a] hover:text-yellow-400">
+        <a href="/profile/change-password" class="flex items-center bg-[#1f1f1f] transition duration-200 py-3 px-8 rounded-lg hover:bg-gradient-to-r hover:from-red-600 hover:to-yellow-400 hover:text-black <%= locals.title === 'Change Password' ? 'bg-gradient-to-r from-red-600 to-yellow-400 text-black' : '' %>">
             <i class="fas fa-key mr-2"></i>
             <span >Change Password</span>
         </a>
-        <form action="/logout" method="POST" class="flex items-center bg-[#1f1f1f] transition duration-200 py-3 px-8 rounded-lg hover:bg-[#3a3a3a] hover:text-yellow-400">
+        <form action="/logout" method="POST" class="flex items-center bg-[#1f1f1f] transition duration-200 py-3 px-8 rounded-lg hover:bg-gradient-to-r hover:from-red-600 hover:to-yellow-400 hover:text-black">
             <i class="fas fa-sign-out-alt mr-2"></i>
             <span >Logout</span>
         </form>
