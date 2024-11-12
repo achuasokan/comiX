@@ -24,7 +24,7 @@ export const getWishListPage = async(req,res) => {
         product.discountedPrice = await calculateDiscountPrice(product);
       }
   
-    res.render('user/wishlist',{ wishlist });
+    res.render('user/wishlist',{ wishlist,title:"Wishlist" });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal server error" });

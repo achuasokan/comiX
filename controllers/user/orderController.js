@@ -17,7 +17,7 @@ export const getOrderHistoryPage = async (req,res) => {
       populate:{path:'category',select:'name'}
     })
     .sort({createdAt:-1}).exec()
-    res.render('profile/orderHistory',{orders})
+    res.render('profile/orderHistory',{orders,title:"Order History"})
   } catch (error) {
     console.log("get order history page error :",error);
     res.status(500).send('Internal Server Error');
@@ -56,7 +56,7 @@ export const getOrderDetailPage = async (req,res) => {
     }
    
 
-    res.render('profile/orderDetail',{ order, item })    
+    res.render('profile/orderDetail',{ order, item,title:"Order Detail" })    
   } catch (error) {
     console.log("get order detail page error :",error);
     res.status(500).send('Internal Server Error');

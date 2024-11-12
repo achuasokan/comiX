@@ -15,7 +15,7 @@ export const  getLogin=async(req,res)=>{
   if(req.session.userID){                                                                       
     return res.redirect('/home')                                                                 
   }else{                                                                                         
-    res.render('user/userLogin')                                             
+    res.render('user/userLogin',{title:"Login"})                                             
   }
 }
 
@@ -88,7 +88,7 @@ export const getHome=async (req,res)=> {
 export const getSignup=async (req,res)=> {                                
   try{
     
-    res.render('user/userSignUp')                        
+    res.render('user/userSignUp',{title:"Signup"})                        
   }catch(error){
     console.log(error);  
   }
@@ -160,7 +160,7 @@ export const postSignup=async(req,res)=>{
 export const getverifyOTP=(req,res)=>{
   try{
     
-    res.render('user/otpSignup')
+    res.render('user/otpSignup',{title:"Verify OTP"})
   }catch(error){
     console.log(error);
 
@@ -294,7 +294,7 @@ export const getlandingPage=async(req,res)=>{
     }
 
     //render the home page with the category list and latest product
-    res.render("user/home",{categorylist,latestproduct})
+    res.render("user/home",{categorylist,latestproduct,title:"comiX"})
 
   }catch(error){
 

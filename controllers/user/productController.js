@@ -72,7 +72,8 @@ export const getProductsByCategory = async (req,res)=> {
       category,
       currentPage: page,
       totalPages,
-      sortOption
+      sortOption,
+      title:category.name
     })
 
   }catch(error){
@@ -109,7 +110,8 @@ export const getProductDetail = async (req,res) => {
     //render the product detail page with the product and related products
     res.render('user/productDetail',{
       product,
-      relatedProducts
+      relatedProducts,
+      title:product.name
     })
 
   }catch(error){
@@ -231,7 +233,8 @@ export const getAllProductPage = async (req, res) => {
       currentPage: page,
       totalPages,
       sortOption,
-      searchQuery
+      searchQuery,
+      title:"All Products"
     });
 
   } catch (error) {

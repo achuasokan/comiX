@@ -22,7 +22,8 @@ export const getCartPage = async (req,res) => {
     cart.total = calculateTotal(subtotal, cart.discount);
     res.render('user/cart', {cart,
       totalDiscount,
-      originalPrice: subtotal + totalDiscount
+      originalPrice: subtotal + totalDiscount,
+      title:"Cart"
     })
   } catch (error) {
     console.log("Error in getCartPage:", error)

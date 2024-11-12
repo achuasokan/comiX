@@ -8,7 +8,7 @@ import { generateOTP, sendOTPEmail } from '../../utils/otp.js'
 export const getForgotPassword = async (req,res) => {
   try{
    
-    res.render('user/forgotPassword')
+    res.render('user/forgotPassword',{title:"Forgot Password"})
   } catch(error) {
     console.log(error);
     res.status(500).send("Internal server Error")
@@ -63,7 +63,7 @@ export const postForgotPassword = async (req,res) => {
 export const getVerifyPasswordOTP =async (req,res) => {
   try{
    
-    res.render('user/otpForgotPassword')
+    res.render('user/otpForgotPassword',{title:"Verify OTP"})
 
   }catch(error){
     console.log(error);
@@ -150,7 +150,7 @@ export const postresendOTP =async (req,res) => {
 export const getResetPassword =async (req,res) => {
   try{
   
-    res.render('user/resetPassword')
+    res.render('user/resetPassword',{title:"Reset Password"})
     
   } catch(error) {
     console.log(error);

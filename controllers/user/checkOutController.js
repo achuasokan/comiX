@@ -48,7 +48,8 @@ export const getCheckoutPage = async (req, res) => {
       originalPrice: subtotal + totalDiscount,
       user: req.session.userID,
       coupons,
-      razorpayKey: process.env.RAZORPAY_KEY_ID
+      razorpayKey: process.env.RAZORPAY_KEY_ID,
+      title:"Checkout"
     });
   } catch (error) {
     console.error('Error loading checkout page:', error);
@@ -417,7 +418,7 @@ export const orderConfirmation = async (req,res) => {
     if(!newOrder) {
       return res.status(400).json({message:"No orders found"})
     }
-    res.render('user/orderConfirmation', {order:newOrder})
+    res.render('user/orderConfirmation', {order:newOrder,title:"Order Confirmation"})
   }catch (error) {
     console.error('Error loading order confirmation:', error);
     res.status(500).send('Server Error');

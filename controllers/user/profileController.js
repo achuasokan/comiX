@@ -9,7 +9,7 @@ export const getProfilePage=async(req,res)=>{
   try{
     // get user from database
     const user=await userModel.findById(req.session.userID)
-    res.render('profile/personal-Info',{user})
+    res.render('profile/personal-Info',{user,title:"Personal Info"})
   }catch(error){
     console.log(error);
   }
@@ -50,7 +50,7 @@ export const getAddressPage = async(req,res) => {
     // get addresses from database
     const addresses=await addressModel.find({userId:userID})
     // render address page with addresses
-    res.render('profile/address',{addresses})
+    res.render('profile/address',{addresses,title:"Address"})
   }catch(error) {
     console.log("error in get address page",error);
     res.status(500).send("internal server error in get address page")
@@ -62,7 +62,7 @@ export const getAddressPage = async(req,res) => {
 
 export const getAddAddressPage = async(req,res) => {
   try{
-    res.render('profile/addAddress')
+    res.render('profile/addAddress',{title:"Add Address"})
   }catch(error){
     console.log("error in get add address page",error);
   }
@@ -127,7 +127,7 @@ export const getEditAddressPage = async(req,res) => {
     const address = await addressModel.findById(addressID)
 
     // render edit address page with address data
-    res.render('profile/editAddress',{address})
+    res.render('profile/editAddress',{address,title:"Edit Address"})
   }catch(error) {
     console.log("error in get edit address page",error);
     res.status(500).send("internal server error in get edit address page")
@@ -199,7 +199,7 @@ export const getChangePasswordPage = async(req,res) => {
   try{
     // get message from query
    
-    res.render('profile/changePassword')
+    res.render('profile/changePassword',{title:"Change Password"})
   }catch (error) {
     console.log("error in get change password page",error);
     res.status(500).send("internal server error in get change password page") 
@@ -262,7 +262,7 @@ export const postChangePassword = async (req,res) => {
 export const getCouponPage = async (req,res) => {
   try {
     const couponsList = await couponModel.find({}).populate('applicableCategory').populate('applicableProduct')
-    res.render('profile/coupons',{couponsList})
+    res.render('profile/coupons',{couponsList,title:"Coupons"})
   }catch (error) {
     console.error("error in get coupon page",error);
     res.status(500).send("internal server error in get coupon page")

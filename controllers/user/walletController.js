@@ -14,7 +14,7 @@ export const getWalletPage = async (req,res) => {
     
     wallet.transaction.sort((a,b)=>b.transactionDate-a.transactionDate)
 
-    res.render('profile/wallet',{wallet})
+    res.render('profile/wallet',{wallet,title:"Wallet"})
   } catch (error) {
     console.error("error in get wallet page",error);
     res.status(500).send("internal server error in get wallet page")
