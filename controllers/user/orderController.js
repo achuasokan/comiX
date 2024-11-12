@@ -99,7 +99,7 @@ export const orderCancel = async (req,res) => {
     // finding the cancelled item from the updated order
     const cancelledItem = updatedOrder.items.id(itemId)
 
-    // finding the product associated with the cancelled item by using the product ID of the cancelled item comparing with the product ID of the product collection
+ 
     const product = await productModel.findById(cancelledItem.product._id)
 
 // updating stock
@@ -116,7 +116,7 @@ export const orderCancel = async (req,res) => {
     // finding the refund amount by using the itemTotal of the cancelled item
     const refundAmount =cancelledItem.itemTotal
 
-    //if the payment method is razorpay then calculate the refund amount and update the wallet
+ 
     if (order.paymentMethod === 'Razorpay' || order.paymentMethod === 'Wallet') {
       // if the wallet is not found then create a new wallet for the user with the refund amount
       if (!wallet) {
@@ -184,88 +184,3 @@ export const requestReturn = async (req, res) => {
   }
 };
 
-
-
-// export const orderCancel = async (req,res) => {
-//   try {
-//     const userId = req.session.userID
-
-//     const orderId = req.params.orderID
-//     const itemId = req.params.itemId
-//     const productId= req.params.productId
-  
-    
-
-//     const order = await orderModel.findOne({_id:orderId, user:userId})
-
-    
-//     if(!order){
-//     return res.status(404).json({message: 'Order not found'})
-//     }
-
-//     const itemIndex = order.items.findIndex((item) => item.product.toString() === productId)
-
-//     if(itemIndex === -1){
-//       return res.status(404).json({message: 'Item not found in the order'})
-//     }
-
-
-//     const itemQuantity = order.items[itemIndex].quantity;
-//     order.items[itemIndex].itemStatus = "Cancelled";
-//     order.updatedAt = Date.now();
-//     await order.save();
- 
-//     const product = await productModel.findById(productId)
-
-
-
-
-//     if(!product){
-//       return res.status(404).json({message: 'Product not found'})
-//     }
-
-//     product.quantity += itemQuantity
-//     await product.save()
-
-//     //first
-//     const itemTotal = order.items[itemIndex].itemTotal;
-
-//     let wallet = await walletModel.findOne({ user:userId });
-//     if (order.paymentMethod === 'Razorpay' || order.paymentMethod === 'Wallet') {
-     
-
-//       if (!wallet) {
-//         // Create a new wallet with initial balance
-//         wallet = new walletModel({
-//           user: userId,
-//           balance: itemTotal, // Set initial balance with refund amount
-//           transaction: [{
-//             walletAmount: itemTotal,
-//             transactionType: 'Credited',
-//             orderId: orderId,
-//             transactionDate: Date.now()
-//           }]
-//         });
-       
-     
-//       } else {
-//         // Update existing wallet balance and log transaction
-//         wallet.balance += itemTotal;
-//         wallet.transaction.push({
-//           walletAmount: itemTotal,
-//           transactionType: 'Credited',
-//           orderId: orderId,
-//           transactionDate: Date.now()
-//         });
-       
-      
-//       }
-//     }
-//     await wallet.save();
-//     res.status(200).json({message:'Order cancelled successfully' });
-
-//   }catch (error) {
-//     console.log("order cancel error :",error);
-//     res.status(500).send('Internal Server Error');
-//   }
-// }
