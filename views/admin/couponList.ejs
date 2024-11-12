@@ -51,16 +51,16 @@
             <!-- table body -->
              <% couponList.forEach((coupons,index) => { %>
               <tr class="border-b border-[#3a3a3a] hover:bg-[#2a2a2a] transition-colors duration-200">
-                <td class="px-6 py-4 whitespace-nowrap font-medium text-center"><%=index + 1%></td>
-                <td class="px-6 py-4 whitespace-nowrap font-medium text-center"><%=coupons.couponCode%></td>
-                <td class="px-6 py-4 whitespace-nowrap font-medium text-center"><%=coupons.discountType%></td>
-                <td class="px-6 py-4 whitespace-nowrap font-medium text-center"><%=coupons.discountValue%></td>
-                <td class="px-6 py-4 whitespace-nowrap font-medium text-center"><%=coupons.minSpend%></td>
-                <td class="px-6 py-4 whitespace-nowrap font-medium text-center"><%=coupons.usageLimit%></td>
-                <td class="px-6 py-4 whitespace-nowrap font-medium text-center"><%=coupons.usedCount%></td>
-                <td class="px-6 py-4 whitespace-nowrap font-medium text-center"><%=coupons.startDate.toLocaleDateString()%></td>
-                <td class="px-6 py-4 whitespace-nowrap font-medium text-center"><%=coupons.expiryDate.toLocaleDateString()%></td>
-                <td class="px-6 py-4 whitespace-nowrap font-medium text-center truncate <%= coupons.applicableType === 'category' ? 'text-blue-600' : '' %> <%= coupons.applicableType === 'all' ? 'text-green-500' : '' %>">
+                <td class="px-6 py-4 whitespace-nowrap font-medium text-center text-lime-400"><%=index + 1%></td>
+                <td class="px-6 py-4 whitespace-nowrap font-medium text-center text-blue-500"><%=coupons.couponCode%></td>
+                <td class="px-6 py-4 whitespace-nowrap font-medium text-center text-blue-500"><%=coupons.discountType%></td>
+                <td class="px-6 py-4 whitespace-nowrap font-medium text-center text-blue-500"><%=coupons.discountValue%></td>
+                <td class="px-6 py-4 whitespace-nowrap font-medium text-center text-blue-500"><%=coupons.minSpend%></td>
+                <td class="px-6 py-4 whitespace-nowrap font-medium text-center text-blue-500"><%=coupons.usageLimit%></td>
+                <td class="px-6 py-4 whitespace-nowrap font-medium text-center text-blue-500"><%=coupons.usedCount%></td>
+                <td class="px-6 py-4 whitespace-nowrap font-medium text-center text-blue-500"><%=coupons.startDate.toLocaleDateString()%></td>
+                <td class="px-6 py-4 whitespace-nowrap font-medium text-center text-blue-500"><%=coupons.expiryDate.toLocaleDateString()%></td>
+                <td class="px-6 py-4 whitespace-nowrap font-medium text-center truncate text-blue-500 <%= coupons.applicableType === 'category' ? 'text-orange-500' : '' %> <%= coupons.applicableType === 'all' ? 'text-green-500' : '' %>">
                   <%= 
                     coupons.applicableType === 'product' && coupons.applicableProduct ? coupons.applicableProduct.name : 
                     coupons.applicableType === 'category' && coupons.applicableCategory ? coupons.applicableCategory.name : 

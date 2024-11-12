@@ -42,7 +42,7 @@
                 <% let serialNumber = startIndex; %>
                  <% orderlist.forEach(order => { %>
                   <tr class="border-b border-[#3a3a3a] hover:bg-[#2a2a2a] transition-colors duration-200">
-                    <td class="px-6 py-4 whitespace-nowrap font-semibold text-lg"><%= serialNumber++ %></td>
+                    <td class="px-6 py-4 whitespace-nowrap font-semibold text-lg text-lime-400"><%= serialNumber++ %></td>
                     <td class="px-6 py-4 whitespace-nowrap font-semibold text-center text-md text-blue-500 truncate"><%= order.user ? order.user.name : 'Unknown User' %></td>
                     <td class="px-6 py-4 whitespace-nowrap font-semibold text-center truncate text-blue-500 truncate"><%= order._id %></td>
                     <td class="px-6 py-4 whitespace-nowrap font-semibold text-center text-blue-500">
@@ -57,9 +57,10 @@
                       <% order.items.forEach(item => { %>
                         <div class="mb-2">
                           <span class="<%= item.itemStatus === 'Pending' ? 'text-yellow-500' : 
-                                         item.itemStatus === 'Confirmed' ? 'text-blue-500' : 
+                                         item.itemStatus === 'Confirmed' ? 'text-lime-400' : 
                                          item.itemStatus === 'Shipped' ? 'text-orange-500' : 
                                          item.itemStatus === 'Delivered' ? 'text-green-500' : 
+                                         item.itemStatus === 'Returned' ? 'text-red-500' : 
                                          item.itemStatus === 'Cancelled' ? 'text-red-500' : '' %>">
                             <%= item.itemStatus %>
                           </span>
@@ -137,8 +138,7 @@
       <select id="returnStatusSelect" class="mt-1 block w-full bg-[#242526] text-gray-200 border border-gray-600 rounded-md p-2">
         <option value="Pending">Pending</option>
         <option value="Approved">Approved</option>
-        <option value="Rejected">Rejected</option>
-        <option value="Refunded">Refunded</option>
+        <option value="Rejected">Rejected</option> 
       </select>
       <button id="changeReturnStatusBtn" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg mt-4">Submit</button>
     </div>

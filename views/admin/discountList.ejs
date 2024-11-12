@@ -44,10 +44,10 @@
             <tbody>
               <% discountList.forEach((discounts,index) => { %>
                 <tr class="border-b border-[#3a3a3a] hover:bg-[#2a2a2a] transition-colors duration-200">
-                  <td class="px-6 py-4 font-medium text-lg text-center"><%=startIndex+index%></td>
-                  <td class="px-6 py-4 text-lg text-center"><%=discounts.discountType%></td>
-                  <td class="px-6 py-4 text-lg text-center"><%=discounts.discountValue%></td>
-                  <td class="px-6 py-4 text-lg text-center <%= discounts.discountType === 'category' ? 'text-orange-500' : '' %>">
+                  <td class="px-6 py-4 font-medium text-lg text-center text-lime-400"><%=startIndex+index%></td>
+                  <td class="px-6 py-4 text-lg text-center text-blue-500"><%=discounts.discountType%></td>
+                  <td class="px-6 py-4 text-lg text-center text-blue-500"><%=discounts.discountValue%></td>
+                  <td class="px-6 py-4 text-lg text-center text-blue-500 <%= discounts.discountType === 'category' ? 'text-orange-500' : '' %>">
                     <%= discounts.discountType === 'product' && discounts.product ? discounts.product.name : discounts.discountType === 'category' && discounts.category ? discounts.category.name : 'N/A' %>
                   </td>
                   
