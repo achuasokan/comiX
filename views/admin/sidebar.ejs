@@ -5,34 +5,34 @@
   <img src="/img/comiX.png" alt="comiX Logo" class="w-11/12 h-auto -mt-6">
   <div class="w-full space-y-3">
     <!-- nav links -->
-    <div class="flex items-center bg-[#1f1f1f] hover:bg-[#2f2f2f] text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
+    <div class="flex items-center bg-[#1f1f1f] hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-500 <%= locals.title == "Dashboard" ? "bg-gradient-to-r from-blue-500 to-purple-500" : "" %>  text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
       <a href="/admin/dashboard">Dashboard</a>
     </div>
-    <div class="flex items-center bg-[#1f1f1f] hover:bg-[#2f2f2f] text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
+    <div class="flex items-center bg-[#1f1f1f] hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-500 <%= locals.title == "Products" || locals.title == "Add Product" || locals.title == "Edit Product" ?  "bg-gradient-to-r from-blue-500 to-purple-500" : "" %>  text-gray-300  hover:text-white py-3 px-4 rounded-lg transition duration-200">
       <a href="/admin/products">Products</a>
     </div>
-    <div class="flex items-center bg-[#1f1f1f] hover:bg-[#2f2f2f] text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
+    <div class="flex items-center bg-[#1f1f1f] hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-500 <%= locals.title == "Customers" ? "bg-gradient-to-r from-blue-500 to-purple-500" : "" %>  text-gray-300  hover:text-white py-3 px-4 rounded-lg transition duration-200">
       <a href="/admin/users">Customers</a>
     </div>
-    <div class="flex items-center bg-[#1f1f1f] hover:bg-[#2f2f2f] text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
+    <div class="flex items-center bg-[#1f1f1f] hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-500 <%= locals.title == "Category" || locals.title == "Add Category" || locals.title == "Edit Category" ? "bg-gradient-to-r from-blue-500 to-purple-500" : "" %>  text-gray-300  hover:text-white py-3 px-4 rounded-lg transition duration-200">
       <a href="/admin/category">Category</a>
     </div>
-    <div class="flex items-center bg-[#1f1f1f] hover:bg-[#2f2f2f] text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
+    <div class="flex items-center bg-[#1f1f1f] hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-500 <%= locals.title == "Orders" ? "bg-gradient-to-r from-blue-500 to-purple-500" : "" %>  text-gray-300  hover:text-white py-3 px-4 rounded-lg transition duration-200">
       <a href="/admin/orders">Orders</a>
     </div>
-    <div class="flex items-center bg-[#1f1f1f] hover:bg-[#2f2f2f] text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
+    <div class="flex items-center bg-[#1f1f1f] hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-500 <%= locals.title == "Coupons" || locals.title == "Add Coupon" || locals.title == "Edit Coupon" ? "bg-gradient-to-r from-blue-500 to-purple-500" : "" %>  text-gray-300  hover:text-white py-3 px-4 rounded-lg transition duration-200">
       <a href="/admin/coupons">Coupons</a>
     </div>
-    <div class="flex items-center bg-[#1f1f1f] hover:bg-[#2f2f2f] text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
+    <div class="flex items-center bg-[#1f1f1f] hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-500 <%= locals.title == "Discounts" || locals.title == "Add Discount" || locals.title == "Edit Discount" ? "bg-gradient-to-r from-blue-500 to-purple-500" : "" %>  text-gray-300  hover:text-white py-3 px-4 rounded-lg transition duration-200">
       <a href="/admin/discounts">Discounts</a>
     </div>
-    <div class="flex items-center bg-[#1f1f1f] hover:bg-[#2f2f2f] text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
+    <div class="flex items-center bg-[#1f1f1f] hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-500 <%= locals.title == "Banner" ? "bg-gradient-to-r from-blue-500 to-purple-500" : "" %>  text-gray-300  hover:text-white py-3 px-4 rounded-lg transition duration-200">
       <a href="#">Banner</a>
     </div>
-    <div class="flex items-center bg-[#1f1f1f] hover:bg-[#2f2f2f] text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
+    <div class="flex items-center bg-[#1f1f1f] hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-500 <%= locals.title == "Sales Report" ? "bg-gradient-to-r from-blue-500 to-purple-500" : "" %>  text-gray-300  hover:text-white py-3 px-4 rounded-lg transition duration-200">
       <a href="/admin/salesReport">Sales Report</a>
     </div>
-    <div class="flex items-center bg-[#1f1f1f] hover:bg-[#2f2f2f] text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
+    <div class="flex items-center bg-[#1f1f1f] hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-500 text-gray-300 hover:text-white py-3 px-4 rounded-lg transition duration-200">
       <a href="#" id="logoutLink">Logout</a>
     </div>
   </div>
