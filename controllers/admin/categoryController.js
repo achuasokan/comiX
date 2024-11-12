@@ -8,7 +8,7 @@ import mongoose from 'mongoose'
 export const getCategory=async (req,res) => {                                                //admin category page
   try{
     const categoryList=await categoryModel.find({})                                       //get all category from database
-    res.render('admin/category',{categoryList})                                                        //render category page
+    res.render('admin/category',{categoryList,title:"Category"})                                                        //render category page
   }catch(message){
     console.log(message);
     res.status(500)  
@@ -20,7 +20,7 @@ export const getCategory=async (req,res) => {                                   
 
 export const getAddCategory=async (req,res)=>{                                              //add category page rendering
   try{
-   return  res.render("admin/addCategory")
+   return  res.render("admin/addCategory",{title:"Add Category"})
   }catch(error){
     console.log(error);
     res.status(500)
@@ -99,7 +99,7 @@ export const getEditCategory=async(req,res)=>{
     const id=req.params.id              //Extract the category ID from the request parameters
 
     const category=await categoryModel.findById(id)     //find the category by id
-    res.render('admin/editCategory',{category})      //render the edit category page with the  found category
+    res.render('admin/editCategory',{category,title:"Edit Category"})      //render the edit category page with the  found category
   }catch(error){
     console.log(error);
     res.status(500).send("Internal Server Error"); 
@@ -229,7 +229,7 @@ export const searchCategory=async(req,res)=>{
   try{
     const {search=""}=req.query
     const categoryList=await categoryModel.find({name:{$regex:"^"+search,$options:"i"}})
-    res.render("admin/category",{categoryList})
+    res.render("admin/category",{categoryList,title:"Category"})
   }catch(error){
     console.log(error);
     res.status(500).send("Internal Server Error")

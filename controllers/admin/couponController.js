@@ -8,7 +8,7 @@ export const getCouponListPage = async (req,res) => {
   try{
     const couponList = await couponModel.find()
     .populate('applicableProduct applicableCategory')
-    res.render('admin/couponList',{couponList})
+    res.render('admin/couponList',{couponList,title:"Coupons"})
   } catch (error) {
     console.log("error in coupon list",error);
     res.status(500).json({message:"Internal server error"})
@@ -21,7 +21,7 @@ export const addCouponPage =async (req,res) => {
   try{
     const categories = await categoryModel.find({isBlocked:false})
     const products = await productModel.find({isDeleted:false})
-    res.render('admin/addCoupon',{categories,products})
+    res.render('admin/addCoupon',{categories,products,title:"Add Coupon"})
 
   } catch (error) {
     console.log("error in add coupon page",error);
@@ -175,7 +175,7 @@ export const getEditCouponPage = async (req,res) => {
     const expiryDate = coupon.expiryDate.toISOString().split('T')[0]
     
     
-    res.render('admin/editCoupon',{coupon: {...coupon.toObject(),startDate,expiryDate},categories,products})
+    res.render('admin/editCoupon',{coupon: {...coupon.toObject(),startDate,expiryDate},categories,products,title:"Edit Coupon"})
   }catch (error) {
     console.log("Error in edit coupon page",error);
 res.status(500).send('Internal server error')    
