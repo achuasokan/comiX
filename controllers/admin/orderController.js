@@ -35,7 +35,8 @@ export const getOrderListPage = async (req,res) => {
       orderlist,
       currentPage: page,
       totalPages,
-      startIndex
+      startIndex,
+      title:"Orders"
     })
 
   }catch (error) {
@@ -107,6 +108,7 @@ export const getOrderDetails = async (req,res) => {
       path: 'items.product',
       select: 'name image price'
     })
+    
 
     if(!order) {
       return res.status(404).send("Order not found")
