@@ -6,7 +6,7 @@ export const getAdminLogin = async (req,res) => {
   if(req.session.adminID) {                                                                          //if admin is already logged in
     res.redirect( '/admin/dashboard' )                                                                 //redirect to dashboard
   }else {
-    res.render('admin/adminLogin',{message:undefined})
+    res.render('admin/adminLogin',{title:"Admin Login"})
   }
 }
 
@@ -19,7 +19,8 @@ export const postAdminLogin = async (req,res)=>{
     req.session.adminID=email                                                                      //set admin id in session  
     res.redirect('/admin/dashboard')                                                                //redirect to dashboard
   }else{                                                                                            //if email and password are incorrect
-    res.render('admin/adminLogin',{message:"Invalid Email or Password"})
+    req.flash('error',["Invalid Email or Password"])
+    res.redirect('/admin/login')
   }
 }
 
