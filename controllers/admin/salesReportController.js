@@ -11,7 +11,7 @@ export const getSalesReportPage = async (req,res) => {
     const startDate = query.startDate
     const endDate = query.endDate;
     const page = parseInt(query.page) || 1;
-    const limit = 5;
+    const limit = 10;
     const skip = (page -1) * limit
 
 
@@ -85,7 +85,8 @@ export const getSalesReportPage = async (req,res) => {
     filterType,
     startDate,
     endDate,
-    startIndex
+    startIndex,
+    title:"Sales Report"
    })
 
   }catch (error) {
@@ -97,12 +98,13 @@ export const getSalesReportPage = async (req,res) => {
 
  //* //  //  //   //  //         GENERATE PDF REPORT     //  //  //  //  //  //  //
 
- export const generatePDFReport = async (req,res) => {
+ 
+export const generatePDFReport = async (req, res) => {
   try {
-    const { filterType, startDate, endDate} = req.query;
+    const { filterType, startDate, endDate } = req.query;
     const matchCriteria = getMatchCriteria(filterType, startDate, endDate);
 
-    const salesReport =await orderModel.aggregate([
+    const salesReport = await orderModel.aggregate([
       { $match: matchCriteria },
       { $unwind: '$items' },
       { $match: { 'items.itemStatus': 'Delivered' } },
@@ -112,28 +114,94 @@ export const getSalesReportPage = async (req,res) => {
           totalRevenue: { $sum: '$items.itemTotal' },
           totalDiscount: { $sum: '$items.totalDiscount' },
           salesCount: { $sum: 1 },
-        }
-      }
-    ])
+        },
+      },
+    ]);
 
-    const reportData = salesReport[0] || { totalRevenue: 0, totalDiscount: 0, salesCount: 0}
+    const reportData = salesReport[0] || { totalRevenue: 0, totalDiscount: 0, salesCount: 0 };
 
-    const doc = new PDFDocument();
-    res.setHeader('Content-disposition', 'attachment; filename=sales_report.pdf');
-    res.setHeader('Content-type', 'application/pdf');
-
+    const doc = new PDFDocument({ margin: 30 });
+    res.setHeader('Content-Disposition', 'attachment; filename=sales_report.pdf');
+    res.setHeader('Content-Type', 'application/pdf');
     doc.pipe(res);
-    doc.fontSize(25).text('Sales Report', { align: 'center'})
-    doc.moveDown(2);
-    doc.text(`Total Revenue: ₹${reportData.totalRevenue}`);
-    doc.text(`Total Discount: ₹${reportData.totalDiscount}`);
-    doc.text(`Total Sales Count: ${reportData.salesCount}`);
-    doc.end()
-  }catch (error) {
-    console.log("Error in generatePDFReport",error);
-    res.status(500).send("Internal Server Error");
+
+    doc.fontSize(20).font('Helvetica-Bold').fillColor('#333')
+      .text('Comix Sales Report', { align: 'center' });
+    doc.moveDown(0.5);
+    doc.fontSize(12).font('Helvetica').fillColor('#666')
+      .text(`Generated on: ${new Date().toLocaleDateString()}`, { align: 'center' });
+
+    doc.moveDown(1);
+    doc.fontSize(12).font('Helvetica-Bold').fillColor('#333')
+      .text('Summary', { underline: true });
+    doc.moveDown(0.5);
+    doc.fontSize(12).font('Helvetica').fillColor('#444')
+      .text(`Total Revenue: ₹${reportData.totalRevenue}`)
+      .text(`Total Discount: ₹${reportData.totalDiscount}`)
+      .text(`Total Sales Count: ${reportData.salesCount}`);
+    doc.moveDown(1);
+
+    const headers = [
+      { label: 'User', width: 60 },
+      { label: 'Order ID', width: 80 },
+      { label: 'Product', width: 100 },
+      { label: 'Qty', width: 40 },
+      { label: 'Total Disc', width: 60 },
+      { label: 'Coupon Disc', width: 70 },
+      { label: 'Item Total', width: 60 }
+    ];
+
+    let x = doc.x, y = doc.y;
+    doc.fontSize(10).font('Helvetica-Bold').fillColor('#fff')
+      .rect(x, y, doc.page.width - doc.page.margins.left - doc.page.margins.right, 18)
+      .fill('#007acc');
+    headers.forEach((header) => {
+      doc.text(header.label, x + 5, y + 4, { width: header.width, align: 'center' });
+      x += header.width;
+    });
+    y += 18;
+
+    const truncate = (str, len) => (str.length > len ? `${str.slice(0, len - 3)}...` : str);
+
+    const orders = await orderModel.find(matchCriteria)
+      .populate('user', 'name')
+      .populate('items.product', 'name');
+
+    doc.font('Helvetica').fontSize(9).fillColor('#000');
+    orders.forEach(order => {
+      order.items.forEach(item => {
+        if (item.itemStatus === 'Delivered') {
+          x = doc.page.margins.left;
+          y += 15;
+
+          const rowData = [
+            truncate(order.user.name, 8),
+            truncate(order._id.toString(), 12),
+            truncate(item.product.name, 15),
+            item.quantity.toString(),
+            `₹${item.totalDiscount}`,
+            `₹${item.couponDiscountAmount}`
+          ];
+
+          rowData.forEach((text, i) => {
+            doc.text(text, x + 3, y, { width: headers[i].width, align: 'center' });
+            x += headers[i].width;
+          });
+
+          if (y > doc.page.height - 50) {
+            doc.addPage(); // Add a new page when reaching bottom
+            y = doc.y;
+          }
+        }
+      });
+    });
+
+    doc.end();
+  } catch (error) {
+    console.error('Error in generatePDFReport:', error);
+    res.status(500).send('Internal Server Error');
   }
- }
+};
 
 
 
@@ -171,15 +239,16 @@ export const generateExcelReport = async (req, res) => {
     const titleCell = worksheet.getCell('A1');
     titleCell.value = 'comiX Sales Report';
     titleCell.font = {
-      name: 'Impact:',
+      name: ' Georgia',
       size: 16,
       bold: true,
-      color: { argb: '#FFFFFF' }
+     
+     
     };
     titleCell.fill = {
       type: 'pattern',
       pattern: 'solid',
-      fgColor: { argb: '#00008B' }
+  
     }
     titleCell.alignment = {
       vertical: 'middle',
@@ -204,12 +273,12 @@ export const generateExcelReport = async (req, res) => {
     filterInfoRow.eachCell((cell) => {
       cell.font = {
         bold: true,
-        color: { argb: '#FFFFFF' } 
+    
       };
       cell.fill = {
         type: 'pattern',
         pattern: 'solid',
-        fgColor: { argb: '#0070C0' } 
+   
       };
       cell.alignment = {
         vertical: 'middle',
@@ -238,12 +307,13 @@ export const generateExcelReport = async (req, res) => {
       cell.value = header;
       cell.font = {
         bold: true,
-        color: { argb: '#000000' }
+      
       };
       cell.fill = {
         type: 'pattern',
         pattern: 'solid',
-        fgColor: { argb: '#FFA500' }  // Dark blue background
+      
+        // Dark blue background
       };
       cell.alignment = {
         vertical: 'middle',
