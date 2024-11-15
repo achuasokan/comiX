@@ -222,7 +222,7 @@
      }
 
      const selectedAddress = selectedAddressElement.value;
-    const response = await fetch('/checkout/update-address', {
+    const response = await fetch('/checkout/address/update', {
       method:'POST',
       headers:{
         'Content-Type':'application/json'
@@ -270,7 +270,7 @@
       return;
     }
     const selectedPaymentMethod = selectedPaymentMethodElement.value;
-    const response = await fetch('/checkout/update-payment-method', {
+    const response = await fetch('/checkout/payment-methods/update', {
       method:'POST',
       headers:{
         'Content-Type':'application/json'
@@ -356,7 +356,7 @@
           description: "test transaction by Achu A",
           order_id: data.orderId,
           handler: async function (response) {
-            const paymentResponse = await axios.post('/checkout/verify-payment', {
+            const paymentResponse = await axios.post('/checkout/payment/verify', {
               orderId: data.orderId,
               paymentId: response.razorpay_payment_id,
               signature: response.razorpay_signature,
@@ -432,7 +432,7 @@
   // apply coupon code
   document.getElementById('applyCouponBtn').addEventListener('click', async () => {
     const couponCode = document.getElementById('couponCode').value;
-    const response = await fetch('/checkout/apply-coupon', {
+    const response = await fetch('/checkout/coupons/apply', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -470,7 +470,7 @@
 
   // remove coupon code
   document.getElementById('removeCouponBtn').addEventListener('click', async () => {
-    const response = await fetch('/checkout/remove-coupon', {method:'POST',
+    const response = await fetch('/checkout/coupons/remove', {method:'POST',
       headers:{
         'Content-Type':'application/json'
       }
