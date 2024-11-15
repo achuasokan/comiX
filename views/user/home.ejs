@@ -23,14 +23,14 @@
                <% categorylist.forEach(Category => { %>
                 <div class="  rounded-lg overflow-hidden shadow-lg">
                   <div class="h-96 w-full overflow-hidden">
-                    <a href="/Category/<%= Category._id %>">
+                    <a href="/shop/category/<%= Category._id %>">
                       <img src="<%- Category.image %>" alt="<%- Category.image %>" class="w-full h-full object-cover" loading="lazy">
                     </a>
                   </div>
                   <div class="p-4">
                     <h3 class="text-white text-xl font-semibold text-center"><%- Category.name %></h3>
                     <p class="text-center">
-                      <a href="/Category/<%= Category._id %>" class="text-orange-400 hover:text-orange-600 font-bold">Shop Now</a>
+                      <a href="/shop/category/<%= Category._id %>" class="text-orange-400 hover:text-orange-600 font-bold">Shop Now</a>
                     </p>
                   </div>
                 </div>
