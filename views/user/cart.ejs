@@ -107,7 +107,7 @@
     quantityInput.value = newQuantity;
     
     fetch(`/cart/${productId}/update`, {
-      method: 'POST',
+      method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -146,8 +146,8 @@
       }
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`/cart/delete/${productId}`, {
-          method: 'POST',
+        fetch(`/cart/${productId}`, {
+          method: 'DELETE',
         })
         .then(response => response.json())
         .then(data => {
