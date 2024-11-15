@@ -24,11 +24,11 @@ export const postForgotPassword = async (req,res) => {
     const user = await userModel.findOne( {email} )
     if(!user) {
       req.flash('error','User not found')
-      return res.redirect('/forgotPassword')
+      return res.redirect('/password/forgot')
     }
     if(user.isBlocked){
       req.flash('error',"your account has been blocked. Please Contact Support")
-      return res.redirect('/forgotPassword')
+      return res.redirect('/password/forgot')
     }
 
     // Generate a new OTP
@@ -47,12 +47,12 @@ export const postForgotPassword = async (req,res) => {
    
     // Redirect the user to the OTP verification page
     req.flash('success','OTP sent to your email.Please check your email')
-    res.redirect('/verifyPasswordOtp')
+    res.redirect('/password/verify-otp')
 
   } catch(error) {
     console.log(error);
     req.flash('error',"An Error occurred during password reset. Please try again")
-    res.redirect('/forgotPassword')
+    res.redirect('/password/forgot')
 
   }
 }
@@ -83,7 +83,7 @@ export const postVerifyPasswordOTP =async (req,res) => {
 
     if(!tempForgotPassword){
       req.flash('error','session expired. please try again')
-      return res.redirect('/verifyPasswordOtp')
+      return res.redirect('/password/verify-otp')
     }
 
     // Extract email, stored OTP, and OTP expiration time from session data
@@ -92,19 +92,19 @@ export const postVerifyPasswordOTP =async (req,res) => {
     // Check if the entered OTP matches the stored OTP and is not expired
     if(otp !== storedOTP || otpExpiresAt < new Date()) {
       req.flash('error','invalid or expired otp')
-      return res.redirect('/verifyPasswordOtp')
+      return res.redirect('/password/verify-otp')
     }
 
     // Redirect to the reset password page with a success message
     req.flash('success','OTP verified successfully. Please reset your password')
-    res.redirect('/resetPassword')
+    res.redirect('/password/reset')
 
 
   } catch(error) {
 
     console.log(error);
     req.flash('error',"An Error occurred during verifying OTP. Please try again")
-    res.redirect('/verifyPasswordOtp')
+    res.redirect('/password/verify-otp')
 
   }
 }
@@ -112,13 +112,13 @@ export const postVerifyPasswordOTP =async (req,res) => {
 
 //* //  //  //   //  //          resend OTP          //  //  //  //  //  //  //
 
-export const postresendOTP =async (req,res) => {
+export const postResendOTP =async (req,res) => {
   try{
     const tempForgotPassword =req.session.tempForgotPassword
 
     if(!tempForgotPassword){
       req.flash('error','session expired. please try again')
-      return res.redirect('/forgotPassword')
+      return res.redirect('/password/forgot')
     }
 
     const {email} = tempForgotPassword
@@ -134,12 +134,12 @@ export const postresendOTP =async (req,res) => {
 
     await sendOTPEmail(email, newOTP)
     req.flash('success','New OTP has been sent to your email. Please check your email')
-    res.redirect('/verifyPasswordOtp')
+    res.redirect('/password/verify-otp')
 
   } catch(error){
     console.log(error);
     req.flash('error','Error sending OTP. Please try again')
-    res.redirect('/verifyPasswordOtp')
+    res.redirect('/password/verify-otp')
 
   }
 }
@@ -169,13 +169,13 @@ export const postResetPassword =async (req,res) => {
 
     if (!passwordPattern.test(newPassword)) {
       req.flash('error', 'Password must be at least 6 characters long, include upper and lower case letters, a digit, and a special character.');
-      return res.redirect('/resetPassword')
+      return res.redirect('/password/reset')
     }
 
  // Check if the new password and confirm password match
     if(newPassword !== confirmPassword){
       req.flash('error',"The password you entered do not match.Please try again")
-      return res.redirect('/resetPassword')
+      return res.redirect('/password/reset')
     }
 
  // Retrieve tempForgotPassword session data
@@ -183,7 +183,7 @@ export const postResetPassword =async (req,res) => {
 
     if(!tempForgotPassword){
       req.flash('error','session expired. please try again')
-      return res.redirect('/resetPassword')
+      return res.redirect('/password/reset')
     }
  // Extract email from session data
     const {email} = tempForgotPassword
@@ -205,7 +205,7 @@ export const postResetPassword =async (req,res) => {
   } catch(error) {
     console.log(error);
     req.flash('error',"Error reseting password. Please try again")
-    res.redirect('/resetPassword')
+    res.redirect('/password/reset')
 
   }
 }
