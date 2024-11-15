@@ -9,7 +9,7 @@
     <h1 class="text-2xl font-bold mb-4">Available Coupons</h1>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <% couponsList.forEach(coupon => { %>
-        <a href="<%= coupon.applicableType === 'product' ? '/product/' + coupon.applicableProduct.id : coupon.applicableType === 'category' ? '/Category/' + coupon.applicableCategory.id : '/shop/allProducts' %>" class="bg-gray-900 p-4 rounded-lg shadow-lg transition-transform transform hover:scale-105 block">
+        <a href="<%= coupon.applicableType === 'product' ? '/product/' + coupon.applicableProduct.id : coupon.applicableType === 'category' ? '/shop/category/' + coupon.applicableCategory.id : '/shop/allProducts' %>" class="bg-gray-900 p-4 rounded-lg shadow-lg transition-transform transform hover:scale-105 block">
           
           <h2 class="text-lg font-semibold mb-2 text-yellow-400">
             <%= coupon.couponCode %> - <%= coupon.discountValue %> <%= coupon.discountType === 'percentage' ? '%OFF' : '₹OFF' %>
