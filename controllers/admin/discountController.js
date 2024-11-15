@@ -59,11 +59,10 @@ export const addDiscount = async (req,res) => {
     const errors = [];
 
     const discountValues = parseInt(discountValue);
-    if(isNaN(discountValues) || discountValues <= 0 || discountValues.toString().length !== discountValue) {
-      errors.push('Discount value must be a number greater than zero.')
+    if(isNaN(discountValues) || discountValues < 1 || discountValues > 90 || discountValue.startsWith('0')) {
+      errors.push('Discount value must be a number between 1 to 90.')
     }
 
-    
     
     if(discountType === 'product'){
       const existingDiscount = await discountModel.findOne({product})
@@ -137,6 +136,36 @@ export const postEditDiscount = async (req,res) => {
   try{
     const discountId = req.params.id
     const {discountType,discountValue,product,category} = req.body
+
+    const errors = [];
+
+    const discountValues = parseInt(discountValue);
+    if(isNaN(discountValues) || discountValues < 1 || discountValues > 90 || discountValue.startsWith('0')) {
+      errors.push('Discount value must be a number between 1 to 90.')
+    }
+
+    if(discountType === 'product'){
+      const existingDiscount = await discountModel.findOne({product,
+        _id: {$ne: discountId}}
+      )
+      if(existingDiscount){
+       errors.push('A discount already exists for this product.')
+      }
+    }
+
+    if(discountType === 'category'){
+      const existingDiscount = await discountModel.findOne({category,
+        _id: {$ne: discountId}}
+      )
+      if(existingDiscount){
+       errors.push('A discount already exists for this category.')
+      }
+    }
+
+    if(errors.length > 0) {
+      req.flash('error', errors)
+      return res.status(400).redirect(`/admin/editDiscount/${discountId}`)
+    }
 
     const updatedDiscount = await discountModel.findByIdAndUpdate(discountId,{
       discountType,

@@ -92,8 +92,8 @@ function validateField(fieldName) {
   switch(fieldName) {
     case 'discountValue':
       const discountValue = field.value.trim();
-      isValid=/^\d+$/.test(discountValue) && parseInt(discountValue) >=1;
-      errorElement.textContent =isValid ? '' : 'Discount value should be a number and must be greater than zero'
+      isValid=/^\d+$/.test(discountValue) && parseInt(discountValue) >=1 && parseInt(discountValue) <= 90 && !discountValue.startsWith('0');
+      errorElement.textContent =isValid ? '' : 'Discount value should be a number and must be between 1 to 90';
   }
   return isValid;
 }
