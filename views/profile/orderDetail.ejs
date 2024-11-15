@@ -132,7 +132,7 @@
     });
 
     function cancelOrder(orderId, itemId,productId) {
-      fetch(`/order/cancel-item/${orderId}/${itemId}/${productId}`, {
+      fetch(`/order/${orderId}/item/${itemId}/product/${productId}/cancel`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -201,7 +201,7 @@
     });
 
     function submitReturnRequest(orderId, itemId, returnReason) {
-      fetch(`/order/return-item/${orderId}/${itemId}`, {
+      fetch(`/order/${orderId}/item/${itemId}/return`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
