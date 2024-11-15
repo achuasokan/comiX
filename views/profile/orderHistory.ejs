@@ -1,5 +1,28 @@
 <%- include('../partials/header.ejs') %>
 
+<style>
+  .item-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px; /* Add padding for better spacing */
+  }
+  .item-name {
+    flex-grow: 1; /* Allow the item name to take available space */
+    min-width: 0; /* Prevent overflow */
+    margin-right: 10px; /* Space between name and price */
+  }
+  .item-price {
+    min-width: 100px; /* Fixed width for price */
+    text-align: right; /* Align text to the right */
+    margin-right: 200px; /* Space between name and price */
+  }
+  .item-status {
+    min-width: 200px; /* Fixed width for status */
+    text-align: right; /* Align text to the right */
+  }
+</style>
+
 <div class="flex bg-black text-white">
   <%- include('./profileSidebar.ejs') %>
 
@@ -14,7 +37,6 @@
         <option value="Delivered">Delivered</option>
         <option value="Cancelled">Cancelled</option>
         <option value="Processing">Processing</option>
-      
       </select>
       <input
         type="text"
@@ -27,64 +49,61 @@
     <p class="text-gray-400">You have no orders yet.</p>
     <% } else { %>
     <ul class="space-y-4">
-      <% orders.forEach(order => { %> <% order.items.forEach(item => { %>
-      <li
-        class="border border-gray-700 rounded-lg p-4 shadow-md flex items-center justify-between"
-      >
-        <div class="flex items-center">
-            <a href="/order/<%= order._id %>/details/<%= item._id %>" class="flex items-center">
-             
-              <% if (item.product) { %>
-          <img
-            src="<%= item.product.image[1] %>"
-            alt="<%= item.product.name %>"
-            class="w-16 h-16 object-cover rounded mr-4"
-          />
-          <div class="flex flex-col">
-            <h2 class="text-xl font-semibold truncate"><%= item.product.name %></h2>
-            <p class="text-sm text-gray-400">
-              Category: <%= item.product.category.name %>
-            </p>
+      <% orders.forEach(order => { %>
+      <li class="border border-gray-700 rounded-lg p-4 shadow-md">
+        <h2 class="text-xl font-semibold">Order ID: <%= order._id %></h2>
+        <p class="text-sm text-gray-400">Status: <%= order.paymentStatus %></p>
+        <div class="space-y-2">
+          <% order.items.forEach(item => { %>
+          <div class="border border-gray-600 rounded-lg item-container">
+            <div class="flex items-center item-name">
+              <a href="/order/<%= order._id %>/details/<%= item._id %>" class="flex items-center">
+                <% if (item.product) { %>
+                <img
+                  src="<%= item.product.image[1] %>"
+                  alt="<%= item.product.name %>"
+                  class="w-16 h-16 object-cover rounded mr-4"
+                />
+                <div class="flex flex-col">
+                  <h3 class="text-lg font-semibold truncate"><%= item.product.name %></h3>
+                  <p class="text-sm text-gray-400">Category: <%= item.product.category.name %></p>
+                </div>
+                <% } else { %>
+                <p class="text-sm text-gray-400">Product not found</p>
+                <% } %>
+              </a>
+            </div>
+            <div class="item-price">
+              <p class="text-lg">Price: ₹<%= item.discountPrice %></p>
+            </div>
+            <div class="item-status">
+              <p class="text-sm text-gray-400">
+                <% if (item.itemStatus === 'Pending') { %>
+                <span class="text-yellow-500">Order is pending right now.</span>
+                <% } else if (item.itemStatus === 'Shipped') { %>
+                <span class="text-green-500">Shipped on <%= order.updatedAt.toLocaleDateString() %></span>
+                <% } else if (item.itemStatus === 'Confirmed') { %>
+                <span class="text-green-500">Confirmed on <%= order.updatedAt.toLocaleDateString() %></span>
+                <% } else if (item.itemStatus === 'Delivered') { %>
+                <span class="text-green-500">Delivered on <%= order.updatedAt.toLocaleDateString() %></span>
+                <% } else if (item.itemStatus === 'Cancelled') { %>
+                <span class="text-red-500">Cancelled on <%= order.updatedAt.toLocaleDateString() %></span>
+                <% } else if (item.itemStatus === 'Returned') { %>
+                <span class="text-red-500">Returned on <%= order.updatedAt.toLocaleDateString() %></span>
+                <% } else if (item.itemStatus === 'Refunded') { %>
+                <span class="text-orange-500">Your item has been refunded on <%= order.updatedAt.toLocaleDateString() %></span>
+                <% } else if (item.itemStatus === 'Return Requested') { %>
+                <span class="text-yellow-500">Return request sent</span>
+                <% } else if (item.itemStatus === 'Rejected') { %>
+                <span class="text-red-500">Return request rejected.</span>
+                <% } %>
+              </p>
+            </div>
           </div>
-          <% } else { %>
-          <p class=" text-sm text-gray-400">Product not found</p>
-          <% } %>
-          </a>
-        </div>
-        <div class="flex flex-col items-center flex-grow justify-around">
-          <p class="text-lg">Price: ₹<%= item.discountPrice %></p>
-        </div>
-        <div class="flex flex-col items-end">
-          <p class="text-sm text-gray-400">
-            <% if (item.itemStatus === 'Pending') { %>
-            <span class="text-yellow-500">Order is pending right now.</span>
-
-            <% } else if (item.itemStatus === 'Shipped') { %>
-            <span class="text-green-500">Shipped on <%= order.updatedAt.toLocaleDateString() %></span>
-
-            <% } else if (item.itemStatus === 'Confirmed') { %>
-            <span class="text-green-500">Confirmed on <%= order.updatedAt.toLocaleDateString() %></span>
-
-            <% } else if (item.itemStatus === 'Delivered') { %>
-            <span class="text-green-500">Delivered on <%= order.updatedAt.toLocaleDateString() %></span>
-
-            <% } else if (item.itemStatus === 'Cancelled') { %>
-            <span class="text-red-500">Cancelled on <%= order.updatedAt.toLocaleDateString() %></span>
-
-            <% } else if (item.itemStatus === 'Returned') { %>
-            <span class="text-red-500"> Returned on <%= order.updatedAt.toLocaleDateString() %></span>
-            
-            <% } else if (item.itemStatus === 'Refunded') { %>
-            <span class="text-orange-500">Your item has been refunded on <%= order.updatedAt.toLocaleDateString() %></span>
-            <% } else if (item.itemStatus === 'Return Requested') { %>
-            <span class="text-yellow-500">Return request sent</span>
-            <% } else if (item.itemStatus === 'Rejected') { %>
-            <span class="text-red-500"> Return request rejected.</span>
-            <% } %>
-          </p>
+          <% }) %>
         </div>
       </li>
-      <% }) %> <% }) %>
+      <% }) %>
     </ul>
     <% } %>
   </div>
