@@ -81,7 +81,7 @@
   }
 
   document.getElementById('confirmDelete').onclick = function() {
-  fetch(`/wishlist/delete/${productIdToDelete}`, {
+  fetch(`/wishlist/${productIdToDelete}`, {
     method: 'DELETE'
   })
 .then(response => response.json())
