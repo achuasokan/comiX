@@ -60,7 +60,7 @@ router.get('/',userControl.getLandingPage)
 
 router.get('/shop/allProducts',productControl.getAllProductPage)
 
-router.get('/Category/:id',productControl.getProductsByCategory)
+router.get('/shop/category/:id',productControl.getProductsByCategory)
 
 router.get('/product/:id',productControl.getProductDetail)
 
@@ -106,7 +106,7 @@ router.get('/wishlist',isUser,wishlistControl.getWishListPage)
 
 router.post('/wishlist/:productId',isUser,wishlistControl.addToWishlist)
 
-router.delete('/wishlist/delete/:productId',isUser,wishlistControl.removeFromWishlist)
+router.delete('/wishlist/:productId',isUser,wishlistControl.removeFromWishlist)
 
 //^  //  //  //  //  //  //               Cart Routes               //  //  //  //  //  //  //
 
@@ -114,10 +114,10 @@ router.get('/cart',isUser,cartControl.getCartPage)
 
 router.post('/cart/:productId/add',isUser,cartControl.addToCart)
 
-router.post('/cart/:productId/update',isUser,cartControl.updateCartItemQuantity)
+router.patch('/cart/:productId/update',isUser,cartControl.updateCartItemQuantity)
 
 
-router.post('/cart/delete/:productId',isUser,cartControl.removeCartItem)
+router.delete('/cart/:productId',isUser,cartControl.removeCartItem)
 
 //^  //  //  //  //  //  //               Checkout Routes              //  //  //  //  //  //  //
 
