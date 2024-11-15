@@ -31,31 +31,32 @@ router.post('/logout',userControl.postLogout)
 
 //^  //  //  //  //  //  //               OtP verifying Routes             //  //  //  //  //  //  //
 
-router.route('/verify-otp')
-    .get(userControl.getverifyOTP)
-    .post(userControl.postverifyOTP)
-router.post('/resend-otp',userControl.resendOTP)                                               
+router.route('/otp/verify')
+    .get(userControl.getVerifyOTP)
+    .post(userControl.postVerifyOTP)
+
+router.post('/otp/resend',userControl.resendOTP)                                               
 
 //^  //  //  //  //  //  //               Forgot Password Routes             //  //  //  //  //  //  //
 
-router.route('/forgotPassword')
+router.route('/password/forgot')
     .get(passwordControl.getForgotPassword)
     .post(passwordControl.postForgotPassword)
 
-router.route('/verifyPasswordOtp')
+router.route('/password/verify-otp')
     .get(passwordControl.getVerifyPasswordOTP)
     .post(passwordControl.postVerifyPasswordOTP)                                               
 
-router.post('/resendOTP',passwordControl.postresendOTP)                                        
+router.post('/password/resend-otp',passwordControl.postResendOTP)                                        
 
-router.route('/resetPassword')
+router.route('/password/reset')
     .get(passwordControl.getResetPassword)
     .post(passwordControl.postResetPassword)
 
 
 //^  //  //  //  //  //  //               Landing page Routes              //  //  //  //  //  //  //
 
-router.get('/',userControl.getlandingPage)
+router.get('/',userControl.getLandingPage)
 
 router.get('/shop/allProducts',productControl.getAllProductPage)
 
