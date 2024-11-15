@@ -13,7 +13,7 @@
      <!-- flash message  -->
      <%- include('../partials/flashMessage.ejs') %>
 
-      <form action="/verify-otp" method="POST" class="space-y-6">
+      <form action="/otp/verify" method="POST" class="space-y-6">
        
         <div>
           <label for="otp" class="block text-sm font-medium text-gray-300 mb-2">Enter OTP</label>
@@ -23,7 +23,7 @@
           Verify OTP
         </button>
       </form>
-      <form action="/resend-otp" method="POST">
+      <form action="/otp/resend" method="POST">
         <div class="mt-4 text-center">
           <p class="text-sm text-gray-400">Didn't receive the OTP?</p>
                                                     
