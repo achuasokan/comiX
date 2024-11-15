@@ -178,6 +178,7 @@ export const changeReturnStatus = async (req, res) => {
 
     if(returnStatus === 'Approved') {
       item.itemStatus = 'Returned';
+      item.returnRequested = false;
 
       const product = item.product
       if (product) {

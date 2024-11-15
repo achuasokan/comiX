@@ -128,19 +128,21 @@
 
   <!-- Modal for return request details -->
 <div id="returnRequestModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 hidden">
-  <div class="bg-[#1f1f1f] text-white p-4 rounded-lg relative w-3/4 max-w-2xl h-auto overflow-hidden">
+  <div class="bg-[#1f1f1f] text-white p-6 rounded-lg relative w-3/4 max-w-2xl h-auto overflow-hidden">
     <button class="absolute top-2 right-2 text-white text-2xl hover:text-gray-300" id="closeReturnModal">&times;</button>
-    <div id="returnRequestContent" style="overflow-y: scroll; max-height: 70vh; -ms-overflow-style: none; scrollbar-width: none;">
+    
+    <h3 class="text-lg font-bold text-center mb-4">Return Request Details</h3>
+    
+    <div id="returnRequestContent" class="mb-4" style="overflow-y: scroll; max-height: 70vh; -ms-overflow-style: none; scrollbar-width: none;">
       <!-- Return request details will be populated here -->
     </div>
-    <div class="mt-4">
-      <label for="returnStatusSelect" class="block text-sm font-medium">Change Return Status:</label>
-      <select id="returnStatusSelect" class="mt-1 block w-full bg-[#242526] text-gray-200 border border-gray-600 rounded-md p-2">
-        <option value="Pending">Pending</option>
-        <option value="Approved">Approved</option>
-        <option value="Rejected">Rejected</option> 
-      </select>
-      <button id="changeReturnStatusBtn" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg mt-4">Submit</button>
+    
+    <div class="mt-4 text-center">
+      <p class="block text-sm font-medium">Change Return Status:</p>
+      <div class="mt-4 flex justify-center space-x-4">
+        <button id="approveReturnBtn" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg">Approve</button>
+        <button id="rejectReturnBtn" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg">Reject</button>
+      </div>
     </div>
   </div>
 </div>
@@ -249,7 +251,6 @@ returnDetailsButtons.forEach(button => {
 
             // Populate the modal with return request details
             document.getElementById('returnRequestContent').innerHTML = `
-                <h3 class="text-lg font-bold">Return Request Details</h3>
                 <p><strong>User:</strong> ${result.user.name}</p>
                 <p><strong>Product:</strong> ${result.product.name}</p>
                 <img src="${result.product.image[1]}" alt="${result.product.name}" class="w-32 h-32 object-cover mb-2">
@@ -260,112 +261,63 @@ returnDetailsButtons.forEach(button => {
             // Show the modal
             document.getElementById('returnRequestModal').classList.remove('hidden');
 
-            // Set the current status as the previous status
-            const previousStatus = result.returnStatus;
-
-            // Disable the "Pending" option in the dropdown
-            const returnStatusSelect = document.getElementById('returnStatusSelect');
-            returnStatusSelect.value = previousStatus;
-            Array.from(returnStatusSelect.options).forEach(option => {
-                if (option.value === "Pending") {
-                    option.disabled = true; // Always disable "Pending"
-                }
-            });
-
-            // Disable the current status option in the dropdown
-            if (previousStatus) {
-                Array.from(returnStatusSelect.options).forEach(option => {
-                    if (option.value === previousStatus) {
-                        option.disabled = true; // Disable the current status
-                    }
-                });
-            }
-
-            // Track selected statuses
-            const selectedStatuses = new Set();
-
-            // Set up the change return status button
-            document.getElementById('changeReturnStatusBtn').onclick = async () => {
-                const selectedStatus = document.getElementById('returnStatusSelect').value;
-                selectedStatuses.add(selectedStatus); // Add selected status to the set
-
-                try {
-                    const updateResponse = await fetch(`/admin/orders/${orderId}/${itemId}/change-return-status`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ returnStatus: selectedStatus })
-                    });
-
-                    const updateResult = await updateResponse.json();
-                    console.log("update result :", updateResult);
-                    if (updateResult.success) {
-                        // Update the UI or show a success message
-                        Toastify({
-                            text: `Return status changed to: ${updateResult.newStatus}`,
-                            duration: 3000,
-                            gravity: "top",
-                            position: 'right',
-                            backgroundColor: "green",
-                        }).showToast();
-                        // Optionally, close the modal
-                        document.getElementById('returnRequestModal').classList.add('hidden');
-                    } else {
-                        // Show failure notification
-                        Toastify({
-                            text: `${updateResult.message}`,
-                            duration: 3000,
-                            gravity: "top",
-                            position: 'right',
-                            backgroundColor: "red",
-                        }).showToast();
-                    }
-                } catch (error) {
-                    console.log("Error changing return status:", error);
-                    // Show error notification
-                    Toastify({
-                        text: "An error occurred while changing the return status.",
-                        duration: 3000,
-                        gravity: "top",
-                        position: 'right',
-                        backgroundColor: "red",
-                    }).showToast();
-                }
+            // Approve button click handler
+            document.getElementById('approveReturnBtn').onclick = async () => {
+                await changeReturnStatus(orderId, itemId, 'Approved');
             };
 
-            // Handle the change in return status
-            returnStatusSelect.addEventListener('change', (event) => {
-                const selectedStatus = event.target.value;
-
-                // Disable all options first
-                Array.from(returnStatusSelect.options).forEach(option => {
-                    option.disabled = true; // Disable all options
-                });
-
-                // Always keep "Pending" disabled
-                returnStatusSelect.querySelector('option[value="Pending"]').disabled = true;
-
-                // Disable the current status
-                returnStatusSelect.querySelector(`option[value="${previousStatus}"]`).disabled = true;
-
-                // Enable remaining options based on selected statuses
-                const allStatuses = ["Approved", "Returned", "Rejected", "Refunded"];
-                allStatuses.forEach(status => {
-                    if (!selectedStatuses.has(status) && status !== "Pending") {
-                        const option = returnStatusSelect.querySelector(`option[value="${status}"]`);
-                        if (option) {
-                            option.disabled = false; // Enable remaining statuses
-                        }
-                    }
-                });
-            });
+            // Reject button click handler
+            document.getElementById('rejectReturnBtn').onclick = async () => {
+                await changeReturnStatus(orderId, itemId, 'Rejected');
+            };
 
         } catch (error) {
             console.log("Error fetching return request details:", error);
         }
     });
 });
+
+// Function to change return status
+async function changeReturnStatus(orderId, itemId, status) {
+    try {
+        const response = await fetch(`/admin/orders/${orderId}/${itemId}/change-return-status`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ returnStatus: status })
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            Toastify({
+                text: `Return status changed to: ${result.newStatus}`,
+                duration: 3000,
+                gravity: "top",
+                position: 'right',
+                backgroundColor: "green",
+            }).showToast();       
+            document.getElementById('returnRequestModal').classList.add('hidden');
+        } else {
+            Toastify({
+                text: `${result.message}`,
+                duration: 3000,
+                gravity: "top",
+                position: 'right',
+                backgroundColor: "red",
+            }).showToast();
+        }
+    } catch (error) {
+        console.log("Error changing return status:", error);
+        Toastify({
+            text: "An error occurred while changing the return status.",
+            duration: 3000,
+            gravity: "top",
+            position: 'right',
+            backgroundColor: "red",
+        }).showToast();
+    }
+}
 
 // Close modal
 document.getElementById('closeReturnModal').addEventListener('click', () => {
