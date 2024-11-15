@@ -146,7 +146,7 @@ export const postSignup=async(req,res)=>{
     await sendOTPEmail(email,otp)  
 
    req.flash('success','OTP sent to your email. Please check your email')                          //render otp page
-   return res.redirect('/verify-otp')
+   return res.redirect('/otp/verify')
 
   }catch(error){
     console.log(error);
@@ -157,13 +157,13 @@ export const postSignup=async(req,res)=>{
 
 //* //  //  //   //  //        Get  VERIFY OTP          //  //  //  //  //  //  //
 
-export const getverifyOTP=(req,res)=>{
+export const getVerifyOTP=(req,res)=>{
   try{
     
     res.render('user/otpSignup',{title:"Verify OTP"})
   }catch(error){
     console.log(error);
-
+    res.status(500).send("Internal server error in verify OTP")
   }
  
 }
@@ -171,7 +171,7 @@ export const getverifyOTP=(req,res)=>{
 
 //* //  //  //   //  //        Post   VERIFY OTP          //  //  //  //  //  //  //
 
-export const postverifyOTP=async (req,res)=>{                                                         
+export const postVerifyOTP=async (req,res)=>{                                                         
   try{
     
 //get otp from request body
@@ -191,7 +191,7 @@ export const postverifyOTP=async (req,res)=>{
 // Check if the provided OTP matches and whether it is expired
   if(otp !== storedOtp || otpExpiresAt < new Date()){
     req.flash('error','invalid or Expired otp')
-    return res.redirect('/verify-otp')
+    return res.redirect('/otp/verify')
   }
 
 // Hash the password 
@@ -213,8 +213,7 @@ export const postverifyOTP=async (req,res)=>{
 
   }catch(error){
     console.log(error);
-    req.flash('error',"error verifying OTP")
-    return res.redirect('/verify-otp')
+    res.status(500).send("Internal server error in verify OTP")
   }
 }
 
@@ -252,12 +251,11 @@ export const resendOTP=async (req,res)=>{
 
 // Render OTP page with a success message                                                           
    req.flash('success','New OTP has been sent to your email')                 //render otp page
-   return res.redirect('/verify-otp')
+   return res.redirect('/otp/verify')
 
   }catch(error){
     console.log('Error resending OTP',error);
-    req.flash('error',"Error sending OTP. Please try again")
-    return res.redirect('/verify-otp')
+    res.status(500).send("Internal server error in resend OTP")
   }
 }
 
@@ -277,7 +275,7 @@ export const postLogout=async (req,res) => {                                    
 
 //* //  //  //   //  //          get home page          //  //  //  //  //  //  //
 
-export const getlandingPage=async(req,res)=>{
+export const getLandingPage=async(req,res)=>{
 
   try{
 
