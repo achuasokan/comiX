@@ -78,6 +78,12 @@ export const postOrder = async (req, res) => {
       return res.status(400).json({ message: 'Invalid address' });
     }
 
+
+    const totalAmount = cart.total
+    if (paymentMethod === 'COD'  && totalAmount > 1000) {
+      return res.status(400).json({success:false, message:"COD is not available for orders above ₹1000"})
+    }
+
     const items = cart.items.map(item => {
       const itemTotal = (item.discountPrice * item.quantity) - item.couponDiscountAmount; // Calculate item total
       const discountAmount = (item.product.price - (item.discountPrice || item.product.price)) * item.quantity;
