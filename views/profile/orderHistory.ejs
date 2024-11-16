@@ -51,8 +51,15 @@
     <ul class="space-y-4">
       <% orders.forEach(order => { %>
       <li class="border border-gray-700 rounded-lg p-4 shadow-md">
-        <h2 class="text-xl font-semibold">Order ID: <%= order._id %></h2>
-        <p class="text-sm text-gray-400">Status: <%= order.paymentStatus %></p>
+        <h2 class="text-xl font-semibold flex justify-between items-center">
+          <span>Order ID: <%= order._id %></span>
+          <% if (order.paymentStatus === 'Pending' && order.paymentMethod === 'Razorpay') { %>
+            <button class="bg-gradient-to-r from-red-600 to-yellow-400 text-black px-2 py-1 text-sm rounded-lg hover:bg-blue-600" onclick="repayOrder(`<%= order._id %>`)">
+              Repay
+            </button>
+          <% } %>
+        </h2>
+        <p class="text-sm text-gray-400">Payment Status: <%= order.paymentStatus %></p>
         <div class="space-y-2">
           <% order.items.forEach(item => { %>
           <div class="border border-gray-600 rounded-lg item-container">
@@ -110,3 +117,45 @@
 </div>
 
 <%- include('../partials/footer.ejs') %>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+   const razorpayKey = "<%= razorpayKey %>";
+  async function repayOrder(orderId) {
+try{
+const response = await axios.post(`/checkout/payment/repay/${orderId}`);
+const data = response.data;
+
+if(data.success) {
+  const options = {
+    key: razorpayKey,
+    amount: data.amount,
+    currency: "INR",
+    name: "comiX",
+    image: "img/comiX.png",
+    order_id: data.razorpayOrderId,
+    handler: async function(response) {
+      console.log("response", response);
+      await axios.post('/checkout/payment/verify', {
+        razorpayOrderId: data.razorpayOrderId,
+        paymentId: response.razorpay_payment_id,
+        signature: response.razorpay_signature,
+        OrderId: data.OrderId,
+        address: '',
+        paymentMethod: 'Razorpay'
+      });
+        window.location.href = '/checkout/order-confirmation';
+    },
+    theme: {
+      color: "#000000"
+    }
+  }
+  const razorpay = new Razorpay(options);
+  razorpay.open();
+} else {
+  alert(data.message || 'Failed to initiate payment');
+}
+}catch(error) {
+  console.log("error in repay order", error);  
+}
+  }
+</script>
