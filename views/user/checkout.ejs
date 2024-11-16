@@ -354,12 +354,13 @@
           name: "comiX",
           image: "img/comiX.png",
           description: "test transaction by Achu A",
-          order_id: data.orderId,
+          order_id: data.razorpayOrderId,
           handler: async function (response) {
             const paymentResponse = await axios.post('/checkout/payment/verify', {
-              orderId: data.orderId,
+              razorpayOrderId: data.razorpayOrderId,
               paymentId: response.razorpay_payment_id,
               signature: response.razorpay_signature,
+              OrderId: data.OrderId,
               address: selectedAddress.value,
               paymentMethod: selectedPaymentMethod.value
             });
