@@ -9,7 +9,7 @@ export const getWalletPage = async (req,res) => {
     const wallet = await walletModel.findOne({user:userID})
 
     if (!wallet) {
-      return res.status(404).send("wallet not found")
+      return res.render('profile/wallet',{wallet:null,title:"Wallet"})
     }
     
     wallet.transaction.sort((a,b)=>b.transactionDate-a.transactionDate)

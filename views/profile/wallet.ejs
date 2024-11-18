@@ -1,5 +1,5 @@
 <%- include('../partials/header.ejs') %>
-<div class="bg-gray-900 text-white flex">
+<div class="bg-black   text-white flex">
 
   <!-- Sidebar for profile -->
   <%- include('./profileSidebar.ejs') %>
@@ -9,6 +9,7 @@
     <h1 class="text-4xl font-bold mb-6 text-center text-gradient">My Wallet</h1>
 
     <!-- Wallet Balance Section -->
+     <% if (wallet && wallet.balance > 0) { %>
     <div class="flex justify-center mb-6">
       <div class="bg-gradient-to-r from-teal-400 to-blue-500 p-8 rounded-lg shadow-lg text-center transform transition-transform hover:scale-105">
         <h2 class="text-xl font-semibold">Current Balance</h2>
@@ -32,27 +33,36 @@
     </div>
 
     <!-- Transaction History Section -->
-    <h2 class="text-2xl font-semibold mb-4 text-center">Transaction History</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      <% if (wallet.transaction && wallet.transaction.length > 0) { %>
-        <% wallet.transaction.forEach(transaction => { %>
-          <div class="bg-gray-800 rounded-lg p-4 shadow-lg">
-            <div class="flex justify-between">
-              <span class="font-semibold"><%= new Date(transaction.transactionDate).toLocaleDateString() %></span>
-              <span class="font-semibold"><%= transaction.transactionType %></span>
-            </div>
-            <div class="mt-2">
-              <span class="text-lg">Amount: ₹<%= transaction.walletAmount.toFixed(2) %></span>
-            </div>
-            <div class="mt-2">
-              <span class="text-sm">Order ID: <%= transaction.order_id || 'N/A' %></span>
-            </div>
-          </div>
-        <% }); %>
-      <% } else { %>
-        <p class="text-center">No transactions found.</p>
-      <% } %>
-    </div>
+    <!-- <h2 class="text-2xl font-semibold mb-4 text-center">Transaction History</h2> -->
+    <table class="min-w-full bg-gray-800 text-white rounded-lg shadow-lg">
+      <thead class="bg-gray-900">
+        <tr>
+          <th class="py-3 px-4 text-left text-orange-500">Date</th>
+          <th class="py-3 px-4 text-left text-orange-500">Type</th>
+          <th class="py-3 px-4 text-left text-orange-500">Amount</th>
+          <th class="py-3 px-4 text-left text-orange-500">Order ID</th>
+        </tr>
+      </thead>
+      <tbody class="bg-black">
+        <% if (wallet.transaction && wallet.transaction.length > 0) { %>
+          <% wallet.transaction.forEach(transaction => { %>
+            <tr class="border-b border-gray-600 hover:bg-gray-700 transition-colors">
+              <td class="py-2 px-4"><%= new Date(transaction.transactionDate).toLocaleDateString() %></td>
+              <td class="py-2 px-4"><%= transaction.transactionType %></td>
+              <td class="py-2 px-4">₹<%= transaction.walletAmount.toFixed(2) %></td>
+              <td class="py-2 px-4"><%= transaction.order_id || 'N/A' %></td>
+            </tr>
+          <% }); %>
+        <% } else { %>
+          <tr>
+            <td colspan="4" class="text-center py-2">No transactions found.</td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+    <% } else { %>
+      <p class="text-center">No wallet found.</p>
+    <% } %>
   </div>
   
 </div>
