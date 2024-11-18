@@ -183,6 +183,7 @@ export const changeReturnStatus = async (req, res) => {
       const product = item.product
       if (product) {
         product.stock += item.quantity
+        product.sold -= item.quantity;
         await product.save()
       }
 

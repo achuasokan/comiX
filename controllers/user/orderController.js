@@ -110,6 +110,7 @@ export const orderCancel = async (req,res) => {
 // updating stock
     if(product) {
       product.stock += cancelledItem.quantity;
+      product.sold -= cancelledItem.quantity;
       await product.save()
     } else {
       console.log('Product not found for item :', cancelledItem.product._id);

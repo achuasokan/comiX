@@ -28,7 +28,8 @@ const productSchema=mongoose.Schema({
   },
   sold:{
     type:Number,
-    default:0
+    default:0,
+    min:0
   },
   discount:{
     type:mongoose.Schema.Types.ObjectId,

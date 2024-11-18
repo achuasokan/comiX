@@ -494,6 +494,7 @@ const updateStock = async (items) => {
     const product = await productModel.findById(item.product);
     if(product && product.stock >= item.quantity) {
       product.stock -= item.quantity;
+      product.sold += item.quantity;
       await product.save();
     } else {
       throw new Error(`Insufficient stock for product: ${product.name}`);
