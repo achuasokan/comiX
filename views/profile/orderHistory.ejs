@@ -109,6 +109,11 @@
           </div>
           <% }) %>
         </div>
+        <div class="flex justify-between mt-2">
+          <button class="bg-gradient-to-r from-red-600 to-yellow-400 text-black px-2 py-1 text-sm rounded-lg hover:bg-blue-600" onclick="downloadInvoice(`<%= order._id %>`)">
+            Download Invoice
+          </button>
+        </div>
       </li>
       <% }) %>
     </ul>
@@ -158,4 +163,33 @@ if(data.success) {
   console.log("error in repay order", error);  
 }
   }
+
+
+  //download invoice
+  async function downloadInvoice(orderId) {
+  try {
+    // Using axios to make a GET request with responseType blob
+    const response = await axios.get(`/order/${orderId}/invoice`, {
+      responseType: 'blob'
+    });
+
+    // Create a blob from the PDF stream
+    const blob = new Blob([response.data], { type: 'application/pdf' });
+    
+    // Create a link element and trigger download
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `invoice-${orderId}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    
+    // Cleanup
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(link);
+  } catch (error) {
+    console.error('Error downloading invoice:', error);
+    alert('Failed to download invoice. Please try again.');
+  }
+}
 </script>

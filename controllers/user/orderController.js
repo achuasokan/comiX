@@ -1,6 +1,7 @@
 import orderModel from '../../models/Order.js'
 import productModel from '../../models/Product.js'
 import mongoose from 'mongoose'
+import PDFDocument from 'pdfkit'
 
 import walletModel from '../../models/wallet.js'
 
@@ -188,3 +189,113 @@ export const requestReturn = async (req, res) => {
   }
 };
 
+
+
+//*  //  //   //  //         DOWNLOAD INVOICE   //  //  //  //  //  //  //
+
+export const downloadInvoice = async (req,res) => {
+  try {
+    const orderId = req.params.orderID
+    const order = await orderModel.findById(orderId)
+    .populate({
+      path:'items.product',
+      select:'name image category',
+      populate:{path:'category',select:'name'}
+    }).populate('address')
+    .populate('user')
+
+    if(!order){
+      return res.status(404).send('Order not found')
+    }
+
+  const docInvoice = new PDFDocument({ margin: 50 })
+
+    let fileName = `comiX_Invoice_${order._id}.pdf`
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'attachment; filename='+fileName + '"');
+
+    docInvoice.pipe(res)
+
+    // Add logo and company info
+    docInvoice.image('public/img/comiX.png', 50, 30, { width: 100 })
+       .fillColor('#444444')
+       .fontSize(10)
+       .text('Digital ComiX Store', 100, 70,{color:'#444444'})
+       .moveDown(2);
+
+
+       // Add customer information
+       docInvoice.fontSize(24).font('Helvetica-Bold').text('INVOICE', { align: 'center' }).moveDown(3);
+    
+ docInvoice.fontSize(10)
+    .text(`Invoice Number: ${order._id}`, 50, 200)
+    .text(`Date: ${new Date(order.createdAt).toLocaleDateString()}`, 50, 215)
+    .text(`Payment Method: ${order.paymentMethod}`, 50, 230)
+    .text(`Payment Status: ${order.paymentStatus}`, 50, 245)
+    .moveDown();
+
+ // Add shipping address
+ docInvoice.text('Shipping Address:', 50, 270)
+    .text(`${order.address.name}`, 50, 285)
+    .text(`${order.address.street}`, 50, 300)
+    .text(`${order.address.city}, ${order.address.state}`, 50, 315)
+    .text(`${order.address.pincode}`, 50, 330)
+    .moveDown();
+
+   // Create table headers with borders
+   let y = 400;
+   docInvoice.fontSize(10)
+     .text('Item', 50, y)
+     .text('Quantity', 280, y)
+     .text('Price', 350, y)
+     .text('Discount', 400, y)
+     .text('Coupon', 460, y)
+     .text('Total', 520, y)
+     .moveDown();
+
+   // Draw a line under the headers
+   docInvoice.moveTo(50, y + 10).lineTo(600, y + 10).stroke();
+
+   // Add items with borders
+   y += 20;
+   order.items.forEach(item => {
+     docInvoice.fontSize(10)
+       .text(item.product.name, 50, y, { width: 180 })
+       .text(item.quantity.toString(), 280, y)
+       .text(`₹${item.price.toFixed(2)}`, 350, y)
+       .text(`₹${item.discountPrice.toFixed(2)}`, 400, y)
+       .text(item.couponDiscountAmount ? `-₹${item.couponDiscountAmount.toFixed(2)}` : 'N/A', 460, y)
+       .text(`₹${item.itemTotal.toFixed(2)}`, 520, y);
+     y += 30;
+
+     // Draw a line after each item
+     docInvoice.moveTo(50, y - 10).lineTo(600, y - 10).stroke();
+   });
+
+   // Add totals
+   const summaryY = y + 20;
+   docInvoice.fontSize(10)
+     .text('Subtotal:', 350, summaryY)
+     .text(`₹${order.subtotal.toFixed(2)}`, 450, summaryY);
+
+   if (order.couponDiscountAmountAll > 0) {
+     docInvoice.text('Coupon Discount:', 350, summaryY + 20)
+       .text(`-₹${order.couponDiscountAmountAll.toFixed(2)}`, 450, summaryY + 20);
+   }
+
+   docInvoice.fontSize(12).font('Helvetica-Bold')
+     .text('Total:', 350, summaryY + 40)
+     .text(`₹${order.total.toFixed(2)}`, 450, summaryY + 40);
+
+   // Add footer
+   docInvoice.fontSize(10)
+     .text('Thank you for shopping with ComiX!', 50, 700, { align: 'center' })
+     .text('For any queries, please contact support@comix.com', 50, 715, { align: 'center' });
+
+   // Finalize the PDF and send
+   docInvoice.end();
+  }catch (error) {
+    console.log("download invoice error :",error);
+    res.status(500).send('Internal Server Error');
+  }
+}

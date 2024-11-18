@@ -150,6 +150,8 @@ router.post('/order/:orderID/item/:itemId/product/:productId/cancel',isUser,orde
 
 router.post('/order/:orderID/item/:itemId/return',orderControl.requestReturn);
 
+router.get('/order/:orderID/invoice',isUser,orderControl.downloadInvoice)
+
 
 
     export default router
