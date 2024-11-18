@@ -40,22 +40,24 @@
  
 
   <script>
-
     // Timer setup
-  let timeLeft=120;                                                                             //set time left to 120 seconds
-  function updateTimer() {                                                                      //function to update timer
-    const timerDisplay=document.getElementById('timer')                                         //get timer display
-    if(timeLeft<=0){
-      clearInterval(timeInterval)                                                               //clear interval
-      timerDisplay.innerHTML='The OTP has expired.Please request a new One'                       //set timer display
-      document.getElementById('otp').disabled=true;                                               //disable otp input
-
-    }else{
-    //   const minutes = Math.floor(timeLeft / 60);
-    // const seconds = timeLeft % 60;
-      timerDisplay.innerHTML='The OTP will expire in ' + timeLeft + ' seconds';                   //set timer display
-      timeLeft--;                                                                                 //decrement time left
+    let timeLeft = 60; // Default time
+    if ('<%= session.tempUser ? true : false %>') {
+      const otpExpiresAt = new Date('<%= session.tempUser.otpExpiresAt %>');
+      const currentTime = new Date();
+      timeLeft = Math.max(0, Math.floor((otpExpiresAt - currentTime) / 1000)); // Calculate remaining time
     }
-  }
-  const timeInterval=setInterval(updateTimer,1000)                                                //call updateTimer function every second
+  
+    function updateTimer() {
+      const timerDisplay = document.getElementById('timer');
+      if (timeLeft <= 0) {
+        clearInterval(timeInterval);
+        timerDisplay.innerHTML = 'The OTP has expired. Please request a new one.';
+        document.getElementById('otp').disabled = true;
+      } else {
+        timerDisplay.innerHTML = 'The OTP will expire in ' + timeLeft + ' seconds';
+        timeLeft--; // decrement time left
+      }
+    }
+    const timeInterval = setInterval(updateTimer, 1000); // call updateTimer function every second
   </script>

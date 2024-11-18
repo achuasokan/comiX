@@ -139,8 +139,9 @@ export const postSignup=async(req,res)=>{
     email,
     password,
     otp,
-    otpExpiresAt
+    otpExpiresAt:otpExpiresAt.toISOString()
    }
+
    
     //send otp to email
     await sendOTPEmail(email,otp)  
@@ -160,7 +161,7 @@ export const postSignup=async(req,res)=>{
 export const getVerifyOTP=(req,res)=>{
   try{
     
-    res.render('user/otpSignup',{title:"Verify OTP"})
+    res.render('user/otpSignup',{title:"Verify OTP", session: req.session})
   }catch(error){
     console.log(error);
     res.status(500).send("Internal server error in verify OTP")
@@ -243,7 +244,7 @@ export const resendOTP=async (req,res)=>{
       email,
       password,
       otp: newOTP,
-      otpExpiresAt
+      otpExpiresAt:otpExpiresAt.toISOString()
     }
 
 // Send the new OTP to the email
