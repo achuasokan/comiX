@@ -435,6 +435,9 @@
         };
         const razorpay = new Razorpay(options);
         razorpay.open();
+        razorpay.on('payment.failed', function(response){
+          window.location.href = '/checkout/order-failed';
+        })
       } else if (data.success) {
         window.location.href = '/checkout/order-confirmation';
       } else {

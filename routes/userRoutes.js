@@ -140,6 +140,8 @@ router.post('/checkout/payment/verify',isUser,checkOutControl.verifyPayment)
 
 router.post('/checkout/payment/repay/:orderId',isUser,checkOutControl.repayOrder)
 
+router.get('/checkout/order-failed',isUser,checkOutControl.failedOrderPage)
+
 //^  //  //  //  //  //  //               Order History Routes             //  //  //  //  //  //  //
 
 router.get('/profile/orders',isUser,orderControl.getOrderHistoryPage)

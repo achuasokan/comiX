@@ -202,7 +202,7 @@ export const verifyPayment = async (req,res) => {
       }
       res.status(200).json({success:true, message:"Payment verified successfully"})
     } else {
-      res.status(400).json({success:false, message:"Payment verification failed by razorpay "})
+      res.status(400).json({success:false, message:"Payment verification failed "})
     }
   }  catch (error) {
     console.log("error in verify payment", error);
@@ -465,6 +465,18 @@ export const repayOrder = async (req,res) => {
   }
 }
 
+
+
+//* //  //  //   //  //         Failed Order Page     //  //  //  //  //  //  //
+
+export const failedOrderPage = async (req,res) => {
+  try {
+    res.render('user/failedOrder', {title:"Order Failed"})
+  } catch (error) {
+    console.log("error in failed order page", error);
+    res.status(500).send("Internal server error in failed order page");
+  }
+}
 
 
 //* //  //  //   //  //         Calculate Subtotal     //  //  //  //  //  //  //
