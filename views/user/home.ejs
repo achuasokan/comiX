@@ -5,13 +5,24 @@
 
 
             <!-- Banner -->
-        <section class="relative h-96 bg-cover bg-center" style="background-image: url('../img/banner.jpg');">
-            <div class="absolute inset-0 bg-black bg-opacity-10 flex justify-center items-center mt-52">
-              <h1 class="text-white text-3xl md:text-5xl font-bold almendra-sc-regular">
-                Seen the World of Unseen
-              </h1>
-            </div>
-          </section>
+             <% if (banner) { %>
+              <section class="relative h-96 bg-cover bg-center" style="background-image: url('<%= banner.image %>');">
+                <div class="absolute inset-0 bg-black bg-opacity-10 flex justify-center items-center mt-52">
+                  <h1 class="text-white text-3xl md:text-5xl font-bold almendra-sc-regular">
+                    <%= banner.description %>
+                  </h1>
+                </div>
+              </section>
+             <% } else { %>
+              <section class="relative h-96 bg-cover bg-center" style="background-image: url('img/banner.jpg');">
+                <div class="absolute inset-0 bg-black bg-opacity-10 flex justify-center items-center mt-52">
+                  <h1 class="text-white text-3xl md:text-5xl font-bold almendra-sc-regular">
+                    Your last seen
+                  </h1>
+                </div>
+              </section>
+             <% } %>
+      
           
           <!-- Category -->
           <div class="bg-black py-8">
@@ -19,8 +30,8 @@
             <!--  grid layout -->
              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
                  <!-- Card 1 -->
-                  <% if (categorylist .length > 0 ) { %>
-               <% categorylist.forEach(Category => { %>
+                  <% if (categoryList .length > 0 ) { %>
+               <% categoryList.forEach(Category => { %>
                 <div class="  rounded-lg overflow-hidden shadow-lg">
                   <div class="h-96 w-full overflow-hidden">
                     <a href="/shop/category/<%= Category._id %>">
@@ -52,7 +63,7 @@
     <!-- ✅ product Section - Starts Here 👇 -->
     <section
         class="flex flex-wrap justify-center gap-14 mt-10 mb-5 ">
-           <% latestproduct.forEach(products => { %>
+           <% latestProduct.forEach(products => { %>
             
             <article class="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
                 <a href="/product/<%= products._id %>">
