@@ -1,0 +1,86 @@
+<div class="bg-[#18191a] text-gray-200 m-0 p-0 flex flex-col md:flex-row min-h-screen">
+
+ <!-- Sidebar -->
+ <%- include("./sidebar.ejs")%>
+ <!-- Sidebar end -->
+
+
+ <!-- Main Content -->
+ <div class="flex flex-col flex-grow w-full md:w-auto">
+
+  <!-- 2nd main content -->
+  <div class="flex-grow p-6 overflow-y-auto">
+    <!-- Add Category Button -->
+    <div class="flex justify-end items-center">
+      <a href="/admin/addBanner" class="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-2 px-4 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110">  
+          Add Banner     
+      </a>
+    </div>
+
+    <!-- Add Category Button end -->
+
+    <!-- Table -->
+    <div class="mt-8">
+      <h2 class="text-2xl font-bold text-white mb-6">Banner</h2>
+      <div class="bg-[#242526] rounded-lg shadow-lg overflow-x-auto">
+        <table class="w-full text-sm text-left text-gray-300">
+          <thead class="text-xs  bg-[#1f1f1f] text-orange-500 text-center">
+            <tr>
+              <th scope="col" class="px-6 py-4 font-medium text-xl">SI</th>
+              <th scope="col" class="px-6 py-4 font-medium text-xl">Title</th>
+              <th scope="col" class="px-6 py-4 font-medium text-xl">Image</th>
+              <th scope="col" class="px-6 py-4 font-medium text-xl">Description</th>
+              <th scope="col" class="px-6 py-4 font-medium text-xl">Status</th>
+              <th scope="col" class="px-6 py-4 font-medium text-xl">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <%bannerList.forEach((banner,index)=>{%>
+              <tr class="border-b border-[#3a3a3a] hover:bg-[#2a2a2a] transition-colors duration-200 text-center">
+                <td class="px-6 py-4 font-medium text-lg text-lime-400"><%=startIndex+index%></td>
+                <td class="px-6 py-4 text-lg text-blue-500"><%=banner.title%></td>
+                <td class="px-6 py-4 text-lg flex justify-center items-center "><img src="<%=banner.image%>" class="w-10 h-10 object-cover"></td>
+                <td class="px-6 py-4 text-lg text-green-500"><%=banner.description%></td>
+                <td class="px-6 py-4 text-lg <%=banner.isActive ? 'text-green-500' : 'text-red-500' %>"><%=banner.isActive ? 'Active' : 'Blocked' %></td>
+                <td class="px-6 py-4 ">
+                  <div class="flex items-center justify-center space-x-2"> 
+                    <a href="/admin/editBanner/<%=banner._id%>">
+                      <button class="min-w-[80px] px-4 py-2 font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 rounded-lg transition duration-200" type="button">Edit</button>
+                    </a>
+                    <form action="/admin/banner/block/<%=banner._id%>" method="POST">
+                      <button type="submit" class="min-w-[80px] px-4 py-2 font-semibold text-white <%= banner.isActive ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600' %> rounded-lg transition duration-200">
+                        <%= banner.isActive ? 'Block' : 'Unblock' %>
+                      </button>
+                    </form>
+
+                  </div>
+                </td>
+              </tr>
+
+            <%})%>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="flex justify-center items-center space-x-2 mt-6">
+      <% for(let i=1;i<=totalPages;i++){ %>
+        <a href="?page=<%= i %>" class="px-4 py-2 <%= currentPage === i ? 'bg-blue-500 text-white' : 'bg-[#1f1f1f] text-gray-300' %> rounded-md hover:bg-[#2f2f2f] transition duration-200"><%= i %></a>
+      <% } %>
+    </div>
+    <!-- Pagination end -->
+  </div>
+   <!-- 2nd main content end -->
+  </div>
+  <!-- ist main content end -->
+
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const successMessage = '<%= success ? success : "" %>';
+    if (successMessage) {
+      showToast(successMessage, 'green');
+    }
+  });
+</script>
