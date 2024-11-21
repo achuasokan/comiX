@@ -26,8 +26,8 @@
     <div class="flex items-center bg-[#1f1f1f] hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-500 <%= locals.title == "Discounts" || locals.title == "Add Discount" || locals.title == "Edit Discount" ? "bg-gradient-to-r from-blue-500 to-purple-500" : "" %>  text-gray-300  hover:text-white py-3 px-4 rounded-lg transition duration-200">
       <a href="/admin/discounts">Discounts</a>
     </div>
-    <div class="flex items-center bg-[#1f1f1f] hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-500 <%= locals.title == "Banner" ? "bg-gradient-to-r from-blue-500 to-purple-500" : "" %>  text-gray-300  hover:text-white py-3 px-4 rounded-lg transition duration-200">
-      <a href="#">Banner</a>
+    <div class="flex items-center bg-[#1f1f1f] hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-500 <%= locals.title == "Banner" || locals.title == "Add Banner" || locals.title == "Edit Banner" ? "bg-gradient-to-r from-blue-500 to-purple-500" : "" %>  text-gray-300  hover:text-white py-3 px-4 rounded-lg transition duration-200">
+      <a href="/admin/banner">Banner</a>
     </div>
     <div class="flex items-center bg-[#1f1f1f] hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-500 <%= locals.title == "Sales Report" ? "bg-gradient-to-r from-blue-500 to-purple-500" : "" %>  text-gray-300  hover:text-white py-3 px-4 rounded-lg transition duration-200">
       <a href="/admin/salesReport">Sales Report</a>
