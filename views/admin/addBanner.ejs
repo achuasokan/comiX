@@ -1,0 +1,62 @@
+<div class="bg-[#18191a] text-gray-200 m-0 p-0 flex flex-col md:flex-row min-h-screen">
+    <!-- Sidebar -->
+    <%- include("./sidebar.ejs") %>
+    <!-- Sidebar end -->
+
+
+    <div class="container mx-auto py-6">
+      <h1 class="text-2xl font-semibold mb-4 text-gray-200">Add Banner</h1>
+      <form action="/admin/addBanner" method="POST" enctype="multipart/form-data" id="bannerImage-form"
+      class="bg-[#242526] p-6 rounded shadow-md">
+      <%- include('../partials/flashMessage.ejs') %>
+
+
+      <div class="mb-4">
+        <label class="block text-gray-300">Banner Title</label>
+        <input type="text" id="bannerTitle" name="bannerTitle"  class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4" />
+         <p id="bannerTitleError" class="text-red-500 text-sm"aria-live="assertive"></p>
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-300">Description</label>
+        <textarea id="descriptions" name="descriptions" 
+            class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4"></textarea>
+            <p id="descriptionsError" class="text-red-500 text-sm"aria-live="assertive"></p>
+    </div>
+
+    <!-- images adding  -->
+    <div class="mb-4">
+      <label class="block text-gray-300">Images</label>
+      <input type="file" id="imageInput" name="image" accept="image/*" multiple 
+          class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4"
+          onchange="previewImage(event)" />
+      <div class="mt-2 flex flex-wrap " id="imagePreviewContainer"></div> <!-- Container for multiple previews -->
+      <p id="imageError" class="text-red-500 text-sm"aria-live="assertive"></p>
+  </div>
+
+
+  <!-- Cropper modal -->
+  <div id="cropperModal"
+  class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+  <div class="bg-white p-4 rounded">
+      <div class="w-full h-96">
+          <img id="croppingImage" src="" alt="Image to Crop" class="w-full h-full object-cover" />
+      </div>
+      <button id="cropConfirm" class="bg-green-500 text-white px-4 py-2 mt-2 rounded"type="button"
+          onclick="cropImages()">
+          Confirm Crop
+      </button>
+      <button id="cropCancel" class="bg-red-500 text-white px-4 py-2 mt-2 rounded"
+          onclick="closeCropModals()">
+          Cancel
+      </button>
+  </div>
+</div>
+
+<button type="submit" class="bg-primary text-white px-4 py-2 rounded">
+  Add Banner
+</button>
+
+    </form>
+    </div>
+</div>
