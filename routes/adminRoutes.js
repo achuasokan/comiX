@@ -9,6 +9,7 @@ import * as discountController from "../controllers/admin/discountController.js"
 import * as orderController from '../controllers/admin/orderController.js'
 import * as couponController from '../controllers/admin/couponController.js'
 import * as salesReportController from '../controllers/admin/salesReportController.js'
+import * as bannerController from '../controllers/admin/bannerController.js'
 import upload from '../middleware/multerMiddleware.js'
 
 const router=express.Router()
@@ -125,6 +126,18 @@ router.get('/salesReport',adminMiddleware.isAdmin,salesReportController.getSales
 router.get('/salesReport/generate-pdf',adminMiddleware.isAdmin,salesReportController.generatePDFReport)
 router.get('/salesReport/generate-excel',adminMiddleware.isAdmin,salesReportController.generateExcelReport) 
 
+
+//^  //  //  //  //  //  //                Banner routes                //  //  //  //  //  //  //
+
+router.get('/banner',adminMiddleware.isAdmin,bannerController.getBannerPage)
+
+router.get('/addBanner',adminMiddleware.isAdmin,bannerController.getAddBannerPage)
+router.post('/addBanner',upload.array('image', 5),adminMiddleware.isAdmin,bannerController.postAddBanner)
+
+router.get('/editBanner/:bannerId', adminMiddleware.isAdmin, bannerController.getEditPage);
+router.post('/editBanner/:bannerId', upload.array('image', 5), adminMiddleware.isAdmin, bannerController.postEditBanner);
+
+router.post('/banner/block/:bannerId',adminMiddleware.isAdmin,bannerController.blockBanner)
 
 
 
