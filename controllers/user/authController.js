@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt'
 import { generateOTP,sendOTPEmail } from '../../utils/otp.js'                                //import otp utils
 import categoryModel from '../../models/Category.js'
 import productModel from '../../models/Product.js'
+import bannerModel from '../../models/Banner.js'
 import  {calculateDiscountPrice  } from '../../utils/discountprice.js'
 
 
@@ -281,19 +282,21 @@ export const getLandingPage=async(req,res)=>{
   try{
 
    //find the category list and sort them by createdAt in descending order
-    const categorylist=await categoryModel.find({isBlocked:false}).sort({createdAt:-1})
+    const categoryList=await categoryModel.find({isBlocked:false}).sort({createdAt:-1})
+
+    const banner = await bannerModel.findOne({title:'Home Page', isActive:true})
 
     //find the latest product and populate the category details and sort them by createdAt in descending order and limit the result to 12
-    let latestproduct=await productModel.find({isDeleted:false}).populate('category').sort({createdAt:-1}).limit(12)
+    let latestProduct=await productModel.find({isDeleted:false}).populate('category').sort({createdAt:-1}).limit(12)
 
-    latestproduct = latestproduct.filter(document => !document.category.isBlocked);
+    latestProduct = latestProduct.filter(document => !document.category.isBlocked);
 
-    for (let product of latestproduct) {
+    for (let product of latestProduct) {
       product.discountedPrice = await calculateDiscountPrice(product);
     }
 
     //render the home page with the category list and latest product
-    res.render("user/home",{categorylist,latestproduct,title:"comiX"})
+    res.render("user/home",{categoryList,latestProduct,banner, title:"comiX"})
 
   }catch(error){
 
