@@ -6,9 +6,25 @@ import productModel from '../../models/Product.js'
 
 export const getCouponListPage = async (req,res) => {
   try{
+    const page = parseInt(req.query.page) || 1;
+    const limit = 5;
+    const skip = (page - 1) * limit;
     const couponList = await couponModel.find()
     .populate('applicableProduct applicableCategory')
-    res.render('admin/couponList',{couponList,title:"Coupons"})
+    .sort({createdAt: -1})
+    .skip(skip)
+    .limit(limit)
+
+    const totalCoupons =await couponModel.countDocuments({})
+    const totalPages = Math.ceil(totalCoupons / limit)
+    const startIndex = skip + 1
+    res.render('admin/couponList',{
+      couponList,
+      currentPage: page,
+      totalPages,
+      startIndex,
+      title:"Coupons"
+    })
   } catch (error) {
     console.log("error in coupon list",error);
     res.status(500).json({message:"Internal server error"})
