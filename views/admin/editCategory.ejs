@@ -14,7 +14,7 @@
         <input type="text" name="name" id="name"  value="<%= category.name %>" class="input bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-gray-500" />
       
         <label for="image" class="block text-sm font-medium text-gray-300 mb-2">Upload Image</label>
-        <input type="file" name="image" id="image" accept="image/*" class="input bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-gray-500" onchange="previewImage(event)" />
+        <input type="file" name="image" id="image" accept="image/*" class="input bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-gray-500" onchange="previewImaged(event)" />
         
         <div id="imagePreviewContainer" class="mt-4 mb-4 flex flex-wrap"> <!-- Image preview container -->
           <% if (category.image) { %>
@@ -36,7 +36,7 @@
 </div>
 
 <script>
-function previewImage(event) {
+function previewImaged(event) {
   const container = document.getElementById('imagePreviewContainer');
   container.innerHTML = ''; // Clear existing preview
   const file = event.target.files[0];

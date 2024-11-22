@@ -24,11 +24,11 @@
           <%- include('../partials/flashMessage.ejs') %>
 
           <label for="image" class="block text-sm font-medium text-gray-300 mb-2">Upload Image</label>
-          <input type="file" name="image" id="image" accept="image/*" class="input bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-gray-500" onchange="previewImage(event)" />
+          <input type="file" name="image" id="image" accept="image/*" class="input bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-gray-500" onchange="previewCategoryImages(event)" />
           
           <div id="imagePreview" class="mt-4 mb-4 relative">
             <img id="preview" src="" alt="Image Preview" class="hidden max-w-full max-h-96 object-contain rounded-md" />
-            <button id="removeImage" type="button" class="hidden absolute top-2 right-2 bg-red-500 text-white rounded-full p-1" onclick="removePreviewImage()">×</button>
+            <button id="removeImage" type="button" class="hidden absolute top-2 right-2 bg-red-500 text-white rounded-full p-1" onclick="removeCategoryPreviewImage()">×</button>
           </div>
         
           <div class="clear-both">
@@ -41,7 +41,7 @@
 </div>
 
 <script>
-  function previewImage(event) {
+  function previewCategoryImages(event) {
     const preview = document.getElementById('preview');
     const removeButton = document.getElementById('removeImage');
     const file = event.target.files[0];
@@ -58,7 +58,7 @@
     }
   }
 
-  function removePreviewImage() {
+  function removeCategoryPreviewImage() {
     const preview = document.getElementById('preview');
     const removeButton = document.getElementById('removeImage');
     const fileInput = document.getElementById('image');
