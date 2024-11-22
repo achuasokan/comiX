@@ -16,8 +16,8 @@ export const getProduct=async(req,res)=>{
     .skip(skip)
     .limit(limit)
 
-    const totalproducts=await productModel.countDocuments({isDeleted:false})
-    const totalPages=Math.ceil(totalproducts / limit)
+    const totalProducts=await productModel.countDocuments({isDeleted:false})
+    const totalPages=Math.ceil(totalProducts / limit)
     const startIndex = skip + 1;
    
     res.render("admin/productList",{
