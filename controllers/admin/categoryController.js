@@ -7,8 +7,24 @@ import mongoose from 'mongoose'
 
 export const getCategory=async (req,res) => {                                                //admin category page
   try{
+    const page = parseInt(req.query.page) || 1
+    const limit = 5;
+    const skip = (page-1) * limit
     const categoryList=await categoryModel.find({})                                       //get all category from database
-    res.render('admin/category',{categoryList,title:"Category"})                                                        //render category page
+    .sort({createdAt: -1})
+    .skip(skip)
+    .limit(limit)
+
+    const totalProducts = await categoryModel.countDocuments({})
+    const totalPages = Math.ceil(totalProducts / limit)
+    const startIndex = skip + 1;
+    res.render('admin/category',{
+      categoryList,
+      currentPage: page,
+      totalPages,
+      startIndex,
+      title:"Category"
+    })                                                        //render category page
   }catch(message){
     console.log(message);
     res.status(500)  
@@ -225,13 +241,27 @@ export const blockCategory=async(req,res)=>{
 
 //* //  //  //   //  //          SEARCH CATEGORY     //  //  //  //  //  //  //
 
-export const searchCategory=async(req,res)=>{
-  try{
-    const {search=""}=req.query
-    const categoryList=await categoryModel.find({name:{$regex:"^"+search,$options:"i"}})
-    res.render("admin/category",{categoryList,title:"Category"})
-  }catch(error){
+export const searchCategory = async (req, res) => {
+  try {
+    const { search = "" } = req.query;
+    const categoryList = await categoryModel.find({ name: { $regex: "^" + search, $options: "i" } });
+
+    // Calculate pagination details
+    const limit = 5; // Same limit as in getCategory
+    const totalProducts = categoryList.length; // Total products found
+    const totalPages = Math.ceil(totalProducts / limit);
+    const currentPage = 1; // Since this is a search, we can start from page 1
+    const startIndex = (currentPage - 1) * limit + 1; // Calculate startIndex based on currentPage
+
+    res.render("admin/category", {
+      categoryList,
+      currentPage,
+      totalPages,
+      startIndex,
+      title: "Category"
+    });
+  } catch (error) {
     console.log(error);
-    res.status(500).send("Internal Server Error")
+    res.status(500).send("Internal Server Error");
   }
-}
+};
