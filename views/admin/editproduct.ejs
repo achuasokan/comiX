@@ -12,20 +12,20 @@
           <%- include("../partials/flashMessage.ejs") %>
           <div class="mb-4">
               <label class="block text-gray-300">Product Name</label>
-              <input type="text" id="productName" name="productName" required value="<%=products.name%>"
+              <input type="text" id="productName" name="productName"  value="<%=products.name%>"
                   class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4" />
                   <p id="productNameError" class="text-red-500 text-sm"aria-live="assertive"></p>
           </div>
           <div class="mb-4">
               <label class="block text-gray-300">Description</label>
-              <textarea id="description" name="description" required 
+              <textarea id="description" name="description" 
                   class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4"><%=products.description%></textarea>
                   <p id="descriptionError" class="text-red-500 text-sm"aria-live="assertive"></p>
           </div>
 
           <div class="mb-4">
               <label class="block text-gray-300">Category</label>
-              <select id="category" name="category" required
+              <select id="category" name="category" 
                   class="input w-full bg-[#1f1f1f] text-white border border-gray-600 rounded-md p-2 mb-4">
                   <% categorylist.forEach((category) => { %>
                   <option value="<%= category._id %>" 
@@ -39,20 +39,20 @@
 
           <div class="mb-4">
               <label class="block text-gray-300">Price</label>
-              <input type="text" id="price" name="price" required value="<%=products.price%>"
+              <input type="text" id="price" name="price"  value="<%=products.price%>"
                   class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4" />
                   <p id="priceError" class="text-red-500 text-sm"aria-live="assertive"></p>
           </div>
           <div class="mb-4">
               <label class="block text-gray-300">Stock</label>
-              <input type="text" id="stock" name="stock" required value="<%=products.stock%>"
+              <input type="text" id="stock" name="stock"  value="<%=products.stock%>"
                   class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4" />
                   <p id="stockError" class="text-red-500 text-sm"aria-live="assertive"></p>
           </div>
 
           <div class="mb-4">
               <label class="block text-gray-300">SKU</label>
-              <input type="text" id="SKU" name="SKU" required value="<%= products.SKU %>"
+              <input type="text" id="SKU" name="SKU"  value="<%= products.SKU %>"
                   class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4" />
                   <p id="SKUError" class="text-red-500 text-sm"aria-live="assertive"></p>
           </div>

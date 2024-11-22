@@ -12,13 +12,13 @@
             <%- include('../partials/flashMessage.ejs') %>
             <div class="mb-4">
                 <label class="block text-gray-300">Product Name</label>
-                <input type="text" id="productName" name="productName" required
+                <input type="text" id="productName" name="productName" 
                     class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4" />
                     <p id="productNameError" class="text-red-500 text-sm"aria-live="assertive"></p>
             </div>
             <div class="mb-4">
                 <label class="block text-gray-300">Description</label>
-                <textarea id="description" name="description" required
+                <textarea id="description" name="description" 
                     class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4"></textarea>
                     <p id="descriptionError" class="text-red-500 text-sm"aria-live="assertive"></p>
             </div>
@@ -37,27 +37,27 @@
 
             <div class="mb-4">
                 <label class="block text-gray-300">Price</label>
-                <input type="text" id="price" name="price" required
+                <input type="text" id="price" name="price" 
                     class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4" />
                     <p id="priceError" class="text-red-500 text-sm"aria-live="assertive"></p>
             </div>
             <div class="mb-4">
                 <label class="block text-gray-300">Stock</label>
-                <input type="text" id="stock" name="stock" required
+                <input type="text" id="stock" name="stock" 
                     class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4" />
                     <p id="stockError" class="text-red-500 text-sm"aria-live="assertive"></p>
             </div>
 
             <div class="mb-4">
                 <label class="block text-gray-300">SKU</label>
-                <input type="text" id="SKU" name="SKU" required
+                <input type="text" id="SKU" name="SKU" 
                     class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4" />
                     <p id="SKUError" class="text-red-500 text-sm"aria-live="assertive"></p>
             </div>
 
             <div class="mb-4">
                 <label class="block text-gray-300">Images</label>
-                <input type="file" id="imageInput" name="image" accept="image/*" multiple required
+                <input type="file" id="imageInput" name="image" accept="image/*" multiple 
                     class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4"
                     onchange="previewImages(event)" />
                 <div class="mt-2 flex flex-wrap " id="imagePreviewContainer"></div> <!-- Container for multiple previews -->
