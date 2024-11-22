@@ -59,7 +59,7 @@
             <%categoryList.forEach((category,index)=>{%>
 
             <tr class="border-b border-[#3a3a3a] hover:bg-[#2a2a2a] transition-colors duration-200 text-center">
-              <td class="px-6 py-4 font-medium text-lg text-lime-400"><%=index+1%></td>
+              <td class="px-6 py-4 font-medium text-lg text-lime-400"><%=startIndex + index%></td>
               <td class="px-6 py-4 text-lg text-blue-500"><%=category.name%></td>
               <td class="px-6 py-4 text-lg flex justify-center items-center "><img src="<%=category.image%>" class="w-10 h-10 object-cover"></td>
 
@@ -88,6 +88,11 @@
     </div>
 
     <!-- Pagination -->
+     <div class="flex justify-center items-center space-x-2 mt-6">
+      <% for(let i=1; i<=totalPages; i++) { %>
+      <a href="?page=<%= i %>" class="px-4 py-2 <%= currentPage === i ? 'bg-blue-500 text-white' : 'bg-[#1f1f1f] text-gray-300' %> rounded-md hover:bg-[#2f2f2f] transition duration-200"><%= i %></a>
+      <% } %>
+     </div>
 
     
     <!-- Pagination end -->
