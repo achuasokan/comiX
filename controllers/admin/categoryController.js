@@ -126,7 +126,7 @@ export const getEditCategory=async(req,res)=>{
 //* //  //  //   //  //          POST EDIT CATEGORY     //  //  //  //  //  //  //
 
 export const postEditCategory = async (req, res) => {
-  const file = req.file;
+  const file = req.file; 
   try {
     const id = req.params.id.trim();
     const { name, existingImage } = req.body;
@@ -154,6 +154,7 @@ export const postEditCategory = async (req, res) => {
     if(!file && !existingImage) {
       errors.push("Please upload at least one image");
     } else {
+      if (file) {
       const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp', 'image/svg+xml'];
       if (!allowedTypes.includes(file.mimetype)) {
         errors.push('Invalid file Type.please upload a valid image file');
@@ -162,6 +163,7 @@ export const postEditCategory = async (req, res) => {
       if (file.size > maxSize) {
         errors.push('File size exceeds the limit of 10 MB');
       }
+    }
     }
 
     if (errors.length > 0) {
