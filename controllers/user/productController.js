@@ -175,7 +175,8 @@ export const getAllProductPage = async (req, res) => {
     }
 
     if (searchQuery) {
-      filterOption.name = { $regex: searchQuery, $options: 'i' };
+      const removeQuery = searchQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      filterOption.name = { $regex: removeQuery, $options: 'i' };
     }
 
     // Fetch all products based on the filter
