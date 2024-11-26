@@ -92,8 +92,8 @@
     function validatename() {
       const name = nameInput.value.trim();
       const regex = /^(?! )[A-Za-z ]{4,}$/;
-      if (name.length < 3 || name.length > 30 || !regex.test(name)) {
-        nameError.textContent = "Name must be at least 4 characters long and contain only alphabets.";
+      if (name.length < 3 || name.length > 20 || !regex.test(name)) {
+        nameError.textContent = "Name must be between 3 to 20 characters long and contain only alphabets.";
       } else {
         nameError.textContent = '';
       }
