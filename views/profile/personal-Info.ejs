@@ -65,14 +65,14 @@
     const emailError = document.getElementById('emailError')
     const mobileError = document.getElementById('mobileError')
 
-    const namePattern = /^(?! )[A-Za-z ]{4,}$/;
+    const namePattern = /^(?! )[A-Za-z ]{3,20}$/;
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     const mobilePattern = /^[0-9]{10}$/;
 
     // Real-time name validation
     nameInput.addEventListener('input', function () {
         if (!namePattern.test(nameInput.value)) {
-            nameError.textContent = "Name must be at least 4 characters long and contain only alphabets.";
+            nameError.textContent = "Name must be between 3 to 20 characters long and contain only alphabets.";
         } else {
             nameError.textContent = "";
         }
@@ -101,7 +101,7 @@
         let valid = true;
 
         if (!namePattern.test(nameInput.value)) {
-            nameError.textContent = "Name must be at least 4 characters long and contain only alphabets.";
+            nameError.textContent = "Name must be between 3 to 20 characters long and contain only alphabets.";
             valid = false;
         }
 

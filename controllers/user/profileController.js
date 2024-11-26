@@ -30,7 +30,7 @@ export const editProfile=async(req,res)=>{
     await userModel.updateOne({ _id:userID }, { $set:{ name:name,email:email,mobile:mobile } } )
     
     // Update the session variable to reflect the new name
-    req.session.name=name
+    req.session.name=name.length > 10 ?name.substring(0,10) + '...' : name;
     req.flash('success','Profile updated successfully')
     res.redirect('/profile/personal-info')
 
