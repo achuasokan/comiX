@@ -27,25 +27,25 @@
   
           <form class="space-y-8" action="/signup" method="post" id="signupForm">
             <div class="relative">
-              <input id="name" name="name" type="text" placeholder=" " class="block w-full px-2 py-2 bg-transparent text-white border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 placeholder:text-transparent transition duration-300" required>
+              <input id="name" name="name" type="text" placeholder=" " class="block w-full px-2 py-2 bg-transparent text-white border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 placeholder:text-transparent transition duration-300" >
               <label for="name" class="absolute left-2 top-2 ml-2 text-white transition-all duration-300 transform origin-left scale-75 pointer-events-none">Username</label>
               <p id="nameError" class="text-red-200 text-sm" aria-live="assertive"></p>
             </div>
             
             <div class="relative">
-              <input id="email" name="email" type="email" placeholder=" " class="block w-full px-2 py-2 bg-transparent text-white border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 placeholder:text-transparent transition duration-300" required>
+              <input id="email" name="email" type="email" placeholder=" " class="block w-full px-2 py-2 bg-transparent text-white border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 placeholder:text-transparent transition duration-300" >
               <label for="email" class="absolute left-2 top-2 ml-2 text-white transition-all duration-300 transform origin-left scale-75 pointer-events-none">Email</label>
               <p id="emailError" class="text-red-200 text-sm" aria-live="assertive"></p>
             </div>
             
             <div class="relative">
-              <input id="password" name="password" type="password" placeholder=" " class="block w-full px-2 py-2 bg-transparent text-white border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 placeholder:text-transparent transition duration-300" required>
+              <input id="password" name="password" type="password" placeholder=" " class="block w-full px-2 py-2 bg-transparent text-white border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 placeholder:text-transparent transition duration-300" >
               <label for="password" class="absolute left-2 top-2 ml-2 text-white transition-all duration-300 transform origin-left scale-75 pointer-events-none">Password</label>
               <p id="passwordError" class="text-red-200 text-sm" aria-live="assertive"></p>
             </div>
 
             <div class="relative">
-              <input id="confirmPassword" name="confirmPassword" type="password" placeholder=" " class="block w-full px-2 py-2 bg-transparent text-white border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 placeholder:text-transparent transition duration-300" required>
+              <input id="confirmPassword" name="confirmPassword" type="password" placeholder=" " class="block w-full px-2 py-2 bg-transparent text-white border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 placeholder:text-transparent transition duration-300" >
               <label for="confirmPassword" class="absolute left-2 top-2 ml-2 text-white transition-all duration-300 transform origin-left scale-75 pointer-events-none">Confirm Password</label>
               <p id="confirmPasswordError" class="text-red-200 text-sm" aria-live="assertive"></p>
             </div>
@@ -114,14 +114,14 @@
   
   
     
-    const namePattern = /^(?! )[A-Za-z ]{4,}$/;
+    const namePattern = /^(?! )[A-Za-z ]{3,20}$/;
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])(?!.*\s)[A-Za-z\d!@#$%^&*]{6,}$/;
   
     // Real-time name validation
     nameInput.addEventListener('input', function () {
       if (!namePattern.test(nameInput.value)) {
-        nameError.textContent = "Name must be at least 4 characters long and contain only alphabets.";
+        nameError.textContent = "Name must be between 3 to 20 characters long and contain only alphabets.";
       } else {
         nameError.textContent = "";
       }

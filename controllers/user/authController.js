@@ -105,12 +105,12 @@ export const postSignup=async(req,res)=>{
 
     //    validation    //
     let error='';
-     const namepattern = /^(?! )[A-Za-z ]{4,}$/;
+     const namepattern = /^(?! )[A-Za-z ]{3,20}$/;
     const emailpattern=/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     const passwordpattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])(?!.*\s)[A-Za-z\d!@#$%^&*]{6,}$/;
 
     if(!namepattern.test(name)){
-      error="Name must be at least 4 characters long and contain only letters"
+      error="Name must be between 3 to 20 characters long and contain only alphabets."
     }else if(!emailpattern.test(email)){
       error="Please enter a valid email address"
     }else if(!passwordpattern.test(password)){
