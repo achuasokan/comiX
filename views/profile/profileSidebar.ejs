@@ -21,10 +21,12 @@
             <i class="fas fa-ticket-alt mr-2"></i>
             <span >Coupons</span>
         </a>
+        <% if (user && user.password) { %>
         <a href="/profile/change-password" class="flex items-center bg-[#1f1f1f] transition duration-200 py-3 px-8 rounded-lg hover:bg-gradient-to-r hover:from-red-600 hover:to-yellow-400 hover:text-black <%= locals.title === 'Change Password' ? 'bg-gradient-to-r from-red-600 to-yellow-400 text-black' : '' %>">
             <i class="fas fa-key mr-2"></i>
             <span >Change Password</span>
         </a>
+        <% } %>
         <form action="/logout" method="POST" class="flex items-center bg-[#1f1f1f] transition duration-200 py-3 px-8 rounded-lg hover:bg-gradient-to-r hover:from-red-600 hover:to-yellow-400 hover:text-black">
             <i class="fas fa-sign-out-alt mr-2"></i>
             <span >Logout</span>
