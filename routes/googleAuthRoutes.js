@@ -18,7 +18,7 @@ checkUserSession,
     return res.redirect('/login')
   }
   req.session.userID = req.user.id;
-  req.session.name = req.user.name;
+  req.session.name = req.user.name.length > 10 ? req.user.name.substring(0,10) + '...' : req.user.name;
   res.redirect('/home')
  }
 )

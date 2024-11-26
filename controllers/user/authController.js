@@ -1,4 +1,3 @@
-
 import userModel from '../../models/User.js'
 import bcrypt from 'bcrypt'
 import { generateOTP,sendOTPEmail } from '../../utils/otp.js'                                //import otp utils
@@ -61,7 +60,9 @@ export const postLogin=async(req,res)=>{
 
    // If password is correct, store only the user ID in the session
    req.session.userID = userFind._id; // Only store the user ID (ObjectId)
-   req.session.name = userFind.name;  // Store user name if needed
+   req.session.name = userFind.name.length > 10 ? userFind.name.substring(0, 10) + '...' : userFind.name;  // Store user name if needed
+   console.log("Stored name in session",req.session.name);
+   
    
 res.redirect('/home') 
     }
