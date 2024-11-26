@@ -27,7 +27,7 @@
               <label class="block text-gray-300">Category</label>
               <select id="category" name="category" 
                   class="input w-full bg-[#1f1f1f] text-white border border-gray-600 rounded-md p-2 mb-4">
-                  <% categorylist.forEach((category) => { %>
+                  <% categoryList.forEach((category) => { %>
                   <option value="<%= category._id %>" 
                       <%= (category._id.toString() === products.category._id.toString()) ? 'selected' : '' %>>
                       <%= category.name %>

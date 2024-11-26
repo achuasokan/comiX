@@ -36,9 +36,9 @@ export const getProduct=async(req,res)=>{
 //* //  //  //   //  //          GET ADD PRODUCT PAGE   //  //  //  //  //  //  //
 export const getAddProduct=async(req,res)=>{
   try{
-    const categorylist=await categoryModel.find({isBlocked:false})
+    const categoryList=await categoryModel.find({isBlocked:false})
     
-    res.render('admin/addProducts',{categorylist,title:"Add Product"})
+    res.render('admin/addProducts',{categoryList,title:"Add Product"})
 
   }catch(error){
     console.log(error);
@@ -189,9 +189,9 @@ export const softDeleteProduct=async(req,res)=>{
 export const getEditProduct=async(req,res)=>{
   try{
     const id=req.params.id;
-    const categorylist=await categoryModel.find({isBlocked:false})
+    const categoryList=await categoryModel.find({isBlocked:false})
     const products=await productModel.findById(id).populate('category')
-    res.render("admin/editproduct",{products,categorylist,title:"Edit Product"})
+    res.render("admin/editProduct",{products,categoryList,title:"Edit Product"})
 
   }catch(error){
     console.log(error);
@@ -285,7 +285,7 @@ export const postEditProduct = async (req, res) => {
     // If there are validation errors, return them
     if (errors.length > 0) {
       req.flash('error', errors);
-      return res.redirect(`/admin/editproduct/${id}`);
+      return res.redirect(`/admin/editProduct/${id}`);
     }
 
     // Prepare the update object
