@@ -209,19 +209,6 @@ export const postEditCategory = async (req, res) => {
 };
 
 
-//* //  //  //   //  //          DELETE CATEGORY    //  //  //  //  //  //  //
-
-export const deleteCategory=async(req,res)=>{
-  try{
-    const id=req.params.id
-    const categoryDelete=await categoryModel.deleteOne({_id:id})
-    res.status(200).json({message:"Category deleted successfully"})
-  }catch(error){
-    console.log(error);
-    res.status(500).json({message:"Internal server error in delete category"})
-  }
-}
-
 //* //  //  //   //  //          BLOCK CATEGORY    //  //  //  //  //  //  //
 
 export const blockCategory=async(req,res)=>{
