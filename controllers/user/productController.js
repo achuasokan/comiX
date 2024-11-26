@@ -158,7 +158,11 @@ export const getAllProductPage = async (req, res) => {
   try {
     const categoryFilter = req.query.category || "all";
     const sortOption = req.query.sort || "latest";
-    const searchQuery = req.query.search || "";
+    let  searchQuery = req.query.search || "";
+
+    if (searchQuery.length > 16) {
+      searchQuery = searchQuery.substring(0,16)+ '...';
+    }
 
     // Pagination settings
     const page = parseInt(req.query.page) || 1; // default to page 1
