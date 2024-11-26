@@ -15,7 +15,7 @@ const router=express.Router()
 
 router.use(checkUserSession)
 
-//^  //  //  //  //  //  //                User Auth routes                //  //  //  //  //  //  //
+//^  //  //  //  //  //  //                Users Auth routes                //  //  //  //  //  //  //
 
 router.route('/login') 
     .get(userControl.getLogin) 
