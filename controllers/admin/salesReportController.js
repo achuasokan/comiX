@@ -212,51 +212,57 @@ export const generateExcelReport = async (req, res) => {
     const { filterType, startDate, endDate } = req.query;
     const matchCriteria = getMatchCriteria(filterType, startDate, endDate);
 
+    // Fetch orders based on match criteria
     const orders = await orderModel.find(matchCriteria)
       .populate('user', 'name')
       .populate('items.product', 'name')
       .sort({ createdAt: -1 });
 
-    // Create a new workbook and add a worksheet
+    // Calculate summary data using aggregation
+    const salesReport = await orderModel.aggregate([
+      { $match: matchCriteria },
+      { $unwind: '$items' },
+      { $match: { 'items.itemStatus': 'Delivered' } },
+      {
+        $group: {
+          _id: null,
+          totalRevenue: { $sum: '$items.itemTotal' },
+          totalDiscount: { $sum: '$items.totalDiscount' },
+          salesCount: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const reportData = salesReport[0] || { totalRevenue: 0, totalDiscount: 0, salesCount: 0 };
+    
+
+    // Initialize workbook and worksheet
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Sales Report');
 
-    // Define columns first 
+    // columns with headers and keys
     worksheet.columns = [
-      { header: '', key: 'user', width: 20 },
-      { header: '', key: 'orderId', width: 30 },
-      { header: '', key: 'product', width: 30 },
-      { header: '', key: 'quantity', width: 15 },
-      { header: '', key: 'totalDiscount', width: 15 },
-      { header: '', key: 'couponDiscount', width: 15 },
-      { header: '', key: 'itemTotal', width: 15 },
-      { header: '', key: 'paymentStatus', width: 15 },
-      { header: '', key: 'date', width: 15 }
+      { header: 'User', key: 'user', width: 20 },
+      { header: 'Order ID', key: 'orderId', width: 30 },
+      { header: 'Product', key: 'product', width: 30 },
+      { header: 'Quantity', key: 'quantity', width: 15 },
+      { header: 'Discount', key: 'totalDiscount', width: 15 },
+      { header: 'Coupon Discount', key: 'couponDiscount', width: 20 },
+      { header: 'Total', key: 'itemTotal', width: 15 },
+      { header: 'Payment Status', key: 'paymentStatus', width: 15 },
+      { header: 'Date', key: 'date', width: 15 },
     ];
 
-    // Add and style title row
+    //  title row with styling
     worksheet.mergeCells('A1:I1');
     const titleCell = worksheet.getCell('A1');
-    titleCell.value = 'comiX Sales Report';
-    titleCell.font = {
-      name: ' Georgia',
-      size: 16,
-      bold: true,
-     
-     
-    };
-    titleCell.fill = {
-      type: 'pattern',
-      pattern: 'solid',
-  
-    }
-    titleCell.alignment = {
-      vertical: 'middle',
-      horizontal: 'center'
-    };
+    titleCell.value = 'ComiX Sales Report';
+    titleCell.font = { name: 'Georgia', size: 16, bold: true };
+    titleCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFD3D3D3' } }; 
+    titleCell.alignment = { vertical: 'middle', horizontal: 'center' };
     worksheet.getRow(1).height = 30;
 
-    // Add filter information below the title
+    // Add filter info  below the title name
     const filterInfoRow = worksheet.getRow(2);
     filterInfoRow.getCell(1).value = `Filter Type: ${filterType || 'All'}`;
     filterInfoRow.getCell(2).value = `Start Date: ${startDate || 'N/A'}`;
@@ -264,30 +270,18 @@ export const generateExcelReport = async (req, res) => {
 
     // Merge cells for filter info
     worksheet.mergeCells('A2:I2');
-    filterInfoRow.getCell(1).alignment = {
-      vertical: 'middle',
-      horizontal: 'center'
-    };
+    filterInfoRow.getCell(1).alignment = { vertical: 'middle', horizontal: 'center' };
 
     // Style the filter info row
     filterInfoRow.eachCell((cell) => {
-      cell.font = {
-        bold: true,
-    
-      };
-      cell.fill = {
-        type: 'pattern',
-        pattern: 'solid',
-   
-      };
-      cell.alignment = {
-        vertical: 'middle',
-        horizontal: 'center'
-      };
+      cell.font = { bold: true };
+      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFADD8E6' } }; 
+      cell.alignment = { vertical: 'middle', horizontal: 'center' };
     });
     filterInfoRow.height = 20;
 
-    
+    //  header row with styling
+    const headerRow = worksheet.getRow(3);
     const headers = [
       'User',
       'Order ID',
@@ -297,77 +291,97 @@ export const generateExcelReport = async (req, res) => {
       'Coupon Discount',
       'Total',
       'Payment Status',
-      'Date'
+      'Date',
     ];
 
-    // Add and style header row
-    const headerRow = worksheet.getRow(3); // Adjusted to row 3
     headers.forEach((header, i) => {
       const cell = headerRow.getCell(i + 1);
       cell.value = header;
-      cell.font = {
-        bold: true,
-      
-      };
-      cell.fill = {
-        type: 'pattern',
-        pattern: 'solid',
-      
-        // Dark blue background
-      };
-      cell.alignment = {
-        vertical: 'middle',
-        horizontal: 'center'
+      cell.font = { bold: true, color: { argb: 'FFFFFFFF' } }; 
+      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF007ACC' } }; 
+      cell.alignment = { vertical: 'middle', horizontal: 'center' };
+      cell.border = {
+        top: { style: 'thin' },
+        left: { style: 'thin' },
+        bottom: { style: 'thin' },
+        right: { style: 'thin' },
       };
     });
     headerRow.height = 25;
 
-    // Add data rows starting from row 4
-    let rowIndex = 3;
+    // data rows starting from row 4
+    let dataRowIndex = 4; 
     orders.forEach(order => {
       order.items.forEach(item => {
         if (item.itemStatus === 'Delivered') {
           const row = worksheet.addRow({
             user: order.user.name,
-            orderId: order._id,
+            orderId: order._id.toString(),
             product: item.product.name,
             quantity: item.quantity,
-            totalDiscount: item.totalDiscount,
-            couponDiscount: item.couponDiscountAmount,
-            itemTotal: item.itemTotal,
+            totalDiscount: `₹${item.totalDiscount.toFixed(2)}`,
+            couponDiscount: `₹${item.couponDiscountAmount.toFixed(2)}`,
+            itemTotal: `₹${item.itemTotal.toFixed(2)}`,
             paymentStatus: order.paymentStatus,
-            date: new Date(order.orderedAt).toLocaleDateString()
+            date: new Date(order.orderedAt).toLocaleDateString(),
           });
 
-          // Style each cell in the row
+          // Styling each cell in the data row
           row.eachCell((cell) => {
-            cell.alignment = {
-              vertical: 'middle',
-              horizontal: 'center'
-            };
+            cell.alignment = { vertical: 'middle', horizontal: 'center' };
             cell.border = {
               top: { style: 'thin' },
               left: { style: 'thin' },
               bottom: { style: 'thin' },
-              right: { style: 'thin' }
+              right: { style: 'thin' },
             };
           });
-          
-          rowIndex++;
+
+          dataRowIndex++;
         }
       });
     });
 
-    // Add borders to title and header rows
-    [1, 2].forEach(rowNumber => {
-      worksheet.getRow(rowNumber).eachCell((cell) => {
+    // Add an empty row for spacing before summary
+    worksheet.addRow([]);
+
+    // Adding summary data 
+    const summaryStartRow = worksheet.lastRow.number + 1;
+
+    //  a helper function to add summary rows
+    const addSummaryRow = (label, value) => {
+      const row = worksheet.addRow([label, value]);
+
+      //  summary row styling
+      row.getCell(1).font = { bold: true };
+      row.getCell(2).font = { bold: true };
+      row.getCell(1).alignment = { horizontal: 'right' };
+      row.getCell(2).alignment = { horizontal: 'left' };
+      row.eachCell((cell) => {
         cell.border = {
           top: { style: 'thin' },
           left: { style: 'thin' },
           bottom: { style: 'thin' },
-          right: { style: 'thin' }
+          right: { style: 'thin' },
         };
       });
+
+      
+      row.height = 20;
+    };
+
+    // Adding Total Revenue
+    addSummaryRow('Total Revenue:', `₹${reportData.totalRevenue.toFixed(2)}`);
+
+    // Adding Total Discount
+    addSummaryRow('Total Discount:', `₹${reportData.totalDiscount.toFixed(2)}`);
+
+    // Adding Total Sales Count
+    addSummaryRow('Total Sales Count:', reportData.salesCount);
+
+    // Fine-tune column widths increase
+    worksheet.columns.forEach(column => {
+      column.width = column.width < 20 ? 20 : column.width;
     });
 
     // Set response headers for Excel file download
