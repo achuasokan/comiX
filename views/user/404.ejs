@@ -1,0 +1,35 @@
+
+<style>
+  body {
+      background-color: #000000; /* Dark background */
+  }
+  .comic-book {
+      animation: bounce 2s infinite;
+  }
+  @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {
+          transform: translateY(0);
+      }
+      40% {
+          transform: translateY(-20px);
+      }
+      60% {
+          transform: translateY(-10px);
+      }
+  }
+</style>
+
+<div class="flex flex-col items-center justify-center min-h-screen text-white p-4">
+<div class="text-center">
+  <h1 class="text-6xl font-bold mb-4 animate-pulse">404</h1>
+  <p class="text-2xl mb-6">Oops! This page doesn't seem to exist in this universe.</p>
+  <div class="flex justify-center mb-6">
+      <img src="/img/comiX.png" alt="Comic Book" class="comic-book w-48 md:w-72 lg:w-96 h-auto" />
+  </div>
+  <p class="text-lg mb-4">But don't worry, you can find your way back!</p>
+  <button onclick="window.history.back()" class="bg-gradient-to-r from-yellow-400 to-red-600 text-white py-2 px-4 rounded-lg hover:opacity-80 transition duration-300">Go Back</button>
+</div>
+</div>
+
+
+
