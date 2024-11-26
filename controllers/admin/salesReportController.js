@@ -319,7 +319,7 @@ export const generateExcelReport = async (req, res) => {
             orderId: order._id.toString(),
             product: item.product.name,
             quantity: item.quantity,
-            totalDiscount: `₹${item.totalDiscount.toFixed(2)}`,
+            totalDiscount: `₹${item.discountAmount.toFixed(2)}`,
             couponDiscount: `₹${item.couponDiscountAmount.toFixed(2)}`,
             itemTotal: `₹${item.itemTotal.toFixed(2)}`,
             paymentStatus: order.paymentStatus,
