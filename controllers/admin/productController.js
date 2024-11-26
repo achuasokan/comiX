@@ -75,9 +75,9 @@ export const getAddProduct=async(req,res)=>{
       }
   
       //  Validate Price
-      const Price = parseFloat(price);
-      if (isNaN(Price) || Price <= 0) {
-        errors.push("Price must be a number greater than zero.");
+      const priceValue = parseFloat(price);
+      if (isNaN(priceValue) || priceValue <= 0 || !/^\d+(\.\d{1,2})?$/.test(price)) {
+          errors.push("Product Price must be a valid number greater than zero and can have up to two decimal places.");
       }
   
       //  Validate Stock
@@ -139,7 +139,7 @@ export const getAddProduct=async(req,res)=>{
         name: productName,
         description: description,
         image: imageUrls, // Save the array of image URLs
-        price: Price,
+        price: priceValue,
         stock: Stocks,
         category: category,
         SKU: SKU,
@@ -230,9 +230,9 @@ export const postEditProduct = async (req, res) => {
     }
 
     //  Validate Price
-    const Price = parseFloat(price);
-    if (isNaN(Price) || Price <= 0) {
-      errors.push("Price must be a number greater than zero.");
+    const priceValue = parseFloat(price);
+    if (isNaN(priceValue) || priceValue <= 0 || !/^\d+(\.\d{1,2})?$/.test(price)) {
+        errors.push("Product Price must be a valid number greater than zero and can have up to two decimal places.");
     }
 
     //  Validate Stock
@@ -292,7 +292,7 @@ export const postEditProduct = async (req, res) => {
     const updateData = {
       name: productName,
       description: description,
-      price: Price,
+      price: priceValue ,
       stock: Stocks,
       category: category,
       SKU: SKU,
