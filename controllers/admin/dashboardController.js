@@ -134,7 +134,7 @@ export const getDashboard = async (req, res) => {
       };
     });
 
-    console.log("Timeline Data:", formattedSalesData);
+
 
     // Best Selling Products
     const bestSellingProducts = await orderModel.aggregate([
