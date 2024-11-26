@@ -1,4 +1,3 @@
-
 let cropper;
 let currentImageElement;
 let currentImageIndex = 0;
@@ -70,8 +69,9 @@ function validateField(fieldName) {
       errorElement.textContent = isValid ? '' : 'Please select a category.';
       break;
     case 'price':
-      isValid = !isNaN(parseFloat(field.value)) && parseFloat(field.value) > 0;
-      errorElement.textContent = isValid ? '' : 'Product Price must be greater than zero.';
+      const priceValue = parseFloat(field.value);
+      isValid = !isNaN(priceValue) && priceValue > 0 && /^\d+(\.\d{1,2})?$/.test(field.value);
+      errorElement.textContent = isValid ? '' : 'Product Price must be a valid number greater than zero and can have up to two decimal places.';
       break;
     case 'stock':
       const stockValue = field.value.trim();
