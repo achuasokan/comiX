@@ -191,7 +191,7 @@ export const getEditProduct=async(req,res)=>{
     const id=req.params.id;
     const categorylist=await categoryModel.find({isBlocked:false})
     const products=await productModel.findById(id).populate('category')
-    res.render("admin/editProduct",{products,categorylist,title:"Edit Product"})
+    res.render("admin/editproduct",{products,categorylist,title:"Edit Product"})
 
   }catch(error){
     console.log(error);
@@ -285,7 +285,7 @@ export const postEditProduct = async (req, res) => {
     // If there are validation errors, return them
     if (errors.length > 0) {
       req.flash('error', errors);
-      return res.redirect(`/admin/editProduct/${id}`);
+      return res.redirect(`/admin/editproduct/${id}`);
     }
 
     // Prepare the update object
