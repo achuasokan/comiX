@@ -73,16 +73,19 @@
     <div id="mobile-menu" class="hidden absolute right-0 mt-2 w-48 bg-black text-white rounded-md shadow-lg z-50">
       <a href="/" class="block px-4 py-2 hover:text-orange-500">Home</a>
       <a href="/shop/allProducts" class="block px-4 py-2 hover:text-orange-500">Shop</a>
-       <!-- Heart Icon -->
-     <% if (user) { %>
-      <a href="/wishlist" class="hover:text-orange-500">
-        <i class="fas fa-heart  h-6 w-6"></i>
-      </a>
-    <% } else { %>
-      <a href="/login" class="hover:text-orange-500">
-        <i class="fas fa-heart  h-6 w-6"></i>
-      </a>
-    <% } %>
+      <div class="flex px-4 flex-col">
+
+        <!-- Heart Icon -->
+        <% if (user) { %>
+          <a href="/wishlist" class="hover:text-orange-500">
+            <i class="fas fa-heart  h-6 w-6"></i>
+          </a>
+          <% } else { %>
+          <a href="/login" class="hover:text-orange-500">
+            <i class="fas fa-heart  h-6 w-6"></i>
+          </a>
+          <% } %>
+          
     
       <!-- Cart Icon -->
       <% if (user) { %>
@@ -90,13 +93,14 @@
           <i class="fas fa-shopping-cart  h-6 w-6"></i>
         </a>
       <% } else { %>
-        <a href="/login" class="hover:text-orange-500">
+        <a href="/login" class="hover:text-orange-500 ">
           <i class="fas fa-shopping-cart  h-6 w-6"></i>
         </a>
-      <% } %> 
+        <% } %> 
       <!-- Reuse User Menu for mobile -->
+    </div>
       <% if(user) { %>
-      <div class="relative">
+        <div class="relative ">
         <button id="mobile-user-icon" aria-label="User menu mobile" class="block w-full text-left px-4 py-2 hover:text-orange-500 focus:outline-none">
           <!-- User Icon (Font Awesome) -->
           <i class="fas fa-user hover:text-orange-500 h-6 w-6"></i>
@@ -110,7 +114,7 @@
         </div>
       </div>
       <% } else { %>
-        <a href='/login' class="hover:text-orange-500">Log in</a>
+        <a href='/login' class=" px-4 hover:text-orange-500">Log in</a>
       <% } %>
     </div>
   </div>
