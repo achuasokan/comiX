@@ -54,7 +54,7 @@ router.post('/blockCategory/:id',adminMiddleware.isAdmin,categoryController.bloc
 
 router.get('/searchCategory',adminMiddleware.isAdmin,categoryController.searchCategory)
 
-router.delete('/deleteCategory/:id',adminMiddleware.isAdmin,categoryController.deleteCategory)
+
 
 
 
