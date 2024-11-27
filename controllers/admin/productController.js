@@ -3,7 +3,7 @@ import categoryModel from "../../models/Category.js"
 import cloudinary from "../../config/cloudinary.js"
 import fs from "fs"
 
-//* //  //  //   //  //          GET PRODUCT LIST PAGE  //  //  //  //  //  //  //
+//* //  //  //   //  //          GET PRODUCT LIST PAGEs  //  //  //  //  //  //  //
 export const getProduct=async(req,res)=>{
   try{
     const page=parseInt(req.query.page) || 1;
@@ -46,7 +46,7 @@ export const getAddProduct=async(req,res)=>{
   }
 }
 
-  //* //  //  //   //  //          POST ADD PRODUCT   //  //  //  //  //  //  //
+  //* //  //  //   //  //          POST ADD PRODUCTs  //  //  //  //  //  //  //
 
   export const postAddProduct = async (req, res) => {
     const files = req.files || [];
