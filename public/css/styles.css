@@ -18,3 +18,45 @@
 .truncate {
   max-width: 199px;
 }
+
+/* Submit buttons of User side */
+.styled-btn {
+  border: 3px ridge transparent;
+  outline: none;
+  position: relative;
+  border-radius: 0.3em;
+  background-color: transparent;
+  cursor: pointer;
+  color:white;
+  font-size: 16px;
+  font-weight: bold;
+  transition:  1s;
+  border-image: linear-gradient(to right, #fbbf24, #f8712b) 1; 
+}
+.styled-btn::after,
+.styled-btn::before {
+  content: '';
+  position: absolute;
+  left: 3%;
+
+  width: 95%;
+  height: 45%;
+  background-color:black;
+  top: -10px;
+  transition: 0.6s;
+}
+
+.styled-btn::before {
+  top: 80%;
+}
+
+.styled-btn:hover::before,
+.styled-btn:hover::after {
+  transform:scale(0);
+}
+
+.styled-btn:hover {
+  box-shadow: inset 0px 0px 20px rgba(251, 191, 36, 0.7);
+}
+
+/* submit button of user side end */
