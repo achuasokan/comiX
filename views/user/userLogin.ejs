@@ -14,7 +14,6 @@
     z-index: 1; 
   }
 </style>
-
 <%- include("../partials/header.ejs") %>
 
 <div class="min-h-screen flex items-center justify-center bg-black">
@@ -33,6 +32,9 @@
           <input id="password" name="password" type="password" class="block w-full px-2 py-2 text-white border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 placeholder-transparent bg-transparent" required placeholder=" ">
           <label for="password" class="absolute left-2 top-2 text-white ml-2 transition-all duration-300 transform origin-left scale-75 pointer-events-none">Enter Password</label>
           <p id="passwordError" class="text-red-200 text-sm" aria-live="assertive"></p>
+          <button type="button" id="togglePassword" class="absolute right-2 top-2 text-orange-500">
+            <span class="material-icons" id="eyeIcon">visibility</span>
+          </button>
         </div>
 
         <div>
@@ -74,3 +76,17 @@
 
 <%- include("../partials/footer.ejs") %>
 <script>
+  const togglePassword = document.getElementById('togglePassword');
+  const passwordInput = document.getElementById('password');
+  const eyeIcon = document.getElementById('eyeIcon');
+
+  togglePassword.addEventListener('click', function () {
+    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+    passwordInput.setAttribute('type', type);
+    eyeIcon.textContent = type === 'password' ? 'visibility' : 'visibility_off';
+
+    if (type == 'text') {
+      passwordInput.classList.add('border-orange-500');
+    } 
+  });
+</script>

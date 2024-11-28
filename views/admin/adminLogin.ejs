@@ -1,4 +1,15 @@
-
+<style>
+  .relative input:focus + label,
+.relative input:not(:placeholder-shown) + label {
+  top: -13px; /* Adjust as needed */
+  left: -1px; /* Adjust as needed */
+  font-size: 16px; /* Adjust as needed */
+  color: #fbbf24; /* Change to your desired color */
+  background-color: black; /* Add background color */
+  padding: 0 4px; /* Add padding to the label */
+  z-index: 1; /* Ensure the label is above the input */
+}
+</style>
     <div  class="bg-black m-0 p-0 flex justify-center items-center min-h-screen tracking-widest font-poppins">
       <div class="image-section p-10 border border-[#0e066b] shadow-lg rounded-2xl h-[480px] w-[400px] flex justify-center items-end bg-[url('/img/luffy-logo.png')] bg-center bg-no-repeat bg-cover">
       </div>
@@ -6,20 +17,40 @@
         <h1 class="title text-4xl font-bold text-[#00C9FFFF] shadow-md mb-5 text-center">Admin Login</h1>
         
         <%- include('../partials/flashMessage.ejs') %>
-        <form class="form-box flex flex-col box-border" method="post" action="/admin/login">
-          <div class="input-field relative my-[30px]">
-            <input type="email"  name="email" id="email" required spellcheck="false" class="peer w-full h-[45px] rounded-md text-xl px-4 border-2 border-white bg-transparent outline-none text-white focus:border-[#23cd48] placeholder-transparent" />
-            <label for="email" class="absolute top-1/2 left-4 transform -translate-y-1/2 pointer-events-none transition-transform duration-700 text-white peer-placeholder-shown:translate-y-0 peer-placeholder-shown:text-white peer-focus:-translate-y-9 peer-focus:bg-black peer-focus:px-2 peer-focus:text-[#FFFFF]">Enter Email</label>
+        <form class=" flex flex-col box-border" method="post" action="/admin/login">
+          <div class="my-4 relative">
+            <input type="email"  name="email" id="email" required spellcheck="false" placeholder=" " class="block w-full px-2 py-2 bg-transparent text-white border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 placeholder:text-transparent transition duration-300" />
+            <label for="email" class="absolute left-2 top-2 ml-2 text-white text-md transition-all duration-300 transform origin-left scale-75 pointer-events-none">Enter Email</label>
           </div>
-          <div class="input-field relative my-[20px]">
-            <input type="password"  name="password" id="password" required spellcheck="false" class="peer w-full h-[45px] rounded-md text-xl px-4 border-2 border-white bg-transparent outline-none text-white focus:border-[#23cd48] placeholder-transparent" />
-            <label for="password" class="absolute top-1/2 left-4 transform -translate-y-1/2 pointer-events-none transition-transform duration-700 text-white peer-placeholder-shown:translate-y-0 peer-placeholder-shown:text-white peer-focus:-translate-y-9 peer-focus:bg-black peer-focus:px-2 peer-focus:text-[#FFFFF]">Enter Password</label>
+          <div class="my-4 relative">
+            <input type="password"  name="password" id="password" required spellcheck="false" placeholder=" " class="block w-full px-2 py-2 bg-transparent text-white border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 placeholder:text-transparent transition duration-300" />
+            <label for="password" class="absolute left-2 top-2 ml-2 text-white text-md transition-all duration-300 transform origin-left scale-75 pointer-events-none">Enter Password</label>
+            <button type="button" id="toggleAdminPassword" class="absolute right-2 top-2 text-orange-500">
+              <span class="material-icons" id="adminPasswordEyeIcon">visibility</span>
+            </button>
           </div>
           <button type="submit" class="submit-btn w-full h-[40px] border-2 border-black rounded-md bg-gradient-to-r dark:text-gray-300 from-blue-500 to-purple-500 shadow-lg text-white cursor-pointer transition-colors duration-300 text-xl mt-11 hover:scale-105 hover:from-purple-500 hover:to-blue-500">Log in</button>
         </form>
       </div>
 
     </div>
+
+    <script>
+      // toggle admin password visibility
+      const toggleAdminPassword = document.getElementById('toggleAdminPassword');
+      const adminPasswordInputs = document.getElementById('password');
+      const adminPasswordEyeIcon = document.getElementById('adminPasswordEyeIcon');
+
+      toggleAdminPassword.addEventListener('click', function () {
+        const type = adminPasswordInputs.getAttribute('type') === 'password' ? 'text' : 'password';
+        adminPasswordInputs.setAttribute('type', type);
+        adminPasswordEyeIcon.textContent = type === 'password' ? 'visibility' : 'visibility_off';
+
+        if (type == 'text') {
+          adminPasswordInputs.classList.add('border-blue-500');
+        }
+      });
+    </script>
     
 
     

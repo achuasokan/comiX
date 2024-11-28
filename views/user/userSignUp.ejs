@@ -42,12 +42,18 @@
               <input id="password" name="password" type="password" placeholder=" " class="block w-full px-2 py-2 bg-transparent text-white border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 placeholder:text-transparent transition duration-300" >
               <label for="password" class="absolute left-2 top-2 ml-2 text-white transition-all duration-300 transform origin-left scale-75 pointer-events-none">Password</label>
               <p id="passwordError" class="text-red-200 text-sm" aria-live="assertive"></p>
+              <button type="button" id="togglePassword" class="absolute right-2 top-2 text-orange-500">
+                <span class="material-icons" id="eyeIcon">visibility</span>
+              </button>
             </div>
 
             <div class="relative">
               <input id="confirmPassword" name="confirmPassword" type="password" placeholder=" " class="block w-full px-2 py-2 bg-transparent text-white border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 placeholder:text-transparent transition duration-300" >
               <label for="confirmPassword" class="absolute left-2 top-2 ml-2 text-white transition-all duration-300 transform origin-left scale-75 pointer-events-none">Confirm Password</label>
               <p id="confirmPasswordError" class="text-red-200 text-sm" aria-live="assertive"></p>
+              <button type="button" id="toggleConfirmPassword" class="absolute right-2 top-2 text-orange-500">
+                <span class="material-icons" id="confirmEyeIcon">visibility</span>
+              </button>
             </div>
           
             <div>
@@ -182,6 +188,40 @@
         event.preventDefault();
       }
     });
+
+
+    // toggle password visibility
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInputs = document.getElementById('password');
+    const eyeIcon = document.getElementById('eyeIcon');
+
+    togglePassword.addEventListener('click', function () {
+      const type = passwordInputs.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInputs.setAttribute('type', type);
+      eyeIcon.textContent = type === 'password' ? 'visibility' : 'visibility_off';
+
+      if (type == 'text') {
+        passwordInputs.classList.add('border-orange-500');
+      }
+    });
+
+    // toggle confirm password visibility
+    const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+    const confirmPasswordInputs = document.getElementById('confirmPassword');
+    const confirmEyeIcon = document.getElementById('confirmEyeIcon');
+
+    toggleConfirmPassword.addEventListener('click', function () {
+      const type = confirmPasswordInputs.getAttribute('type') === 'password' ? 'text' : 'password';
+      confirmPasswordInputs.setAttribute('type', type);
+      confirmEyeIcon.textContent = type === 'password' ? 'visibility' : 'visibility_off';
+
+      if (type == 'text') {
+        confirmPasswordInputs.classList.add('border-orange-500');
+      }
+    });
+
+
+
   </script>
 
 
