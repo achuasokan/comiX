@@ -10,6 +10,12 @@ import walletModel from '../../models/wallet.js'
 
 export const getOrderHistoryPage = async (req,res) => {
   try {
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = 2;
+    const skip = (page - 1) * limit;
+
+
     const userId = req.session.userID 
     const orders = await orderModel.find( {user:userId} )
     .populate({
@@ -17,10 +23,16 @@ export const getOrderHistoryPage = async (req,res) => {
       select:'name image category',
       populate:{path:'category',select:'name'}
     })
-    .sort({createdAt:-1}).exec()
+    .sort({createdAt:-1}).skip(skip).limit(limit).exec()
+
+    const totalOrders = await orderModel.countDocuments({user:userId})
+    const totalPages = Math.ceil(totalOrders / limit)
+
     res.render('profile/orderHistory',{
       orders,
       razorpayKey: process.env.RAZORPAY_KEY_ID,
+      currentPage: page,
+      totalPages,
       title:"Orders"
     })
   } catch (error) {
