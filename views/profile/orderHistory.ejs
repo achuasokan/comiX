@@ -24,25 +24,29 @@
 </style>
 
 <div class="flex bg-black text-white">
-  <%- include('./profileSidebar.ejs') %>
+
 
   <div class="container mx-auto p-6 flex-1">
     <h1 class="text-3xl font-bold mb-4">Your Order History</h1>
 
-    <div class="flex flex-col md:flex-row mb-4">
-      <select
-        class="mb-2 md:mb-0 md:mr-4 p-2 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      >
-        <option value="">Filter by Status</option>
-        <option value="Delivered">Delivered</option>
-        <option value="Cancelled">Cancelled</option>
-        <option value="Processing">Processing</option>
-      </select>
-      <input
-        type="text"
-        placeholder="Search your orders here"
-        class="w-full p-2 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
+    <div class="flex mb-4">
+      <nav class="flex" aria-label="Breadcrumb">
+        <ol class="inline-flex items-center space-x-1 md:space-x-3">
+          <li class="inline-flex items-center">
+            <a href="/home" class="text-yellow-500 hover:text-blue-500">
+              <i class="fas fa-home mr-1"></i> Home
+            </a>
+          </li>
+          <li class="inline-flex items-center">
+            <span class="text-gray-400">/</span>
+          </li>
+          <li class="inline-flex items-center">
+            <a href="/profile/personal-info" class="text-yellow-500 hover:text-blue-500">
+              <i class="fas fa-user mr-1"></i> Profile
+            </a>
+          </li>
+        </ol>
+      </nav>
     </div>
 
     <% if (orders.length === 0) { %>
@@ -109,11 +113,13 @@
           </div>
           <% }) %>
         </div>
+        <% if (order.items.every(item => item.itemStatus !== 'Cancelled')) { %>
         <div class="flex justify-between mt-2">
           <button class="bg-gradient-to-r from-red-600 to-yellow-400 text-black px-2 py-1 text-sm rounded-lg hover:bg-blue-600" onclick="downloadInvoice(`<%= order._id %>`)">
             Download Invoice
           </button>
         </div>
+        <% } %>
       </li>
       <% }) %>
     </ul>
