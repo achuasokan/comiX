@@ -8,8 +8,11 @@ import couponModel from '../../models/Coupon.js'
 export const getProfilePage=async(req,res)=>{
   try{
     // get user from database
-    const user=await userModel.findById(req.session.userID)
-    res.render('profile/personal-Info',{user,title:"Personal Information"})
+    const userID = req.session.userID
+    const user=await userModel.findById(userID)
+    console.log("user",user);
+    
+    res.render('profile/personal-Info',{user, title:"Personal Information"})
   }catch(error){
     console.log(error);
   }
@@ -127,7 +130,7 @@ export const getEditAddressPage = async(req,res) => {
     const address = await addressModel.findById(addressID)
 
     // render edit address page with address data
-    res.render('profile/editAddress',{address,title:"Edit Address"})
+    res.render('profile/editAddress',{address, title:"Edit Address"})
   }catch(error) {
     console.log("error in get edit address page",error);
     res.status(500).send("internal server error in get edit address page")
