@@ -1,35 +1,29 @@
-<div class="bg-[#121213] text-white flex flex-col items-center p-6 w-80 h-full sticky top-0">
-    <div class="w-full space-y-6">
-        <h2 class="text-lg font-bold">My Account</h2>
-        <a href="/profile/personal-info" class="flex items-center bg-[#1f1f1f] transition duration-200 py-3 px-8 rounded-lg hover:bg-gradient-to-r hover:from-red-600 hover:to-yellow-400 hover:text-black <%= locals.title === 'Personal Information' ? 'bg-gradient-to-r from-red-600 to-yellow-400 text-black' : '' %>">
-            <i class="fas fa-user mr-2"></i>
-            <span >Personal Information</span>
+<nav class="bg-black p-2 flex flex-col w-full">
+    <h2 class="text-lg font-bold mb-2 text-center">My Account</h2>
+    <div class="flex flex-wrap justify-around">
+        <a href="/profile/personal-info" class="flex items-center transition duration-200 py-2 px-3 rounded-lg hover:bg-gradient-to-r hover:from-red-600 hover:to-yellow-400 hover:text-black <%= locals.title === 'Personal Information' ? 'bg-gradient-to-r from-red-600 to-yellow-400 text-black' : '' %>">
+            <i class="fas fa-user mr-1"></i>
+            <span class="text-sm md:text-base">Personal Information</span>
         </a>
-        <a href="/profile/address" class="flex items-center bg-[#1f1f1f] transition duration-200 py-3 px-8 rounded-lg hover:bg-gradient-to-r hover:from-red-600 hover:to-yellow-400 hover:text-black <%= locals.title === 'Address' || locals.title === 'Add Address' || locals.title === 'Edit Address' ? 'bg-gradient-to-r from-red-600 to-yellow-400 text-black' : '' %>">
-            <i class="fas fa-map-marker-alt mr-2"></i>
-            <span >Address</span>
+        <a href="/profile/address" class="flex items-center transition duration-200 py-2 px-3 rounded-lg hover:bg-gradient-to-r hover:from-red-600 hover:to-yellow-400 hover:text-black <%= locals.title === 'Address' ? 'bg-gradient-to-r from-red-600 to-yellow-400 text-black' : '' %>">
+            <i class="fas fa-map-marker-alt mr-1"></i>
+            <span class="text-sm md:text-base">Address</span>
         </a>
-        <a href="/profile/orders" class="flex items-center bg-[#1f1f1f] transition duration-200 py-3 px-8 rounded-lg hover:bg-gradient-to-r hover:from-red-600 hover:to-yellow-400 hover:text-black <%= locals.title === 'Orders' ? 'bg-gradient-to-r from-red-600 to-yellow-400 text-black' : '' %>">
-            <i class="fas fa-box mr-2"></i>
-            <span>Orders</span>
+        <a href="/profile/orders" class="flex items-center transition duration-200 py-2 px-3 rounded-lg hover:bg-gradient-to-r hover:from-red-600 hover:to-yellow-400 hover:text-black <%= locals.title === 'Orders' ? 'bg-gradient-to-r from-red-600 to-yellow-400 text-black' : '' %>">
+            <i class="fas fa-box mr-1"></i>
+            <span class="text-sm md:text-base">Orders</span>
         </a>
-        <a href="/profile/wallet" class="flex items-center bg-[#1f1f1f] transition duration-200 py-3 px-8 rounded-lg hover:bg-gradient-to-r hover:from-red-600 hover:to-yellow-400 hover:text-black <%= locals.title === 'Wallet' ? 'bg-gradient-to-r from-red-600 to-yellow-400 text-black' : '' %>">
-            <i class="fas fa-wallet mr-2"></i>
-            <span >Wallet</span>
+        <a href="/profile/wallet" class="flex items-center transition duration-200 py-2 px-3 rounded-lg hover:bg-gradient-to-r hover:from-red-600 hover:to-yellow-400 hover:text-black <%= locals.title === 'Wallet' ? 'bg-gradient-to-r from-red-600 to-yellow-400 text-black' : '' %>">
+            <i class="fas fa-wallet mr-1"></i>
+            <span class="text-sm md:text-base">Wallet</span>
         </a>
-        <a href="/profile/coupons" class="flex items-center bg-[#1f1f1f] transition duration-200 py-3 px-8 rounded-lg hover:bg-gradient-to-r hover:from-red-600 hover:to-yellow-400 hover:text-black <%= locals.title === 'Coupons' ? 'bg-gradient-to-r from-red-600 to-yellow-400 text-black' : '' %>">
-            <i class="fas fa-ticket-alt mr-2"></i>
-            <span >Coupons</span>
+        <a href="/profile/coupons" class="flex items-center transition duration-200 py-2 px-3 rounded-lg hover:bg-gradient-to-r hover:from-red-600 hover:to-yellow-400 hover:text-black <%= locals.title === 'Coupons' ? 'bg-gradient-to-r from-red-600 to-yellow-400 text-black' : '' %>">
+            <i class="fas fa-ticket-alt mr-1"></i>
+            <span class="text-sm md:text-base">Coupons</span>
         </a>
-        <% if (user && user.password) { %>
-        <a href="/profile/change-password" class="flex items-center bg-[#1f1f1f] transition duration-200 py-3 px-8 rounded-lg hover:bg-gradient-to-r hover:from-red-600 hover:to-yellow-400 hover:text-black <%= locals.title === 'Change Password' ? 'bg-gradient-to-r from-red-600 to-yellow-400 text-black' : '' %>">
-            <i class="fas fa-key mr-2"></i>
-            <span >Change Password</span>
+        <a href="/profile/change-password" class="flex items-center transition duration-200 py-2 px-3 rounded-lg hover:bg-gradient-to-r hover:from-red-600 hover:to-yellow-400 hover:text-black <%= locals.title === 'Change Password' ? 'bg-gradient-to-r from-red-600 to-yellow-400 text-black' : '' %>">
+            <i class="fas fa-key mr-1"></i>
+            <span class="text-sm md:text-base">Change Password</span>
         </a>
-        <% } %>
-        <form action="/logout" method="POST" class="flex items-center bg-[#1f1f1f] transition duration-200 py-3 px-8 rounded-lg hover:bg-gradient-to-r hover:from-red-600 hover:to-yellow-400 hover:text-black">
-            <i class="fas fa-sign-out-alt mr-2"></i>
-            <span >Logout</span>
-        </form>
     </div>
-  </div>
+</nav>
