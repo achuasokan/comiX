@@ -1,48 +1,53 @@
 <%- include('../partials/header.ejs') %>
-<div class="bg-black text-white flex">
+<div class="bg-black text-white flex flex-col items-center">
+
+  <!-- Horizontal Navigation Bar -->
   <%- include('./profileSidebar.ejs') %>
-  <div class="flex flex-col items-center justify-center p-6 w-full max-w-md mx-auto">
-    <h2 class="text-lg font-bold mb-4">Edit Address</h2>
-    <form class="w-full space-y-4" action="/profile/edit-address/<%=address._id%>" method="POST" id="add-address-form">
+  <!-- Navigation Bar end -->
+
+  <!-- Edit Address Form -->
+  <main class="flex-1 p-4 w-full max-w-md mx-auto">
+    <h2 class="text-lg font-bold mb-4 text-center">Edit Address</h2>
+    <form class="w-full space-y-4" action="/profile/edit-address/<%= address._id %>" method="POST" id="edit-address-form">
     
-      <div class="flex flex-col space-y-1"> <!-- Grouping Name and Error Message -->
-        <input type="text" placeholder="Name" id="name" value="<%= address.name %>" name="name" class="p-2 rounded bg-[#1f1f1f] text-white"  />
+      <div class="flex flex-col space-y-1">
+        <input type="text" placeholder="Name" id="name" value="<%= address.name %>" name="name" class="p-2 rounded bg-[#1f1f1f] text-white" />
         <p id="nameError" class="text-red-500 text-sm" aria-live="assertive"></p>
       </div>
 
-      <div class="flex flex-col space-y-1"> <!-- Grouping Mobile and Error Message -->
-        <input type="tel" placeholder="10-digit mobile number" id="mobile" value="<%= address.mobile %>" name="mobile" class="p-2 rounded bg-[#1f1f1f] text-white"  />
+      <div class="flex flex-col space-y-1">
+        <input type="tel" placeholder="10-digit mobile number" id="mobile" value="<%= address.mobile %>" name="mobile" class="p-2 rounded bg-[#1f1f1f] text-white" />
         <p id="mobileError" class="text-red-500 text-sm" aria-live="assertive"></p>
       </div>
 
-      <div class="flex flex-col space-y-1"> <!-- Grouping Building Name and Error Message -->
-        <input type="text" placeholder="Building Name" id="building" value="<%= address.buildingName %>" name="buildingName" class="p-2 rounded bg-[#1f1f1f] text-white"  />
+      <div class="flex flex-col space-y-1">
+        <input type="text" placeholder="Building Name" id="building" value="<%= address.buildingName %>" name="buildingName" class="p-2 rounded bg-[#1f1f1f] text-white" />
         <p id="buildingNameError" class="text-red-500 text-sm" aria-live="assertive"></p>
       </div>
 
-      <div class="flex flex-col space-y-1"> <!-- Grouping Street and Error Message -->
-        <input type="text" placeholder="Street" id="street" value="<%= address.street %>" name="street" class="p-2 rounded bg-[#1f1f1f] text-white"  />
+      <div class="flex flex-col space-y-1">
+        <input type="text" placeholder="Street" id="street" value="<%= address.street %>" name="street" class="p-2 rounded bg-[#1f1f1f] text-white" />
         <p id="streetError" class="text-red-500 text-sm" aria-live="assertive"></p>
       </div>
 
-      <div class="flex space-x-4"> <!-- Keeping City and State in a row -->
-        <div class="flex flex-col space-y-1 flex-1"> <!-- Grouping City and Error Message -->
-          <input type="text" placeholder="City" id="city" value="<%= address.city %>" name="city" class="p-2 rounded bg-[#1f1f1f] text-white"  />
+      <div class="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
+        <div class="flex flex-col space-y-1 flex-1">
+          <input type="text" placeholder="City" id="city" value="<%= address.city %>" name="city" class="p-2 rounded bg-[#1f1f1f] text-white" />
           <p id="cityError" class="text-red-500 text-sm" aria-live="assertive"></p>
         </div>
-        <div class="flex flex-col space-y-1 flex-1"> <!-- Grouping State and Error Message -->
-          <input type="text" placeholder="State" id="state" value="<%= address.state %>" name="state" class="p-2 rounded bg-[#1f1f1f] text-white"  />
+        <div class="flex flex-col space-y-1 flex-1">
+          <input type="text" placeholder="State" id="state" value="<%= address.state %>" name="state" class="p-2 rounded bg-[#1f1f1f] text-white" />
           <p id="stateError" class="text-red-500 text-sm" aria-live="assertive"></p>
         </div>
       </div>
 
-      <div class="flex flex-col space-y-1"> <!-- Grouping Country and Error Message -->
-        <input type="text" placeholder="Country" id="country" value="<%= address.country %>"  name="country" class="p-2 rounded bg-[#1f1f1f] text-white"  />
+      <div class="flex flex-col space-y-1">
+        <input type="text" placeholder="Country" id="country" value="<%= address.country %>" name="country" class="p-2 rounded bg-[#1f1f1f] text-white" />
         <p id="countryError" class="text-red-500 text-sm" aria-live="assertive"></p>
       </div>
 
-      <div class="flex flex-col space-y-1"> <!-- Grouping Pincode and Error Message -->
-        <input type="text" placeholder="Pincode" id="pincode" value="<%= address.pincode %>" name="pincode" pattern="[0-9]{6}" class="p-2 rounded bg-[#1f1f1f] text-white"  />
+      <div class="flex flex-col space-y-1">
+        <input type="text" placeholder="Pincode" id="pincode" value="<%= address.pincode %>" name="pincode" pattern="[0-9]{6}" class="p-2 rounded bg-[#1f1f1f] text-white" />
         <p id="pincodeError" class="text-red-500 text-sm" aria-live="assertive"></p>
       </div>
 
@@ -50,19 +55,22 @@
         <input type="checkbox" name="isDefault" class="mr-2" <%= address.isDefault ? 'checked' : '' %> />
         <span class="text-white">Set as Default</span>
       </label>
+      
       <div class="flex justify-between">
         <button type="submit" class="bg-yellow-400 text-black py-2 px-4 rounded">Save Changes</button>
         <a href="/profile/address" class="bg-red-500 text-white py-2 px-4 rounded">Cancel</a>
       </div>
     </form>
-  </div>
+  </main>
+  <!-- Edit Address Form end -->
 </div>
+
 <%- include('../partials/footer.ejs') %>
 <script>
-  const form = document.getElementById('add-address-form');
+  const form = document.getElementById('edit-address-form');
   const nameInput = document.getElementById('name');
   const mobileInput = document.getElementById('mobile');
-  const buildingNameInput = document.getElementById('building'); // Corrected ID
+  const buildingNameInput = document.getElementById('building');
   const streetInput = document.getElementById('street');
   const cityInput = document.getElementById('city');
   const stateInput = document.getElementById('state');
@@ -80,7 +88,7 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     nameInput.addEventListener('input', validatename);
-    mobileInput.addEventListener('input', validatemobile); // Corrected function name
+    mobileInput.addEventListener('input', validatemobile);
     buildingNameInput.addEventListener('input', validatebuildingName);
     streetInput.addEventListener('input', validatestreet);
     cityInput.addEventListener('input', validatecity);
@@ -163,7 +171,7 @@
 
     form.addEventListener('submit', function(event) {
       validatename();
-      validatemobile(); // Ensure this matches the corrected function name
+      validatemobile();
       validatebuildingName();
       validatestreet();
       validatecity();
@@ -172,11 +180,9 @@
       validatepincode();
 
       const hasErrors = nameError.textContent || mobileError.textContent || buildingNameError.textContent || streetError.textContent || cityError.textContent || stateError.textContent || countryError.textContent || pincodeError.textContent;
-      console.log('Validation Errors:', hasErrors);
 
       if (hasErrors) {
         event.preventDefault();
-        console.log('Form submission prevented due to validation errors.');
       }
     });
   });

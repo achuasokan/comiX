@@ -1,12 +1,12 @@
 <%- include('../partials/header.ejs') %>
-<div class="bg-black text-white flex">
+<div class="bg-black text-white flex flex-col items-center">
 
-  <!-- Sidebar for profile -->
+  <!-- Horizontal Navigation Bar -->
   <%- include('./profileSidebar.ejs') %>
-  <!-- Sidebar end -->
+  <!-- Navigation Bar end -->
 
-  <div class="flex-1 p-6">
-    <h1 class="text-2xl font-bold mb-4">Available Coupons</h1>
+  <div class="flex-1 p-6 w-full">
+    <h1 class="text-2xl font-bold mb-4 text-center">Available Coupons</h1>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <% couponsList.forEach(coupon => { %>
         <a href="<%= coupon.applicableType === 'product' ? '/product/' + coupon.applicableProduct.id : coupon.applicableType === 'category' ? '/shop/category/' + coupon.applicableCategory.id : '/shop/allProducts' %>" class="bg-gray-900 p-4 rounded-lg shadow-lg transition-transform transform hover:scale-105 block">
