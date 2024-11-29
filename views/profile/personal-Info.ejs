@@ -15,13 +15,13 @@
        <form id="profileForm" action="/profile/personal-info" method="post" class="flex flex-col mb-4">
            <div class="mb-4 w-full"> 
                <label for="nameInput">Name:</label>
-               <input type="text" name="name" id="nameInput" placeholder="Name" value="<%= user.name %>" class="bg-[#1f1f1f] text-white p-2 rounded-lg w-full" disabled />
+               <input type="text" name="name" id="nameInput" placeholder="Name" value="<%= user.name %>" class="bg-black border border-gray-700 text-white p-2 rounded-lg w-full focus:outline-none focus:border-orange-500" disabled />
                <p id="nameError" class="text-red-200 text-sm" aria-live="assertive"></p>
            </div>
            
            <div class="mb-4 w-full"> 
                <label for="mobileInput">Mobile No:</label>
-               <input type="tel" id="mobileInput" name="mobile" placeholder="Mobile No" value="<%= user.mobile %>" class="bg-[#1f1f1f] text-white p-2 rounded-lg w-full" disabled />
+               <input type="tel" id="mobileInput" name="mobile" placeholder="Mobile No" value="<%= user.mobile %>" class="bg-black border border-gray-700 text-white p-2 rounded-lg w-full focus:outline-none focus:border-orange-500" disabled />
                <p id="mobileError" class="text-red-200 text-sm" aria-live="assertive"></p>
            </div>
 

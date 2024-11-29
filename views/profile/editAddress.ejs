@@ -11,43 +11,43 @@
     <form class="w-full space-y-4" action="/profile/edit-address/<%= address._id %>" method="POST" id="edit-address-form">
     
       <div class="flex flex-col space-y-1">
-        <input type="text" placeholder="Name" id="name" value="<%= address.name %>" name="name" class="p-2 rounded bg-[#1f1f1f] text-white" />
+        <input type="text" placeholder="Name" id="name" value="<%= address.name %>" name="name" class="p-2 rounded bg-black border border-blue-500 text-white focus:outline-none focus:border-orange-500" />
         <p id="nameError" class="text-red-500 text-sm" aria-live="assertive"></p>
       </div>
 
       <div class="flex flex-col space-y-1">
-        <input type="tel" placeholder="10-digit mobile number" id="mobile" value="<%= address.mobile %>" name="mobile" class="p-2 rounded bg-[#1f1f1f] text-white" />
+        <input type="tel" placeholder="10-digit mobile number" id="mobile" value="<%= address.mobile %>" name="mobile" class="p-2 rounded bg-black border border-blue-500 text-white focus:outline-none focus:border-orange-500" />
         <p id="mobileError" class="text-red-500 text-sm" aria-live="assertive"></p>
       </div>
 
       <div class="flex flex-col space-y-1">
-        <input type="text" placeholder="Building Name" id="building" value="<%= address.buildingName %>" name="buildingName" class="p-2 rounded bg-[#1f1f1f] text-white" />
+        <input type="text" placeholder="Building Name" id="building" value="<%= address.buildingName %>" name="buildingName" class="p-2 rounded bg-black border border-blue-500 text-white focus:outline-none focus:border-orange-500" />
         <p id="buildingNameError" class="text-red-500 text-sm" aria-live="assertive"></p>
       </div>
 
       <div class="flex flex-col space-y-1">
-        <input type="text" placeholder="Street" id="street" value="<%= address.street %>" name="street" class="p-2 rounded bg-[#1f1f1f] text-white" />
+        <input type="text" placeholder="Street" id="street" value="<%= address.street %>" name="street" class="p-2 rounded bg-black border border-blue-500 text-white focus:outline-none focus:border-orange-500" />
         <p id="streetError" class="text-red-500 text-sm" aria-live="assertive"></p>
       </div>
 
       <div class="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
         <div class="flex flex-col space-y-1 flex-1">
-          <input type="text" placeholder="City" id="city" value="<%= address.city %>" name="city" class="p-2 rounded bg-[#1f1f1f] text-white" />
+          <input type="text" placeholder="City" id="city" value="<%= address.city %>" name="city" class="p-2 rounded bg-black border border-blue-500 text-white focus:outline-none focus:border-orange-500" />
           <p id="cityError" class="text-red-500 text-sm" aria-live="assertive"></p>
         </div>
         <div class="flex flex-col space-y-1 flex-1">
-          <input type="text" placeholder="State" id="state" value="<%= address.state %>" name="state" class="p-2 rounded bg-[#1f1f1f] text-white" />
+          <input type="text" placeholder="State" id="state" value="<%= address.state %>" name="state" class="p-2 rounded bg-black border border-blue-500 text-white focus:outline-none focus:border-orange-500" />
           <p id="stateError" class="text-red-500 text-sm" aria-live="assertive"></p>
         </div>
       </div>
 
       <div class="flex flex-col space-y-1">
-        <input type="text" placeholder="Country" id="country" value="<%= address.country %>" name="country" class="p-2 rounded bg-[#1f1f1f] text-white" />
+        <input type="text" placeholder="Country" id="country" value="<%= address.country %>" name="country" class="p-2 rounded bg-black border border-blue-500 text-white focus:outline-none focus:border-orange-500" />
         <p id="countryError" class="text-red-500 text-sm" aria-live="assertive"></p>
       </div>
 
       <div class="flex flex-col space-y-1">
-        <input type="text" placeholder="Pincode" id="pincode" value="<%= address.pincode %>" name="pincode" pattern="[0-9]{6}" class="p-2 rounded bg-[#1f1f1f] text-white" />
+        <input type="text" placeholder="Pincode" id="pincode" value="<%= address.pincode %>" name="pincode" pattern="[0-9]{6}" class="p-2 rounded bg-black border border-blue-500 text-white focus:outline-none focus:border-orange-500" />
         <p id="pincodeError" class="text-red-500 text-sm" aria-live="assertive"></p>
       </div>
 
