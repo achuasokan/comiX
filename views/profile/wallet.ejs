@@ -29,7 +29,7 @@
 
     <!-- Add Money Input Field -->
     <div id="addMoneyInput" class="hidden mb-6 flex justify-center">
-      <input type="number" id="amount" placeholder="Enter amount" class="p-2 rounded-lg border border-gray-300" />
+      <input type="number" id="amount" placeholder="Enter amount" class="p-2 rounded-lg bg-black border border-gray-800 focus:outline-none focus:border-orange-500" />
       <button id="confirmAdd" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg ml-2">
         Confirm
       </button>
@@ -37,8 +37,8 @@
 
     <!-- Transaction History Section -->
     <div class="overflow-x-auto">
-      <table class="min-w-full bg-gray-800 text-white rounded-lg shadow-lg">
-        <thead class="bg-gray-900">
+      <table class="min-w-full bg-black border-2 border-gray-800 text-white rounded-lg shadow-lg">
+        <thead class="bg-black border-b border-gray-800 ">
           <tr>
             <th class="py-3 px-4 text-left text-orange-500">Date</th>
             <th class="py-3 px-4 text-left text-orange-500">Type</th>
@@ -49,7 +49,7 @@
         <tbody class="bg-black">
           <% if (wallet && wallet.transaction && wallet.transaction.length > 0) { %>
             <% wallet.transaction.forEach(transaction => { %>
-              <tr class="border-b border-gray-600 hover:bg-gray-700 transition-colors">
+              <tr class="border-b border-gray-600 hover:bg-gradient-to-r from-red-600 to-yellow-400 transition-colors">
                 <td class="py-2 px-4"><%= new Date(transaction.transactionDate).toLocaleDateString() %></td>
                 <td class="py-2 px-4"><%= transaction.transactionType %></td>
                 <td class="py-2 px-4">₹<%= transaction.walletAmount.toFixed(2) %></td>
