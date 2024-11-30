@@ -5,18 +5,18 @@
         <div
             class="bg-gradient-to-r from-yellow-400 to-orange-500 shadow-lg flex justify-center items-center h-24 md:h-28 lg:h-28">
             <% if(searchQuery){ %>
-              <h1 class="text-4xl md:text-4xl lg:text-5xl font-bold text-gray-800 text-center almendra-sc-regular">Search results for "<%= searchQuery %>"</h1>
+              <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 text-center almendra-sc-regular">Search results for "<%= searchQuery %>"</h1>
             <% } else { %>
-              <h1 class="text-4xl md:text-4xl lg:text-5xl font-bold text-gray-800 text-center almendra-sc-regular">All Products</h1>
+              <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 text-center almendra-sc-regular">All Products</h1>
             <% } %>
         </div>
 
  <!-- Filter and Sort Controls -->
-        <div class="flex  justify-between mb-4 p-4">
+        <div class="flex  flex-row justify-between mb-4 p-4">
             <!-- Category Filter -->
     <div class="flex items-center">
-      <label for="filter" class="text-white mr-2 font-semibold">Filter</label>
-      <select id="filter"class="bg-gray-800 text-white rounded-md p-2" onchange="filterProducts()">
+      <label for="filter" class="text-white mr-2 font-semibold text-sm md:text-base">Filter</label>
+      <select id="filter"class="bg-black border-2 border-gray-800  text-white rounded-md p-1 text-sm md:p-2 transition duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500" onchange="filterProducts()">
         <option value="all" <%= categoryFilter === 'all' ? 'selected' : '' %>>All</option>
         <% categories.forEach(category => { %>
           <option value="<%= category.name %>" <%= categoryFilter === category.name ? 'selected' : '' %>>
@@ -27,9 +27,9 @@
     </div>
             <!-- Sorting option -->
             <div class="flex items-center">
-              <label for="sort" class="text-white mr-2 font-semibold">Sort by:</label>
+              <label for="sort" class="text-white  font-semibold text-sm md:text-base">Sort by:</label>
               <select id="sort"
-                  class="bg-gray-800 text-white rounded-md p-2 transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  class="bg-black border-2 border-gray-800 text-white rounded-md p-1 text-sm md:p-2 transition duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500"
                   onchange="filterProducts()">
                   <option value="latest" <%= sortOption === 'latest' ? 'selected' : "" %>>Latest</option>
                   <option value="discount" <%= sortOption === 'discount' ? 'selected' : "" %>>Price: Low to High</option>

@@ -160,8 +160,8 @@ export const getAllProductPage = async (req, res) => {
     const sortOption = req.query.sort || "latest";
     let  searchQuery = req.query.search || "";
 
-    if (searchQuery.length > 16) {
-      searchQuery = searchQuery.substring(0,16)+ '...';
+    if (searchQuery.length > 12) {
+      searchQuery = searchQuery.substring(0,12)+ '...';
     }
 
     // Pagination settings
