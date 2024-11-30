@@ -10,7 +10,7 @@
        
         <div class="lg:col-span-2 space-y-6">
           <% cart.items.forEach(item => { %>
-            <div id="cart-item-<%= item.product._id %>" class="bg-gray-900 p-4 rounded-lg flex flex-col md:flex-row items-start md:items-center justify-between">
+            <div id="cart-item-<%= item.product._id %>" class="bg-black border-2 border-gray-800 p-4 rounded-lg flex flex-col md:flex-row items-start md:items-center justify-between">
               <div class="flex items-start md:items-center mb-4 md:mb-0">
                 <a href="/product/<%= item.product._id %>">
                   <img src="<%= item.product.image[1] %>" alt="<%= item.product.name %>" class="w-20 h-20 mr-4">
@@ -34,9 +34,9 @@
 
               <div class="flex items-center">
                 <div class="update-cart-form flex items-center" data-product-id="<%= item.product._id %>">
-                  <button type="button" class="bg-gray-600 text-white rounded-l px-3 decrement-quantity">-</button>
-                  <input type="number" name="quantity" value="<%= item.quantity %>" min="1" max="5" class="border border-gray-600 rounded p-1 w-16 bg-gray-700 text-white text-center mx-2 quantity-input" readonly>
-                  <button type="button" class="bg-gray-600 text-white rounded-r px-3 increment-quantity">+</button>
+                  <button type="button" class="bg-black border border-gray-800 text-white text-center rounded-l px-3 decrement-quantity">-</button>
+                  <input type="number" name="quantity" value="<%= item.quantity %>" min="1" max="5" class="border border-gray-800 rounded p-1 w-16 bg-black text-white text-center mx-2 quantity-input" readonly>
+                  <button type="button" class="bg-black border border-gray-800 text-white text-center rounded-r px-3 increment-quantity">+</button>
                 </div>
                 
                 <button type="button" class="text-red-500 hover:text-red-700 ml-4 delete-item" data-product-id="<%= item.product._id %>">
@@ -47,7 +47,7 @@
           <% }) %>
         </div>
 
-        <div class="mt-8 lg:mt-0 bg-gray-900 shadow-md p-4 rounded-lg lg:sticky lg:top-4 lg:self-start">
+        <div class="mt-8 lg:mt-0 bg-black border-2 border-gray-800 shadow-md p-4 rounded-lg lg:sticky lg:top-4 lg:self-start">
           <h2 class="text-xl font-bold mb-4">Order Summary</h2>
           <p class="mb-2">Items: <span id="total-items"><%= cart.items.length %></span></p>
           <p class="mb-2">Original Price: <span  id="original-price">₹<%= originalPrice %></span></p>
@@ -138,7 +138,7 @@
       cancelButtonColor: '#d33',
       confirmButtonText: 'Yes, remove it!',
       customClass: {
-        popup:'bg-gray-900 text-white rounded-lg shadow-lg p-6',
+        popup:'bg-black border-2 border-gray-800 text-white rounded-lg shadow-lg p-6',
         title:'text-xl font-bold',
         content:'text-base mb-4',
         confirmButton:'bg-green-600 text-white rounded-lg px-4 py-2 hover:bg-green-700 transition duration-200 ease-in-out',
