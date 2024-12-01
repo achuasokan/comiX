@@ -13,7 +13,7 @@
             <div id="cart-item-<%= item.product._id %>" class="bg-black border-2 border-gray-800 p-4 rounded-lg flex flex-col md:flex-row items-start md:items-center justify-between">
               <div class="flex items-start md:items-center mb-4 md:mb-0">
                 <a href="/product/<%= item.product._id %>">
-                  <img src="<%= item.product.image[1] %>" alt="<%= item.product.name %>" class="w-20 h-20 mr-4">
+                  <img src="<%= item.product.image[1] %>" alt="<%= item.product.name %>" class="w-20 h-20 mr-4 object-cover rounded-md">
                 </a>
                 <div>
                   <a href="/product/<%= item.product._id %>">
