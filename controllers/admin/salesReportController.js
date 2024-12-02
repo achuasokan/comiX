@@ -152,11 +152,11 @@ export const generatePDFReport = async (req, res) => {
     ];
 
     let x = doc.x, y = doc.y;
-    doc.fontSize(10).font('Helvetica-Bold').fillColor('#003366')
-      .rect(x, y, doc.page.width - doc.page.margins.left - doc.page.margins.right, 18)
+    doc.fontSize(10).font('Helvetica-Bold').fillColor('#007acc')
+      .rect(x, y, doc.page.width - doc.page.margins.left - doc.page.margins.right, 18).fill('#007acc');
       
     headers.forEach((header) => {
-      doc.text(header.label, x + 5, y + 4, { width: header.width, align: 'center' });
+      doc.fillColor('#000000').text(header.label, x + 5, y + 4, { width: header.width, align: 'center' });
       x += header.width;
     });
     y += 18;
@@ -167,7 +167,7 @@ export const generatePDFReport = async (req, res) => {
       .populate('user', 'name')
       .populate('items.product', 'name');
 
-    doc.font('Helvetica').fontSize(9).fillColor('#000');
+    doc.font('Helvetica').fontSize(9).fillColor('#000000');
     orders.forEach(order => {
       order.items.forEach(item => {
         if (item.itemStatus === 'Delivered') {
