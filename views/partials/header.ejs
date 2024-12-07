@@ -65,7 +65,6 @@
   <!-- Mobile Menu - Hamburger -->
   <div class="md:hidden">
     <button id="menu-toggle" aria-label="Toggle menu" class="focus:outline-none">
-      <!-- Hamburger Icon (Font Awesome) -->
       <i class="fas fa-bars w-6 h-6 text-white"></i>
     </button>
 
@@ -175,5 +174,13 @@
   // Show logout modal for mobile
   document.getElementById('logout-button-mobile').addEventListener('click', function () {
     document.getElementById('logout-modal').classList.remove('hidden');
+  });
+
+  // Close the dropdown if clicked outside
+  document.addEventListener('click', function (event) {
+    const menu = document.getElementById('mobile-menu');
+    if (!menu.contains(event.target) && !document.getElementById('menu-toggle').contains(event.target)) {
+      menu.classList.add('hidden');
+    }
   });
 </script>
