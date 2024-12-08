@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
             button.setAttribute('data-in-wishlist', 'false');
             button.querySelector('i').classList.remove('text-red-500');
             button.querySelector('i').classList.add('text-black');
-            showToast(data.message, 'green'); 
+            showToast(data.message, 'red'); 
           }
         })
         .catch(error => {
