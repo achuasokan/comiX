@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       if (Wishlist) {
         // Handle removal from wishlist
-        fetch(`/wishlist/delete/${productId}`, { method: 'DELETE' })
+        fetch(`/wishlist/${productId}/delete`, { method: 'DELETE' })
         .then(response => response.json()) 
         .then(data => {
           if (data.message) {
