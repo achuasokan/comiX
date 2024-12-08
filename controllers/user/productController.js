@@ -1,5 +1,6 @@
 import productModel from '../../models/Product.js'
 import categoryModel from '../../models/Category.js'
+import bannerModel from '../../models/Banner.js'
 import {calculateDiscountPrice} from '../../utils/discountprice.js'
 
 //* //  //  //   //  //         GET PRODUCTS BY CATEGORY   //  //  //  //  //  //  //
@@ -230,6 +231,7 @@ export const getAllProductPage = async (req, res) => {
     const paginatedProducts = products.slice(skip, skip + limit);
 
     const categories = await categoryModel.find({ isBlocked: false });
+    const banners = await bannerModel.findOne({title:'Festival', isActive:true})
 
     res.render('user/allProducts', {
       product: paginatedProducts,
@@ -239,7 +241,8 @@ export const getAllProductPage = async (req, res) => {
       totalPages,
       sortOption,
       searchQuery,
-      title:"All Products"
+      title:"All Products",
+      banners
     });
 
   } catch (error) {
