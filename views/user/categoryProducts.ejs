@@ -16,7 +16,7 @@
       <div class="flex items-center">
         <label for="sort" class="text-white mr-2 font-semibold">Sort by:</label>
         <select id="sort"
-          class="bg-gray-800 text-white rounded-md p-2 transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 "
+          class="bg-black border-2 border-gray-800 text-white rounded-md p-2 transition duration-200 focus:outline-none focus:ring-1 focus:ring-orange-500 "
           onchange="sortProducts()">
           <option value="latest" <%=sortOption==='latest' ? 'selected' : "" %>>Latest</option>
           <option value="asc" <%=sortOption==='asc' ? 'selected' : "" %>>Price: Low to High</option>
@@ -94,7 +94,7 @@
     <div class="flex justify-center items-center space-x-2 mt-6">
       <% for(let i=1;i<=totalPages;i++){ %>
         <a href="?page=<%= i %>&sort=<%= sortOption %>"
-          class="px-4 py-2 <%= currentPage === i ? 'bg-blue-500 text-white' : 'bg-[#1f1f1f] text-gray-300' %> rounded-md hover:bg-[#2f2f2f] transition duration-200">
+          class="px-4 py-2 <%= currentPage === i ? 'bg-gradient-to-r from-red-600 to-yellow-400 text-white' : 'text-green-500 hover:bg-orange-500 hover:text-white' %> rounded-md transition duration-200">
           <%= i %>
         </a>
         <% } %>
