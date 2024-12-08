@@ -6,17 +6,17 @@
 
             <!-- Banner -->
              <% if (banner) { %>
-              <section class="relative h-96 bg-cover bg-center" style="background-image: url('<%= banner.image %>');">
-                <div class="absolute inset-0 bg-black bg-opacity-10 flex justify-center items-center mt-52">
-                  <h1 class="text-white text-3xl md:text-5xl font-bold almendra-sc-regular">
+              <section class="relative h-64 sm:h-80 md:h-96 bg-cover bg-center" style="background-image: url('<%= banner.image %>');">
+                <div class="absolute inset-0 bg-black bg-opacity-5 flex justify-center items-center mt-40 sm:mt-32 md:mt-64">
+                  <h1 class="text-white text-2xl sm:text-3xl md:text-5xl font-bold almendra-sc-regular">
                     <%= banner.description %>
                   </h1>
                 </div>
               </section>
              <% } else { %>
-              <section class="relative h-96 bg-cover bg-center" style="background-image: url('img/banner.jpg');">
-                <div class="absolute inset-0 bg-black bg-opacity-10 flex justify-center items-center mt-52">
-                  <h1 class="text-white text-3xl md:text-5xl font-bold almendra-sc-regular">
+              <section class="relative h-64 sm:h-80 md:h-96 bg-cover bg-center" style="background-image: url('img/banner.jpg');">
+                <div class="absolute inset-0 bg-black bg-opacity-5 flex justify-center items-center mt-40 sm:mt-32 md:mt-64">
+                  <h1 class="text-white text-2xl sm:text-3xl md:text-5xl font-bold almendra-sc-regular">
                     Seen the World of Unseen
                   </h1>
                 </div>

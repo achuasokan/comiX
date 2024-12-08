@@ -4,7 +4,7 @@
     <img src="/img/comiX.png" alt="comix Logo" class="h-28 w-auto ml-5">
   </a>
   
-  <div class="relative w-72 md:w-96 lg:w-96">
+  <div class="relative  w-48 md:w-96 lg:w-96 mx-4">
     <form action="/shop/allProducts" method="GET">
     <input type="text" placeholder="Search" name="search" class="bg-black text-white text-sm px-4 py-2 border rounded-full w-full pr-10 focus:outline-none focus:ring-1 focus:ring-blue-900">
     <!-- Search Icon (Font Awesome) -->
@@ -65,7 +65,6 @@
   <!-- Mobile Menu - Hamburger -->
   <div class="md:hidden">
     <button id="menu-toggle" aria-label="Toggle menu" class="focus:outline-none">
-      <!-- Hamburger Icon (Font Awesome) -->
       <i class="fas fa-bars w-6 h-6 text-white"></i>
     </button>
 
@@ -175,5 +174,13 @@
   // Show logout modal for mobile
   document.getElementById('logout-button-mobile').addEventListener('click', function () {
     document.getElementById('logout-modal').classList.remove('hidden');
+  });
+
+  // Close the dropdown if clicked outside
+  document.addEventListener('click', function (event) {
+    const menu = document.getElementById('mobile-menu');
+    if (!menu.contains(event.target) && !document.getElementById('menu-toggle').contains(event.target)) {
+      menu.classList.add('hidden');
+    }
   });
 </script>
