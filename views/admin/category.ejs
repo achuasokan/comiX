@@ -1,5 +1,5 @@
 <!-- main Container/body -->
-<div class="bg-[#18191a] text-gray-200 m-0 p-0 flex flex-col md:flex-row min-h-screen">
+<div class="bg-[radial-gradient(125%_125%_at_50%_10%,#000_40%,#63e_100%)] text-gray-200 m-0 p-0 flex flex-col md:flex-row min-h-screen">
 
   <!-- Sidebar -->
   <%- include("./sidebar.ejs")%>
@@ -9,7 +9,7 @@
 <!-- Main Content -->
 <div class="flex flex-col flex-grow w-full md:w-auto">
   <!-- Navbar -->
-  <nav class="bg-[#18191a] h-11 shadow-md flex items-center justify-center px-6 sticky top-0 z-10">
+  <nav class="bg-black h-11 shadow-md flex items-center justify-center px-6 sticky top-0 z-10">
     <form action="/admin/searchCategory" method="GET" class="relative w-2/5">
    
       <input type="text" name="search" placeholder="Search" class="bg-[#242526] text-gray-200 text-sm px-4 py-2 rounded-full w-full pr-10 focus:outline-none focus:ring-2 focus:ring-gray-500">
@@ -40,7 +40,7 @@
 
       <h2 class="text-2xl font-bold text-white mb-6">Category</h2>
       
-      <div class="bg-[#242526] rounded-lg shadow-lg overflow-x-auto">
+      <div class=" rounded-lg shadow-lg overflow-x-auto">
 
         <table class=" w-full text-sm text-left text-gray-300">
 

@@ -1,5 +1,5 @@
 <!-- main Container/body -->
-<div class="bg-[#18191a] text-gray-200 m-0 p-0 flex flex-col md:flex-row min-h-screen">
+<div class="bg-[radial-gradient(125%_125%_at_50%_10%,#000_40%,#63e_100%)] text-gray-200 m-0 p-0 flex flex-col md:flex-row min-h-screen">
 
   <!-- Sidebar -->
   <%- include("./sidebar.ejs")%>
@@ -8,7 +8,7 @@
   <!-- Main Content -->
   <div class="flex-grow p-6 overflow-y-auto">
     <div class="mt-8">
-      <form action="/admin/editCategory/<%= category._id %>" method="POST" enctype="multipart/form-data" class="bg-[#242526] p-6 rounded-lg shadow-md">
+      <form action="/admin/editCategory/<%= category._id %>" method="POST" enctype="multipart/form-data" class=" p-6 rounded-lg shadow-md">
         <%- include('../partials/flashMessage.ejs') %>
         <label for="name" class="block text-sm font-medium text-gray-300 mb-2">Category Name</label>
         <input type="text" name="name" id="name"  value="<%= category.name %>" class="input bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-gray-500" />

@@ -1,4 +1,4 @@
-<div class="bg-[#18191a] text-gray-200 m-0 p-0 flex flex-col md:flex-row min-h-screen">
+<div class="bg-[radial-gradient(125%_125%_at_50%_10%,#000_40%,#63e_100%)] text-gray-200 m-0 p-0 flex flex-col md:flex-row min-h-screen">
 
 
     <!-- Sidebar -->
@@ -6,10 +6,10 @@
     <!-- Sidebar end -->
 
     <div class="container mx-auto py-6">
-      <h1 class="text-2xl font-semibold mb-4 text-gray-200">Add Product</h1>
+      <h1 class="text-2xl font-semibold mb-4 text-gray-200">Edit Banner</h1>
 
       <form action="/admin/editBanner/<%=banner._id%>" method="POST" enctype="multipart/form-data" id="bannerImage-form"
-        class="bg-[#242526] p-6 rounded shadow-md">
+        class=" p-6 rounded shadow-md">
         <%- include("../partials/flashMessage.ejs") %>
 
         <div class="mb-4">
@@ -37,7 +37,7 @@
       <div class="mt-2 flex flex-wrap" id="imagePreviewContainer">
         <% banner.image.forEach((img, index) => { %>
           <div class="relative m-2">
-            <img src="<%= img %>" alt="Product Image" class="w-48 h-48 object-cover rounded">
+            <img src="<%= img %>" alt="Banner Image" class="w-48 h-48 object-cover rounded">
             <input type="hidden" name="existingImages" value="<%= img %>">
             <button type="button" onclick="removeImage(this)" class="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1">
               <i class="fas fa-times"></i>

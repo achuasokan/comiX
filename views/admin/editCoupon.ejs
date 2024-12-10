@@ -1,11 +1,11 @@
-<div class="bg-[#18191a] text-gray-200 m-0 p-0 flex flex-col md:flex-row min-h-screen">
+<div class="bg-[radial-gradient(125%_125%_at_50%_10%,#000_40%,#63e_100%)] text-gray-200 m-0 p-0 flex flex-col md:flex-row min-h-screen">
   <!-- Sidebar -->
   <%- include("./sidebar.ejs") %>
   <!-- Sidebar end -->
 
   <div class="container mx-auto py-6">
    <h1 class="text-2xl font-semibold mb-4 text-gray-200">Edit Coupon</h1>
-   <form action="/admin/editCoupon/<%=coupon._id%>" method="POST" class="bg-[#242526] p-6 rounded shadow-md" id="coupon-form">
+   <form action="/admin/editCoupon/<%=coupon._id%>" method="POST" class=" p-6 rounded shadow-md" id="coupon-form">
      <%- include('../partials/flashMessage.ejs') %>
 
      <div class="mb-4">
