@@ -7,7 +7,7 @@ import bannerModel from '../../models/Banner.js'
 import  {calculateDiscountPrice  } from '../../utils/discountprice.js'
 
 
-//* //  //  //   //  //          getting Login page     //  //  //  //  //  //  //
+//* //  //  //   //  //          getting Login pagessss     //  //  //  //  //  //  //
 
 export const  getLogin=async(req,res)=>{  
  
@@ -276,7 +276,7 @@ export const postLogout=async (req,res) => {                                    
 }
 
 
-//* //  //  //   //  //          get home page          //  //  //  //  //  //  //
+//* //  //  //   //  //          get home pagesss          //  //  //  //  //  //  //
 
 export const getLandingPage=async(req,res)=>{
 
