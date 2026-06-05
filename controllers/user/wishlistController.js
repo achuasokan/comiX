@@ -8,28 +8,28 @@ import { MESSAGES } from '../../constants/messages.js'
 
 export const getWishListPage = async(req,res) => {
   try {
-  //get the user id from the session
+
     const userId = req.session.userID;
     
-    // pagination setup
+
     const page = parseInt(req.query.page) || 1;
     const limit = 8;
 
-  //find the wishlist of the user
+ 
     const wishlist = await wishListModel.findOne({ user: userId });
 
-  //if the wishlist is not found, render the wishlist page with an empty wishlist
+
       if(!wishlist || !wishlist.productsId || wishlist.productsId.length === 0){
         return res.render('user/wishlist',{ wishlist:{productsId:[]}, currentPage: 1, totalPages: 1, title: "Wishlist" })
       }
 
-      // calculate pagination
+    
       const totalItems = wishlist.productsId.length;
       const totalPages = Math.ceil(totalItems / limit);
       const startIndex = (page - 1) * limit;
       const endIndex = startIndex + limit;
 
-      // slice for current page and populate
+      
       wishlist.productsId = wishlist.productsId.slice(startIndex, endIndex);
       await wishlist.populate({
         path: 'productsId',
@@ -52,20 +52,20 @@ export const getWishListPage = async(req,res) => {
 
 export const addToWishlist = async (req, res) => {
   try {
-    //get the user id from the session
-    const userId = req.session.userID; // Get logged-in user ID from session
-    // Check if userId is valid
+  
+    const userId = req.session.userID; 
+   
     if (!userId) {
       return res.status(STATUS_CODES.BAD_REQUEST).send(MESSAGES.AUTH.NOT_LOGGED_IN);
     }
-    //get the product id from the route params
+ 
     const productId = req.params.productId; 
 
     
     await wishListModel.updateOne(
-      { user: userId }, // Find the wishlist for the user
-      { $addToSet: { productsId: productId } }, // Add product to wishlist if not already present
-      { upsert: true } // Create a new wishlist if one doesn't exist
+      { user: userId }, 
+      { $addToSet: { productsId: productId } }, 
+      { upsert: true } 
     );
 
     //  
@@ -85,11 +85,11 @@ export const removeFromWishlist = async (req, res) => {
 
     
     await wishListModel.updateOne(
-      { user: userId }, // Find the wishlist for the user
-      { $pull: { productsId: product } } // Remove the product from the wishlist
+      { user: userId }, 
+      { $pull: { productsId: product } } 
     );
 
-    // res.redirect('/wishlist'); 
+    
     res.status(STATUS_CODES.OK).json({message: MESSAGES.WISHLIST.REMOVED});
   } catch (error) {
     console.log(error);

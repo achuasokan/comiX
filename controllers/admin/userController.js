@@ -8,7 +8,7 @@ export const getUserList=async (req,res)=> {
     const page=parseInt(req.query.page) || 1
     const limit=5
     const skip=(page -1) * limit
-    const usersdata=await userModel.find({}).skip(skip).limit(limit)                                               //get all users from database
+    const usersdata=await userModel.find({}).skip(skip).limit(limit)                                              
 
     const totalproducts=await userModel.countDocuments({})
     const totalPages=Math.ceil(totalproducts / limit)
@@ -20,24 +20,24 @@ export const getUserList=async (req,res)=> {
       totalPages,
       startIndex,
       title:"Customers"
-    })                                                    //render customers page
+    })                                                    
   }catch(message){
     console.log(message);
-     res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR)                                                                           //render message page
+     res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR)                                                                           
   }
 }
 
 
 //* //  //  //   //  //          BLOCK USER   //  //  //  //  //  //  //
-export const blockUser=async (req,res)=>{                                                     //block user
+export const blockUser=async (req,res)=>{                                                    
   try{
-    const userId=req.params.id                                                                //get user id from url
-    const user=await userModel.findById(userId)                                               //get user from database
+    const userId=req.params.id                                                                
+    const user=await userModel.findById(userId)                                               
 
     if(!user){
       return res.status(STATUS_CODES.NOT_FOUND).send(MESSAGES.COMMON.USER_NOT_FOUND)
     }
-    user.isBlocked = !user.isBlocked;                                                         //block user
+    user.isBlocked = !user.isBlocked;                                                         
     await user.save();
     res.redirect('/admin/users')
 

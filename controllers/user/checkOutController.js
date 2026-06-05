@@ -15,12 +15,9 @@ import { MESSAGES } from '../../constants/messages.js'
 //* //  //  //   //  //          get Checkout page     //  //  //  //  //  //  //
 export const getCheckoutPage = async (req, res) => {
   try {
-    // Get the user's cart
+
     const cart = await cartModel.findOne({ user: req.session.userID }).populate({path:'items.product', populate:{path:'category'}});
 
-    // if(!cart || cart.items.length === 0){
-    //   return res.status(400).json({error:'Your cart is empty. Please add items to your cart before proceeding to checkout.'})
-    // }
     
     if (cart.couponCode) {
       cart.couponCode = null;
@@ -35,14 +32,14 @@ export const getCheckoutPage = async (req, res) => {
     
     const addresses = await addressModel.find({ userId: req.session.userID });
     
-    // calculate the subtotal and total discount of the cart items in the cart for the checkout page for the user for the order 
+
     const { subtotal, totalDiscount } = calculateSubtotal(cart.items);
     
     const coupons = await couponModel.find({}).populate('applicableCategory').populate('applicableProduct');
     
 
    
-    // Render the checkout page
+
     res.render('user/checkout', {
       cart,
       addresses,
@@ -115,7 +112,7 @@ export const postOrder = async (req, res) => {
       totalDiscount: items.reduce((acc, item) => acc + item.totalDiscount, 0) 
     });
 
-    // Handle Razorpay Payment
+
     if (paymentMethod === 'Razorpay') {
       const options = {
         amount: cart.total * 100,
@@ -152,7 +149,7 @@ export const postOrder = async (req, res) => {
       await updateStock(items);
       await clearCart(userId);
 
-      //~ if coupon is applied then update the used count of the coupon
+
       if(cart.couponCode) {
         const coupon = await couponModel.findOne({couponCode:cart.couponCode})
         if(coupon) {
@@ -167,7 +164,7 @@ export const postOrder = async (req, res) => {
       await updateStock(items);
       await clearCart(userId);
 
-      //~ if coupon is applied then update the used count of the coupon
+
       if(cart.couponCode) {
         const coupon = await couponModel.findOne({couponCode:cart.couponCode})
         if(coupon) {
@@ -248,27 +245,26 @@ export const applyCoupon = async (req, res) => {
   const { couponCode } = req.body;
   const userId = req.session.userID;
   try {
-    //~ Finding the coupon in the database
+
     const coupon = await couponModel.findOne({ couponCode });
     console.log("coupon", coupon);
     if (!coupon) {
       return res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.CHECKOUT.INVALID_COUPON });
     }
 
-    //~ Finding the cart of the user
+
     const cart = await cartModel.findOne({ user: userId }).populate('items.product');
     if (!cart) {
       return res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.CART.CART_NOT_FOUND });
     }
 
-    //~ Checking coupon validity dates
-    // const currentDate = new Date("2024-11-10T10:00:00Z"); // Use the current date
+
     const currentDate = new Date();
     if (currentDate < coupon.startDate || currentDate > coupon.expiryDate) {
       return res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.CHECKOUT.COUPON_EXPIRED });
     }
 
-    //~ Checking applicability of the coupon based (product/category/all)
+
     const applicableItems = cart.items.filter(item => 
       coupon.applicableType === 'all' ||
       (coupon.applicableType === 'category' && item.product.category.equals(coupon.applicableCategory)) ||
@@ -279,19 +275,17 @@ export const applyCoupon = async (req, res) => {
       return res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.CHECKOUT.COUPON_NOT_APPLICABLE });
     }
 
-    //~ Calculating the discount amount
+
     let discountAmount = 0;
     if (coupon.discountType === 'percentage') {
       discountAmount = applicableItems.reduce((total, item) => {
         const calculatedDiscount = (item.discountPrice * coupon.discountValue / 100);
         const applicableDiscount = Math.min(calculatedDiscount, item.discountPrice);
-        // Store coupon details in the item
-        item.couponCode = coupon.couponCode; // Store coupon code
-        item.couponDiscountAmount = applicableDiscount * item.quantity; // Store discount amount for this item
+        item.couponCode = coupon.couponCode; 
+        item.couponDiscountAmount = applicableDiscount * item.quantity; 
         return total + (applicableDiscount * item.quantity);
       }, 0);
 
-      //~ Prevent applying a 100% discount if it would reduce the total to zero
       if (coupon.discountValue === 100 && discountAmount >= cart.subtotal) {
         return res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.CHECKOUT.COUPON_CANNOT_BE_APPLIED });
       }
@@ -310,17 +304,16 @@ export const applyCoupon = async (req, res) => {
       return res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.CHECKOUT.COUPON_CANNOT_BE_APPLIED });
     }
 
-    //~ Checking the minimum spend of the coupon
+ 
     if (cart.subtotal < coupon.minSpend) {
       return res.json({ success: false, message: `Minimum spend of ₹${coupon.minSpend} required to use this coupon` });
     }
 
-    //~ Checking the usage limit of the coupon
+
     if (coupon.usageLimit && coupon.usedCount >= coupon.usageLimit) {
       return res.json({ success: false, message: MESSAGES.CHECKOUT.COUPON_LIMIT_REACHED });
     }
 
-    //~ Updating the cart with the coupon code, discount, and total
     cart.couponCode = coupon.couponCode;
     cart.couponDiscount = discountAmount;
     cart.total = cart.subtotal - discountAmount;
@@ -328,7 +321,7 @@ export const applyCoupon = async (req, res) => {
 
     
 
-    //~ Sending the response to the client
+
     res.json({
       success: true, 
       discountAmount: discountAmount, 
@@ -360,7 +353,7 @@ export const removeCoupon = async (req,res) => {
       await coupon.save();
     }
 
-    // Remove coupon details from items array
+
     cart.items.forEach(item => {
       item.couponCode = null; 
       item.couponDiscountAmount = 0; 

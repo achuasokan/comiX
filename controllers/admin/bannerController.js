@@ -87,7 +87,7 @@ export const postAddBanner = async (req,res) => {
       }
     }
 
-    //check for existing banner with same title
+   
     const existingBanner = await bannerModel.findOne({title: bannerTitle})
     if(existingBanner) {
       errors.push(MESSAGES.BANNER.ALREADY_EXISTS)
@@ -98,7 +98,7 @@ export const postAddBanner = async (req,res) => {
       return res.redirect('/admin/addBanner')
     }
 
-    // Upload each image to Cloudinary
+    
     const imageUrls = [];
     for (let file of files) {
       const result =  await cloudinary.uploader.upload(file.path, {
@@ -108,7 +108,7 @@ export const postAddBanner = async (req,res) => {
       imageUrls.push(result.secure_url)
     }
 
-    // create the Banner
+    
     const newBanner = new bannerModel({
       title: bannerTitle,
       description: descriptions,
@@ -117,7 +117,6 @@ export const postAddBanner = async (req,res) => {
 
     req.flash('success', MESSAGES.BANNER.ADD_SUCCESS)
 
-    // save the banner to the database
     await newBanner.save()
 
     res.redirect('/admin/banner')
@@ -125,7 +124,6 @@ export const postAddBanner = async (req,res) => {
     console.log("error while adding a banner",error);
     res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR)
   } finally {
-   // Clean up the local uploaded files after uploading to Cloudinary
     files.forEach(file => {
       if(file.path &&  fs.existsSync(file.path)) {
         fs.unlinkSync(file.path)
@@ -154,22 +152,22 @@ export const postEditBanner = async (req,res) => {
     const id = req.params.bannerId;
     const { bannerTitle, descriptions, existingImages} = req.body;
     
-    // validation
+    
     const errors = [];
 
-    //validate Banner Title
+   
     const bannerTitleRegex = /^[a-zA-Z][a-zA-Z0-9\s!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]{2,49}$/;
     if (!bannerTitle || !bannerTitleRegex.test(bannerTitle)) {
       errors.push(MESSAGES.BANNER.INVALID_TITLE_LENGTH)
     }
 
-    // validate Description 
+   
     const descriptionsRegex = /^[a-zA-Z][\s\S]{9,49}$/;
     if (!descriptions || !descriptionsRegex.test(descriptions)) {
       errors.push(MESSAGES.BANNER.INVALID_DESCRIPTION_LENGTH)
     }
 
-    // check for existing banner with same title (excluding the current product)
+    
     const existingBanner = await bannerModel.findOne({
       title: bannerTitle,
       _id: {$ne: id }
@@ -181,7 +179,7 @@ export const postEditBanner = async (req,res) => {
     
     let  updatedImages = existingImages ? (Array.isArray(existingImages) ? existingImages : [existingImages]) : [];
 
-    // validate Image
+  
     if(files.length > 3) {
       errors.push(MESSAGES.BANNER.MAX_IMAGES_EXCEEDED)
     } else {
@@ -198,7 +196,7 @@ export const postEditBanner = async (req,res) => {
       }
     }
 
-    // validate Image 
+   
     if (updatedImages.length === 0 && files.length === 0){
       errors.push(MESSAGES.BANNER.IMAGE_REQUIRED)
     }
@@ -208,13 +206,13 @@ export const postEditBanner = async (req,res) => {
       return res.redirect(`/admin/editBanner/${id}`)
     }
 
-    // preparing the update edit banner
+    
     const updateBannerData = {
       title: bannerTitle,
       description: descriptions
     };
 
-    // Handle Image updates
+   
 
     if (files && files.length > 0) {
       for (let file of files) {
@@ -228,7 +226,7 @@ export const postEditBanner = async (req,res) => {
 
     updateBannerData.image = updatedImages;
 
-    // update the Banner
+    
     const updatedBanner = await bannerModel.findByIdAndUpdate(id, updateBannerData, {new: true});
 
     res.redirect('/admin/banner')
@@ -236,7 +234,7 @@ export const postEditBanner = async (req,res) => {
     console.log("error while adding banner",error);
     res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR)
   } finally {
-    // Clean up the local uploaded files
+
     files.forEach(file => {
       if (file.path && fs.existsSync(file.path)) {
         fs.unlinkSync(file.path)

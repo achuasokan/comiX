@@ -56,39 +56,39 @@ export const getAddProduct=async(req,res)=>{
       const { productName, description, category, price, stock, SKU } = req.body;
       
   
-      // validation
+      
       const errors = [];
   
-      //  Validate Product Name
+  
       const productNameRegex = /^[a-zA-Z][a-zA-Z0-9\s!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]{2,49}$/;
       if (!productName || !productNameRegex.test(productName)) {
         errors.push(MESSAGES.PRODUCT.INVALID_NAME_LENGTH);
       }
   
-      //  Validate Description
+    
       const descriptionRegex = /^[a-zA-Z][\s\S]{9,999}$/;
       if (!description || !descriptionRegex.test(description.trim())) {
         errors.push(MESSAGES.PRODUCT.INVALID_DESCRIPTION_LENGTH);
       }
   
-      //  Validate Category
+      
       if (!category) {
         errors.push(MESSAGES.PRODUCT.CATEGORY_REQUIRED);
       }
   
-      //  Validate Price
+    
       const priceValue = parseFloat(price);
       if (isNaN(priceValue) || priceValue <= 0 || !/^\d+(\.\d{1,2})?$/.test(price)) {
           errors.push(MESSAGES.PRODUCT.INVALID_PRICE);
       }
   
-      //  Validate Stock
+      
       const Stocks = parseFloat(stock);
       if (isNaN(Stocks) || Stocks < 0 || !Number.isInteger(Stocks)) {
         errors.push(MESSAGES.PRODUCT.INVALID_STOCK);
       }
   
-      //  Validate SKU
+      
       const skuRegex = /^[a-zA-Z0-9\-]+$/;
       if (!SKU || !skuRegex.test(SKU)) {
         errors.push(MESSAGES.PRODUCT.INVALID_SKU);
@@ -112,7 +112,7 @@ export const getAddProduct=async(req,res)=>{
         }
       }
        
-      //  Check for existing product with same name or SKU
+    
       const existingProduct = await productModel.findOne({ $or: [{ SKU: SKU }, {name: productName}] })
       if(existingProduct) {
         errors.push(MESSAGES.PRODUCT.ALREADY_EXISTS)
@@ -120,13 +120,13 @@ export const getAddProduct=async(req,res)=>{
 
       
   
-      // If there are validation errors, return them
+      
       if (errors.length > 0) {
         req.flash('error',errors)
         return res.redirect('/admin/addProduct')
       }
   
-      // Upload each image to Cloudinary
+    
       const imageUrls = [];
       for (let file of files) {
         const result = await cloudinary.uploader.upload(file.path, {
@@ -136,11 +136,11 @@ export const getAddProduct=async(req,res)=>{
         imageUrls.push(result.secure_url);
       }
   
-      // Create the product
+    
       const newProduct = new productModel({
         name: productName,
         description: description,
-        image: imageUrls, // Save the array of image URLs
+        image: imageUrls, 
         price: priceValue,
         stock: Stocks,
         category: category,
@@ -149,7 +149,7 @@ export const getAddProduct=async(req,res)=>{
 
       req.flash('success', MESSAGES.PRODUCT.ADD_SUCCESS)
   
-      // Save the product to the database
+     
       await newProduct.save();
   
       res.redirect('/admin/products');
@@ -157,7 +157,7 @@ export const getAddProduct=async(req,res)=>{
       console.error("Error adding product:", error);
       res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR);
     } finally {
-      // Clean up the local uploaded files after uploading to Cloudinary
+      
       files.forEach(file => {
         if(file.path && fs.existsSync(file.path)) {
           fs.unlinkSync(file.path)
@@ -211,45 +211,44 @@ export const postEditProduct = async (req, res) => {
 
     const currentProduct = await productModel.findById(id);
 
-    //  validation
+ 
     const errors = [];
 
-    //  Validate Product Name
+
     const productNameRegex = /^[a-zA-Z][a-zA-Z0-9\s!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]{2,49}$/;
     if (!productName || !productNameRegex.test(productName)) {
       errors.push(MESSAGES.PRODUCT.INVALID_NAME_LENGTH);
     }
 
-    //  Validate Description
+  
     const descriptionRegex = /^[a-zA-Z][\s\S]{9,999}$/;
     if (!description || !descriptionRegex.test(description.trim())) {
       errors.push(MESSAGES.PRODUCT.INVALID_DESCRIPTION_LENGTH);
     }
 
-    //  Validate Category
+    
     if (!category) {
       errors.push(MESSAGES.PRODUCT.CATEGORY_REQUIRED);
     }
 
-    //  Validate Price
+  
     const priceValue = parseFloat(price);
     if (isNaN(priceValue) || priceValue <= 0 || !/^\d+(\.\d{1,2})?$/.test(price)) {
         errors.push(MESSAGES.PRODUCT.INVALID_PRICE);
     }
 
-    //  Validate Stock
+  
     const Stocks = parseFloat(stock);
     if (isNaN(Stocks) || Stocks < 0 || !Number.isInteger(Stocks)) {
       errors.push(MESSAGES.PRODUCT.INVALID_STOCK);
     }
 
-    //  Validate SKU
+  
     const skuRegex = /^[a-zA-Z0-9\-]+$/;
     if (!SKU || !skuRegex.test(SKU)) {
       errors.push(MESSAGES.PRODUCT.INVALID_SKU);
     }
 
-    // Check for existing product with same name or SKU (excluding the current product)
     const existingProduct = await productModel.findOne({
       $or: [{ SKU: SKU }, { name: productName }],
       _id: { $ne: id }
@@ -262,7 +261,7 @@ export const postEditProduct = async (req, res) => {
 
     let updatedImages = existingImages ? (Array.isArray(existingImages) ? existingImages : [existingImages]) : [];
 
-      //  Validate Image
+      
       if (files.length > 3) {
         errors.push(MESSAGES.PRODUCT.MAX_IMAGES_EXCEEDED);
       } else {
@@ -279,18 +278,16 @@ export const postEditProduct = async (req, res) => {
         }
       }
     
-     //  Validate Image
+     
     if (updatedImages.length === 0 && files.length === 0){
       errors.push(MESSAGES.PRODUCT.IMAGE_REQUIRED);
     }
-
-    // If there are validation errors, return them
     if (errors.length > 0) {
       req.flash('error', errors);
       return res.redirect(`/admin/editProduct/${id}`);
     }
 
-    // Prepare the update object
+   
     const updateData = {
       name: productName,
       description: description,
@@ -300,7 +297,7 @@ export const postEditProduct = async (req, res) => {
       SKU: SKU,
     };
 
-    // Handle image updates
+    
    
     if (files && files.length > 0) {
       for (let file of files) {
@@ -314,7 +311,7 @@ export const postEditProduct = async (req, res) => {
 
     updateData.image = updatedImages;
 
-    // Update the product
+    
     const updatedProduct = await productModel.findByIdAndUpdate(id, updateData, { new: true });
 
     res.redirect("/admin/products");
@@ -322,7 +319,6 @@ export const postEditProduct = async (req, res) => {
     console.error("Error updating product:", error);
     res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR);
   } finally {
-    // Clean up the local uploaded files
     files.forEach(file => {
       if (file.path && fs.existsSync(file.path)) {
         fs.unlinkSync(file.path);

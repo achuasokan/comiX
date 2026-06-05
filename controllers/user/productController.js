@@ -89,28 +89,28 @@ export const getProductsByCategory = async (req,res)=> {
 export const getProductDetail = async (req,res) => {
   try{
 
-    //get the product id from the request parameters
+ 
     const productId=req.params.id
 
-    //find the product by its id and populate the category details
+   
     const product = await productModel.findById(productId).populate('category', 'name').populate('reviews.userId', 'name')
 
-    //if the product is not found, return a 404 error
+    
     if(!product){
       return res.status(STATUS_CODES.NOT_FOUND).send(MESSAGES.COMMON.PRODUCT_NOT_FOUND)
     }
    
-    //calculate the discounted price for the product
+   
     product.discountedPrice = await calculateDiscountPrice(product)
 
-    //find related products by category and limit the results to 4 and also not showing the current product card on the list
+   
     const relatedProducts = await productModel.find({category:product.category, _id:{$ne:productId}}).populate('category', 'name').limit(4)
 
     for(let products of relatedProducts) {
       products.discountedPrice = await calculateDiscountPrice(products)
     }
 
-    //render the product detail page with the product and related products
+    
     res.render('user/productDetail',{
       product,
       relatedProducts,
@@ -168,7 +168,7 @@ export const getAllProductPage = async (req, res) => {
     }
 
     // Pagination settings
-    const page = parseInt(req.query.page) || 1; // default to page 1
+    const page = parseInt(req.query.page) || 1; 
     const limit = 8;
     const skip = (page - 1) * limit;
 
@@ -186,7 +186,7 @@ export const getAllProductPage = async (req, res) => {
       filterOption.name = { $regex: removeQuery, $options: 'i' };
     }
 
-    // Fetch all products based on the filter
+  
     let products = await productModel
       .find(filterOption)
       .populate("category")
@@ -195,25 +195,25 @@ export const getAllProductPage = async (req, res) => {
        products = products.filter(document => !document.category.isBlocked);
       
 
-    // Calculate discounted price for all products
+  
     for (let product of products) {
       product.discountedPrice = await calculateDiscountPrice(product);
     }
 
-    // Sort products based on the selected sort option
+   
     switch (sortOption) {
       case 'discount':
         products.sort((a, b) => {
           const priceA = a.discountedPrice !== undefined ? a.discountedPrice : a.price; 
           const priceB = b.discountedPrice !== undefined ? b.discountedPrice : b.price; 
-          return priceA - priceB; // Sort by discounted price (low to high)
+          return priceA - priceB; 
         });
         break;
       case 'discount-desc':
         products.sort((a, b) => {
           const priceA = a.discountedPrice !== undefined ? a.discountedPrice : a.price; 
           const priceB = b.discountedPrice !== undefined ? b.discountedPrice : b.price; 
-          return priceB - priceA; // Sort by discounted price (high to low)
+          return priceB - priceA; 
         });
         break;
       case 'a-z':
@@ -227,7 +227,7 @@ export const getAllProductPage = async (req, res) => {
         break;
     }
 
-    // Apply pagination to the sorted products
+  
     const totalProducts = products.length;
     const totalPages = Math.ceil(totalProducts / limit);
     const paginatedProducts = products.slice(skip, skip + limit);

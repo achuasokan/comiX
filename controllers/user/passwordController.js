@@ -33,21 +33,20 @@ export const postForgotPassword = async (req,res) => {
       return res.redirect('/password/forgot')
     }
 
-    // Generate a new OTP
+    
     const otp =generateOTP()
     const otpExpiresAt =new Date(Date.now()+ 2 * 60 * 1000)
 
-    // Store the email, OTP, and OTP expiration time in the session
     req.session.tempForgotPassword = {
       email,
       otp,
       otpExpiresAt
     }
 
-    // Send the OTP to the user's email
+    
     await sendOTPEmail(email,otp)
    
-    // Redirect the user to the OTP verification page
+
     req.flash('success', MESSAGES.AUTH.OTP_SENT)
     res.redirect('/password/verify-otp')
 
@@ -80,7 +79,7 @@ export const postVerifyPasswordOTP =async (req,res) => {
   try{
     const {otp} = req.body
 
-    // Retrieve OTP details from the session (stored during the forgot password request)
+   
     const tempForgotPassword = req.session.tempForgotPassword 
 
     if(!tempForgotPassword){
@@ -88,16 +87,16 @@ export const postVerifyPasswordOTP =async (req,res) => {
       return res.redirect('/password/verify-otp')
     }
 
-    // Extract email, stored OTP, and OTP expiration time from session data
+  
     const {email,otp:storedOTP,otpExpiresAt} = tempForgotPassword
     
-    // Check if the entered OTP matches the stored OTP and is not expired
+  
     if(otp !== storedOTP || otpExpiresAt < new Date()) {
       req.flash('error', MESSAGES.AUTH.INVALID_OR_EXPIRED_OTP)
       return res.redirect('/password/verify-otp')
     }
 
-    // Redirect to the reset password page with a success message
+  
     req.flash('success', MESSAGES.PASSWORD.OTP_VERIFIED)
     res.redirect('/password/reset')
 
@@ -166,7 +165,7 @@ export const getResetPassword =async (req,res) => {
 export const postResetPassword =async (req,res) => {
   try{
     const {newPassword,confirmPassword} = req.body
- // validation
+
     const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])(?!.*\s)[A-Za-z\d!@#$%^&*]{6,}$/;
 
     if (!passwordPattern.test(newPassword)) {
@@ -174,32 +173,30 @@ export const postResetPassword =async (req,res) => {
       return res.redirect('/password/reset')
     }
 
- // Check if the new password and confirm password match
+
     if(newPassword !== confirmPassword){
       req.flash('error', MESSAGES.PASSWORD.PASSWORD_MISMATCH)
       return res.redirect('/password/reset')
     }
 
- // Retrieve tempForgotPassword session data
+
     const tempForgotPassword = req.session.tempForgotPassword
 
     if(!tempForgotPassword){
       req.flash('error', MESSAGES.PASSWORD.SESSION_EXPIRED)
       return res.redirect('/password/reset')
     }
- // Extract email from session data
+
     const {email} = tempForgotPassword
 
     const hashedPassword = await bcrypt.hash(newPassword, 10)
 
-    // Update the user's password in the database
     await userModel.updateOne({email},{$set:{password:hashedPassword}})
 
-    // Remove temporary session data after resetting the password
+
     delete req.session.tempForgotPassword
 
-  
-    // Redirect to the login page with a success message
+
     req.flash('success', MESSAGES.PASSWORD.RESET_SUCCESS)
     res.redirect('/login')
 

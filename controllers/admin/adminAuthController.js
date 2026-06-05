@@ -4,8 +4,8 @@ import { MESSAGES } from '../../constants/messages.js'
 
 //* //  //  //   //  //          GET LOGIN Page    //  //  //  //  //  //  //
 export const getAdminLogin = async (req,res) => {                                                      
-  if(req.session.adminID) {                                                                          //if admin is already logged in
-    res.redirect( '/admin/dashboard' )                                                                 //redirect to dashboard
+  if(req.session.adminID) {                                                                          
+    res.redirect( '/admin/dashboard' )                                                                 
   }else {
     res.render('admin/adminLogin',{title:"Admin Login"})
   }
@@ -15,11 +15,11 @@ export const getAdminLogin = async (req,res) => {
 
 export const postAdminLogin = async (req,res)=>{                                                       
  
-  const {email,password}=req.body                                                                 //get email and password from request body  
-  if(email===process.env.admin_Email && password === process.env.admin_Password){                   //if email and password are correct
-    req.session.adminID=email                                                                      //set admin id in session  
-    res.redirect('/admin/dashboard')                                                                //redirect to dashboard
-  }else{                                                                                            //if email and password are incorrect
+  const {email,password}=req.body                                                                 
+  if(email===process.env.admin_Email && password === process.env.admin_Password){                   
+    req.session.adminID=email                                                                      
+    res.redirect('/admin/dashboard')                                                                
+  }else{                                                                                            
     req.flash('error',[MESSAGES.ADMIN.INVALID_CREDENTIALS])
     res.redirect('/admin/login')
   }

@@ -90,12 +90,12 @@ export const orderCancel = async (req,res) => {
   try {
 
     const userId = req.session.userID
-    // get the order ID, item ID, product ID from the request parameters
+    
     const orderId = req.params.orderID
     const itemId = req.params.itemId
     const productId = req.params.productId
 
-    // find the order associated with the user
+
     const order = await orderModel.findOne({ _id: orderId, user: userId})
     console.log("order in cancel",order);
 
@@ -103,7 +103,7 @@ export const orderCancel = async (req,res) => {
       return res.status(STATUS_CODES.NOT_FOUND).json({message: MESSAGES.ORDER.NOT_FOUND})
     }
    
-    //update the order document to set the item status to cancelled
+  
     const updatedOrder= await orderModel.findOneAndUpdate(
       { _id: orderId, user: userId, 'items._id': itemId, 'items.product': productId },
       { $set: { 'items.$.itemStatus': 'Cancelled' } },
@@ -115,13 +115,13 @@ export const orderCancel = async (req,res) => {
     }
   
 
-    // finding the cancelled item from the updated order
+   
     const cancelledItem = updatedOrder.items.id(itemId)
 
  
     const product = await productModel.findById(cancelledItem.product._id)
 
-// updating stock
+
     if(product) {
       product.stock += cancelledItem.quantity;
       product.sold -= cancelledItem.quantity;
@@ -131,14 +131,14 @@ export const orderCancel = async (req,res) => {
     }
 
 
-    // find the wallet associated with the user
+
     let wallet = await walletModel.findOne({ user:userId });
-    // finding the refund amount by using the itemTotal of the cancelled item
+
     const refundAmount =cancelledItem.itemTotal
 
  
     if (order.paymentMethod === 'Razorpay' || order.paymentMethod === 'Wallet') {
-      // if the wallet is not found then create a new wallet for the user with the refund amount
+     
       if (!wallet) {
         wallet = new walletModel({
           user: userId,
@@ -151,7 +151,7 @@ export const orderCancel = async (req,res) => {
           }]
         });
       } else {        
-        // if the wallet is found then update the balance of the wallet by adding the refund amount
+      
         wallet.balance += refundAmount;
         wallet.transaction.push({
           walletAmount: refundAmount,
@@ -188,7 +188,7 @@ export const requestReturn = async (req, res) => {
       return res.status(STATUS_CODES.NOT_FOUND).json({ message: MESSAGES.ORDER.ITEM_NOT_FOUND });
     }
 
-    // Update the item with return request details
+
     item.returnRequested = true;
     item.itemStatus = 'Return Requested';
     item.returnReason = returnReason;
@@ -231,7 +231,7 @@ export const downloadInvoice = async (req,res) => {
 
     docInvoice.pipe(res)
 
-    // Add logo and company info
+   
     docInvoice.image('public/img/comiX.png', 50, 30, { width: 100 })
        .fillColor('#444444')
        .fontSize(10)
@@ -239,7 +239,7 @@ export const downloadInvoice = async (req,res) => {
        .moveDown(2);
 
 
-       // Add customer information
+      
        docInvoice.fontSize(24).font('Helvetica-Bold').text('INVOICE', { align: 'center' }).moveDown(3);
     
  docInvoice.fontSize(10)
@@ -249,7 +249,7 @@ export const downloadInvoice = async (req,res) => {
     .text(`Payment Status: ${order.paymentStatus}`, 50, 245)
     .moveDown();
 
- // Add shipping address
+
  docInvoice.text('Shipping Address:', 50, 270)
     .text(`${order.address.name}`, 50, 285)
     .text(`${order.address.street}`, 50, 300)
@@ -257,7 +257,7 @@ export const downloadInvoice = async (req,res) => {
     .text(`${order.address.pincode}`, 50, 330)
     .moveDown();
 
-   // Create table headers with borders
+ 
    let y = 400;
    docInvoice.fontSize(10)
      .text('Item', 50, y)
@@ -268,10 +268,9 @@ export const downloadInvoice = async (req,res) => {
      .text('Total', 520, y)
      .moveDown();
 
-   // Draw a line under the headers
+
    docInvoice.moveTo(50, y + 10).lineTo(600, y + 10).stroke();
 
-   // Add items with borders
    y += 20;
    order.items.forEach(item => {
      docInvoice.fontSize(10)
@@ -283,11 +282,11 @@ export const downloadInvoice = async (req,res) => {
        .text(`₹${item.itemTotal.toFixed(2)}`, 520, y);
      y += 30;
 
-     // Draw a line after each item
+ 
      docInvoice.moveTo(50, y - 10).lineTo(600, y - 10).stroke();
    });
 
-   // Add totals
+
    const summaryY = y + 20;
    docInvoice.fontSize(10)
      .text('Subtotal:', 350, summaryY)
@@ -302,12 +301,10 @@ export const downloadInvoice = async (req,res) => {
      .text('Total:', 350, summaryY + 40)
      .text(`₹${order.total.toFixed(2)}`, 450, summaryY + 40);
 
-   // Add footer
+   
    docInvoice.fontSize(10)
      .text('Thank you for shopping with ComiX!', 50, 700, { align: 'center' })
      .text('For any queries, please contact support@comix.com', 50, 715, { align: 'center' });
-
-   // Finalize the PDF and send
    docInvoice.end();
   }catch (error) {
     console.log("download invoice error :",error);

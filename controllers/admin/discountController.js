@@ -97,12 +97,12 @@ export const addDiscount = async (req,res) => {
     await newDiscount.save()
 
     
-     // Update the product with the new discount ID
+  
      if (discountType === 'product') {
       await productModel.findByIdAndUpdate(product, { discount: newDiscount._id });
     }
 
-    // Update the category with the new discount ID
+   
     if (discountType === 'category') {
       await categoryModel.findByIdAndUpdate(category, { discount: newDiscount._id });
     }

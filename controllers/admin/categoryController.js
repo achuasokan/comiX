@@ -7,12 +7,12 @@ import { MESSAGES } from '../../constants/messages.js'
 
 //* //  //  //   //  //          GET CATEGORY PAGE   //  //  //  //  //  //  //
 
-export const getCategory=async (req,res) => {                                                //admin category page
+export const getCategory=async (req,res) => {                                                
   try{
     const page = parseInt(req.query.page) || 1
     const limit = 5;
     const skip = (page-1) * limit
-    const categoryList=await categoryModel.find({})                                       //get all category from database
+    const categoryList=await categoryModel.find({})                                       
     .sort({createdAt: -1})
     .skip(skip)
     .limit(limit)
@@ -26,7 +26,7 @@ export const getCategory=async (req,res) => {                                   
       totalPages,
       startIndex,
       title:"Category"
-    })                                                        //render category page
+    })                                                        
   }catch(message){
     console.log(message);
     res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR)  
@@ -36,7 +36,7 @@ export const getCategory=async (req,res) => {                                   
 
 //* //  //  //   //  //          GET ADD CATEGORY PAGE   //  //  //  //  //  //  //
 
-export const getAddCategory=async (req,res)=>{                                              //add category page rendering
+export const getAddCategory=async (req,res)=>{                                             
   try{
    return  res.render("admin/addCategory",{title:"Add Category"})
   }catch(error){
@@ -48,7 +48,7 @@ export const getAddCategory=async (req,res)=>{                                  
 
 //* //  //  //   //  //          POST ADD CATEGORY   //  //  //  //  //  //  //
 
-export const postAddCategory=async (req,res)=>{                                                     //post add category
+export const postAddCategory=async (req,res)=>{                                                     
   const file = req.file
   try{
   const {name} = req.body
@@ -114,10 +114,10 @@ const result=await cloudinary.uploader.upload(req.file.path,{
 
 export const getEditCategory=async(req,res)=>{ 
   try{
-    const id=req.params.id              //Extract the category ID from the request parameters
+    const id=req.params.id              
 
-    const category=await categoryModel.findById(id)     //find the category by id
-    res.render('admin/editCategory',{category,title:"Edit Category"})      //render the edit category page with the  found category
+    const category=await categoryModel.findById(id)     
+    res.render('admin/editCategory',{category,title:"Edit Category"})      
   }catch(error){
     console.log(error);
     res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR); 
@@ -133,21 +133,21 @@ export const postEditCategory = async (req, res) => {
     const id = req.params.id.trim();
     const { name, existingImage } = req.body;
 
-    // Validation
+   
     const errors = [];
 
-    // Validate ID
+
     if (!mongoose.Types.ObjectId.isValid(id)) {
       errors.push(MESSAGES.CATEGORY.INVALID_ID);
     }
 
-    // Validate category name
+  
     const categoryNameRegex = /^[a-zA-Z][a-zA-Z0-9\s!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]{1,29}$/;
     if (!name || !categoryNameRegex.test(name.trim())) {
       errors.push(MESSAGES.CATEGORY.INVALID_NAME_FORMAT);
     }
 
-    // Check for existing category with the same name
+  
     const existingCategory = await categoryModel.findOne({ name: name.trim(), _id: { $ne: id } });
     if (existingCategory) {
       errors.push(MESSAGES.CATEGORY.ALREADY_EXISTS);
@@ -173,14 +173,14 @@ export const postEditCategory = async (req, res) => {
       return res.redirect(`/admin/editCategory/${id}`);
     }
 
-    // Prepare the category data to be updated
+  
     const categoryData = {
       name: name.trim()
     };
 
-    // Handle image upload or removal
+   
     if (file) {
-      // New image uploaded
+     
       const result = await cloudinary.uploader.upload(file.path, {
         folder: "Category Image",
         use_filename: true
@@ -191,7 +191,7 @@ export const postEditCategory = async (req, res) => {
       categoryData.image = null;
     }
   
-    // Find the category by ID and update it with the new data
+   
     const updatedCategory = await categoryModel.findByIdAndUpdate(id, categoryData, { new: true });
 
     if (!updatedCategory) {
@@ -203,7 +203,6 @@ export const postEditCategory = async (req, res) => {
     console.error("Error updating category:", error);
     res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR)
   } finally {
-    // Clean up the uploaded file if it exists
     if (file && fs.existsSync(file.path)) {
       fs.unlinkSync(file.path);
     }

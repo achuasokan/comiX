@@ -7,7 +7,7 @@ export const checkUserSession = async (req, res, next) => {
     if (userId) {
       const user = await userModel.findById(userId);
 
-      //~ If user is not found or is blocked, destroy the session and redirect to login page
+      
       if (!user || user.isBlocked) {
         req.flash('error', 'Your account has been blocked. Please contact Support.');
         req.session.destroy((error) => {

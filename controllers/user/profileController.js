@@ -9,7 +9,7 @@ import { MESSAGES } from '../../constants/messages.js'
 
 export const getProfilePage=async(req,res)=>{
   try{
-    // get user from database
+
     const userID = req.session.userID
     const user=await userModel.findById(userID)
     console.log("user",user);
@@ -30,11 +30,10 @@ export const editProfile=async(req,res)=>{
     
     const {name,email,mobile} = req.body
   
-    // Update the user's profile information in the database
-    // Using updateOne to find the user by their ID and set new values for name, email, and mobile
+
     await userModel.updateOne({ _id:userID }, { $set:{ name:name,email:email,mobile:mobile } } )
     
-    // Update the session variable to reflect the new name
+    
     req.session.name=name.length > 10 ?name.substring(0,10) + '...' : name;
     req.flash('success', MESSAGES.PROFILE.PROFILE_UPDATED)
     res.redirect('/profile/personal-info')
@@ -50,11 +49,10 @@ export const editProfile=async(req,res)=>{
 
 export const getAddressPage = async(req,res) => {
   try{
-    // get user id from session
+
     const userID= req.session.userID
-    // get addresses from database
     const addresses=await addressModel.find({userId:userID})
-    // render address page with addresses
+
     res.render('profile/address',{addresses,title:"Address"})
   }catch(error) {
     console.log("error in get address page",error);
@@ -80,19 +78,19 @@ export const postAddAddress = async(req,res) => {
     const userID= req.session.userID
     const {name,mobile,buildingName,street,city,state,country,pincode,isDefault} = req.body
     
-    // max address limit
+    
     const maxAddress = 3
 
-    // get user address count
+
     const userAddresses = await addressModel.countDocuments({userId:userID})
     
-    // check if user address count is greater than or equal to max address
+
     if(userAddresses >= maxAddress) {
       req.flash('error', MESSAGES.PROFILE.MAX_ADDRESS)
       return res.redirect('/profile/address')
     }
 
-    // create address
+
     const newAddress = new addressModel( {
       userId:userID,
       name:name,
@@ -106,7 +104,7 @@ export const postAddAddress = async(req,res) => {
       isDefault: isDefault ? true :false
     })
 
-   // If the new address is set as default, remove the default status from other addresses
+
     if(newAddress.isDefault) {
       await addressModel.updateMany({userId:userID},{$set:{isDefault:false}})
     }
@@ -126,12 +124,8 @@ export const postAddAddress = async(req,res) => {
 
 export const getEditAddressPage = async(req,res) => {
   try{
-    // get address id from params
     const addressID = req.params.id
-    // get address from database
     const address = await addressModel.findById(addressID)
-
-    // render edit address page with address data
     res.render('profile/editAddress',{address, title:"Edit Address"})
   }catch(error) {
     console.log("error in get edit address page",error);
@@ -144,12 +138,12 @@ export const getEditAddressPage = async(req,res) => {
 export const postEditAddress = async (req,res) => {
   try {
     const userID = req.session.userID
-  // get address id from params
+  
     const addressID = req.params.id
-  // get address data from body
+  
     const {name,mobile,buildingName,street,city,state,country,pincode,isDefault}  = req.body
 
-    // create update address object
+
     const updateAddress =  {
       name:name,
       mobile:mobile.trim(),
@@ -162,12 +156,10 @@ export const postEditAddress = async (req,res) => {
       isDefault:isDefault ? true : false
     }
 
-    // if the new address is set as default, remove the default status from other addresses
+
     if(updateAddress.isDefault) {
       await addressModel.updateMany({userId:userID},{$set:{isDefault:false}})
     }
-
-    // update address
     await addressModel.updateOne({_id:addressID},{$set:updateAddress})
 
     req.flash('success', MESSAGES.PROFILE.ADDRESS_UPDATED)
@@ -184,11 +176,9 @@ export const postEditAddress = async (req,res) => {
 
 export const deleteAddress = async (req,res) => {
 try{
-  // get user id from session
+  
   const userID = req.session.userID
-  // get address id from params
   const addressID = req.params.id
-  // delete address
   await addressModel.deleteOne({_id:addressID,userId:userID})
   req.flash('success', MESSAGES.PROFILE.ADDRESS_DELETED)
   res.status(STATUS_CODES.OK).json({message: MESSAGES.PROFILE.ADDRESS_DELETED})
@@ -202,7 +192,7 @@ try{
 
 export const getChangePasswordPage = async(req,res) => {
   try{
-    // get message from query
+    
    
     res.render('profile/changePassword',{title:"Change Password"})
   }catch (error) {
@@ -216,43 +206,43 @@ export const getChangePasswordPage = async(req,res) => {
 
 export const postChangePassword = async (req,res) => {
   try{
-    // get user id from session
+    
     const userID = req.session.userID
     const {confirmPassword,newPassword,currentPassword}  = req.body
 
     const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])(?!.*\s)[A-Za-z\d!@#$%^&*]{6,}$/;
 
-    // check if new password is valid
+    
     if(!passwordPattern.test(newPassword)) {
       req.flash('error', MESSAGES.PROFILE.INVALID_PASSWORD) 
       return res.redirect('/profile/change-password')
     }
 
-    // check if new password and confirm password match
+   
     if(newPassword !== confirmPassword) {
       req.flash('error', MESSAGES.PROFILE.PASSWORD_MISMATCH) 
       return res.redirect('/profile/change-password')
     }
 
-    // get user from database
+
     const user = await userModel.findById(userID)
 
-    // compare current password with user password
+    
     const isMatch = await bcrypt.compare(currentPassword,user.password)
 
-    // if current password is incorrect
+   
     if(!isMatch) {
       req.flash('error', MESSAGES.PROFILE.CURRENT_PASSWORD_INCORRECT) 
       return res.redirect('/profile/change-password')
     }
 
-    // hash new password
+   
     const hashedPassword = await bcrypt.hash(newPassword,10)
   
-    // update user password
+   
     await userModel.updateOne({_id:userID},{$set:{password:hashedPassword}})
 
-    // redirect to change password page with success message
+
     req.flash('success', MESSAGES.PROFILE.PASSWORD_UPDATED)
     res.redirect('/profile/change-password')
 

@@ -51,32 +51,28 @@ export const addToCart = async (req,res) => {
     if(quantity > product.stock) {
       return res.status(STATUS_CODES.BAD_REQUEST).json({message: MESSAGES.CART.OUT_OF_STOCK})
     }
-    // calculate the discount price of the product
+  
     const discountprice = await calculateDiscountPrice(product)
 
-    // find the cart of the user
+   
     let cart = await cartModel.findOne({user: userId})
-    // if the cart is not found create a new cart
+   
     if (!cart) {
       cart = new cartModel({user: userId, items:[] })
     }
 
-    // find the index of the product in the cart
+   
     const itemIndex = cart.items.findIndex(item => item.product.equals(productId))
-    // if the product is already in the cart
+  
     if(itemIndex > -1) {
-      // increase the quantity of the product
+    
       const newQuantity = cart.items[itemIndex].quantity + quantity
 
-     
-      // if(newQuantity > product.stock) {
-      //   return res.status(STATUS_CODES.BAD_REQUEST).send({message: MESSAGES.CART.OUT_OF_STOCK})
-      // }
 
       if (newQuantity > 5) {
         return res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.CART.MAX_QUANTITY_REACHED });
       }
-      // increase the quantity of the product
+      
       cart.items[itemIndex].quantity += quantity
     } else {
   
@@ -88,7 +84,7 @@ export const addToCart = async (req,res) => {
       if (quantity > 5) {
         return res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.CART.MAX_QUANTITY_REACHED });
       }
-      // add the product to the cart
+     
       cart.items.push({
         product: productId,
         quantity: quantity,
@@ -97,8 +93,8 @@ export const addToCart = async (req,res) => {
       })
     }
 
-    // cart.subtotal = calculateSubtotal(cart.items)
-    cart.subtotal = calculateSubtotal(cart.items).subtotal; // Update subtotal
+   
+    cart.subtotal = calculateSubtotal(cart.items).subtotal; 
     cart.total = calculateTotal(cart.subtotal, cart.discount)
 
     await cart.save()
@@ -131,8 +127,7 @@ export const updateCartItemQuantity = async (req, res) => {
 
       cart.items[itemIndex].quantity = newQuantity;
      
-      // const discountPrice = await calculateDiscountPrice(product)
-      // cart.items[itemIndex].discountPrice = discountPrice
+
 
       const { subtotal, totalDiscount } = calculateSubtotal(cart.items);
       cart.subtotal = subtotal;
@@ -176,7 +171,7 @@ export const removeCartItem = async (req, res) => {
       cart.subtotal = subtotal;
       cart.total = calculateTotal(subtotal, cart.discount);
 
-       // Clear coupon if cart is empty
+
        if (cart.items.length === 0) {
         cart.couponCode = null;
         cart.couponDiscount = 0;
@@ -214,10 +209,10 @@ const calculateSubtotal = (items) => {
   items.forEach(item => {
     const itemTotal = (item.discountPrice || 0) * (item.quantity || 0);
     subtotal += itemTotal;
-    totalDiscount += (item.price - item.discountPrice) * item.quantity; // Calculate total discount
+    totalDiscount += (item.price - item.discountPrice) * item.quantity; 
   });
 
-  return { subtotal, totalDiscount }; // Return both subtotal and total discount
+  return { subtotal, totalDiscount }; 
 }
 
 const calculateTotal = (subtotal, discount) => {

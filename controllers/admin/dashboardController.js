@@ -99,7 +99,7 @@ export const getDashboard = async (req, res) => {
 
     const totalCustomers = await userModel.countDocuments();
 
-    // Sales and Orders Timeline Data
+   
     const salesData = await orderModel.aggregate([
       { 
         $match: { 
@@ -117,7 +117,7 @@ export const getDashboard = async (req, res) => {
           _id: { $dateToString: { format: "%H:%M", date: "$orderedAt", timezone: "Asia/Kolkata" } },
           revenue: { $sum: "$items.itemTotal" },
           orders: { $sum: 1 },
-          itemsSold: { $sum: "$items.quantity" } // Count each item after unwinding
+          itemsSold: { $sum: "$items.quantity" } 
         }
       },
       { $sort: { _id: 1 } }
@@ -128,11 +128,11 @@ export const getDashboard = async (req, res) => {
 
     const formattedSalesData = parsedSalesData.map(item => {
       const [hour, minute] = item._id.split(':');
-      const hour12 = hour % 12 || 12; // In here iam doing 24 hour format Convert to 12-hour format
+      const hour12 = hour % 12 || 12; 
       const ampm = hour < 12 ? 'AM' : 'PM';
       return {
         ...item,
-        _id: `${hour12}:${minute} ${ampm}` // Format as "hh:mm AM/PM"
+        _id: `${hour12}:${minute} ${ampm}` 
       };
     });
 
@@ -180,7 +180,7 @@ export const getDashboard = async (req, res) => {
       { $limit: 10 }
     ]);
 
-    // Best Selling Categories
+ 
     const bestSellingCategories = await orderModel.aggregate([
       { 
         $match: { 
