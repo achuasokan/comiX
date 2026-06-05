@@ -1,35 +1,33 @@
 
-<style>
-  body {
-      background-color: #000000; /* Dark background */
-  }
-  .comic-book {
-      animation: bounce 2s infinite;
-  }
-  @keyframes bounce {
-      0%, 20%, 50%, 80%, 100% {
-          transform: translateY(0);
-      }
-      40% {
-          transform: translateY(-20px);
-      }
-      60% {
-          transform: translateY(-10px);
-      }
-  }
-</style>
+<div class="min-h-screen bg-[#050505] flex flex-col items-center justify-center text-white p-4 relative overflow-hidden font-sans">
+    <!-- Ambient Background Effects -->
+    <div class="absolute inset-0 z-0 pointer-events-none">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] md:w-[800px] h-[600px] md:h-[800px] bg-red-600/10 blur-[150px] rounded-full mix-blend-screen"></div>
+        <div class="absolute inset-0" style="background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.03) 1px, transparent 0); background-size: 32px 32px;"></div>
+    </div>
 
-<div class="flex flex-col items-center justify-center min-h-screen text-white p-4">
-<div class="text-center">
-  <h1 class="text-6xl font-bold mb-4 animate-pulse">404</h1>
-  <p class="text-2xl mb-6">Oops! This page doesn't seem to exist in this universe.</p>
-  <div class="flex justify-center mb-6">
-      <img src="/img/comiX.png" alt="Comic Book" class="comic-book w-48 md:w-72 lg:w-96 h-auto" />
-  </div>
-  <p class="text-lg mb-4">But don't worry, you can find your way back!</p>
-  <button onclick="window.history.back()" class="bg-gradient-to-r from-yellow-400 to-red-600 text-white py-2 px-4 rounded-lg hover:opacity-80 transition duration-300">Go Back</button>
+    <!-- Content -->
+    <div class="text-center relative z-10 max-w-2xl mx-auto flex flex-col items-center">
+        
+        <!-- Animated 404 Text -->
+        <div class="relative mb-6 group">
+            <h1 class="text-[120px] sm:text-[150px] md:text-[200px] font-black leading-none tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/10 select-none drop-shadow-[0_0_30px_rgba(255,255,255,0.1)] transition-transform duration-700 group-hover:scale-105">404</h1>
+        </div>
+        
+        <div class="mb-12 z-10">
+            <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold uppercase tracking-[0.2em] mb-4">Lost in the Multiverse</h2>
+            <p class="text-white/50 text-xs sm:text-sm tracking-widest uppercase leading-loose max-w-md mx-auto px-4 border-l-2 border-orange-500">
+                The page you are looking for has been erased from this timeline. Let's get you back to safety.
+            </p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4 items-center justify-center w-full px-8 z-10">
+            <button onclick="window.history.back()" class="w-full sm:w-auto px-8 py-4 border border-white/20 text-white text-[10px] sm:text-xs font-bold uppercase tracking-widest hover:bg-white/10 transition-all rounded-sm flex items-center justify-center gap-3">
+                <i class="fas fa-arrow-left"></i> Go Back
+            </button>
+            <a href="/" class="w-full sm:w-auto px-8 py-4 bg-white text-black text-[10px] sm:text-xs font-bold uppercase tracking-widest hover:bg-gray-200 transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] rounded-sm flex items-center justify-center gap-3">
+                <i class="fas fa-home"></i> Return Home
+            </a>
+        </div>
+    </div>
 </div>
-</div>
-
-
-

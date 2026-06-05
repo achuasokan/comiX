@@ -1,93 +1,107 @@
 
-<style>
-  .relative input:focus + label,
-.relative input:not(:placeholder-shown) + label {
-  top: -13px; /* Adjust as needed */
-  left: -1px; /* Adjust as needed */
-  font-size: 16px; /* Adjust as needed */
-  color: #fbbf24; /* Change to your desired color */
-  background-color: black; /* Add background color */
-  padding: 0 4px; /* Add padding to the label */
-  z-index: 1; /* Ensure the label is above the input */
-}
-</style>
-  
-  <%- include('../partials/header.ejs') %>
-  
-<div class="min-h-screen flex items-center justify-center bg-black">
-  <div class="bg-black bg-opacity-10 p-8 mb-6 rounded-xl max-w-md w-full">
-    <div class="w-full max-w-sm p-8 backdrop-filter backdrop-blur-sm bg-black bg-opacity-50 rounded-2xl shadow-2xl border border-white/10">
-      <h2 class="text-4xl p-2 font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-red-600 mb-8 text-center">Email OTP Verification</h2>
+<%- include('../partials/header.ejs') %>
+
+<div class="min-h-screen bg-black flex text-white relative">
+  <!-- Left Side: Brand/Graphic -->
+  <div class="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-[#050505] border-r border-white/10 items-center justify-center p-12">
+    <div class="absolute inset-0 z-0">
+      <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-red-600/20 blur-[120px] rounded-full mix-blend-screen"></div>
+      <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-yellow-500/10 blur-[120px] rounded-full mix-blend-screen"></div>
+      <div class="absolute inset-0" style="background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.15) 1px, transparent 0); background-size: 32px 32px;"></div>
+    </div>
+    
+    <div class="relative z-10 max-w-lg">
+      <h1 class="text-6xl font-bold uppercase tracking-tighter mb-6 leading-tight">Verify<br>Your<br>Identity.</h1>
+      <p class="text-white/50 text-sm tracking-widest uppercase leading-loose border-l-2 border-orange-500 pl-6">
+        We've sent a one-time password to your email. Enter it to secure your new account and join ComiX.
+      </p>
+    </div>
+  </div>
+
+  <!-- Right Side: OTP Form -->
+  <div class="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 md:p-16 relative">
+    <div class="w-full max-w-md relative z-10">
       
-      <div id="timer" class="text-center text-yellow-400 mb-4"></div> <!-- Timer display -->
+      <div class="mb-10 text-center lg:text-left">
+        <h2 class="text-3xl font-bold uppercase tracking-widest mb-2">Verification</h2>
+        <p class="text-[10px] tracking-widest uppercase text-white/50">Enter the 6-digit code sent to your email.</p>
+      </div>
+
+      <div id="timer" class="text-center lg:text-left text-[10px] tracking-widest uppercase text-white font-bold mb-6 border border-white/10 bg-white/5 p-3"></div>
       
-     <!-- flash message  -->
-     <%- include('../partials/flashMessage.ejs') %>
+      <%- include('../partials/flashMessage.ejs') %>
 
       <form action="/otp/verify" method="POST" class="space-y-6">
        
-        <div class="relative">
-          <input type="password" id="otp" name="otp"  class="block w-full px-2 py-2 bg-transparent text-white border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 placeholder:text-transparent transition duration-300" placeholder=" ">
-          <label for="otp" class="absolute left-2 top-2 ml-2 text-white tracking-widest transition-all duration-300 transform origin-left scale-75 pointer-events-none">Enter OTP</label>
-          <button type="button" id="toggleSignupOtp" class="absolute right-2 top-2 text-orange-500">
-            <span class="material-icons" id="SignUpOtpEyeIcon">visibility</span>
-          </button>
+        <div class="group">
+          <label for="otp" class="block mb-2 text-[10px] uppercase tracking-widest font-bold text-white/50 group-focus-within:text-white transition-colors">One-Time Password</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+              <i class="fas fa-key text-white/30 group-focus-within:text-white transition-colors"></i>
+            </div>
+            <input type="password" id="otp" name="otp" class="w-full bg-white/5 border border-white/10 text-white text-sm py-3.5 pl-12 pr-12 focus:outline-none focus:border-white focus:bg-white/10 transition-all rounded-sm placeholder-white/20 tracking-widest" placeholder="Enter OTP code" required>
+            <button type="button" id="toggleSignupOtp" class="absolute inset-y-0 right-0 flex items-center pr-4 text-white/30 hover:text-white transition-colors">
+              <i class="fas fa-eye" id="SignUpOtpEyeIcon"></i>
+            </button>
+          </div>
         </div>
-        <button type="submit" class="styled-btn w-full py-2 px-2 tracking-wider transform hover:scale-105">
-          Verify OTP
-        </button>
-      </form>
-      <form action="/otp/resend" method="POST">
-        <div class="mt-4 text-center">
-          <p class="text-sm text-gray-400">Didn't receive the OTP?</p>
-                                                    
-          <button type="submit" class="text-sm text-yellow-400 hover:text-yellow-300 focus:outline-none">
-            Resend OTP
-        </button>
+
+        <div class="pt-2">
+          <button type="submit" class="w-full bg-white text-black py-4 uppercase tracking-widest text-xs font-bold hover:bg-gray-200 transition-colors shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(255,255,255,0.2)]">Verify & Continue</button>
         </div>
       </form>
+
+      <form action="/otp/resend" method="POST" class="mt-8 text-center lg:text-left">
+        <p class="text-[10px] uppercase tracking-widest text-white/50">
+          Didn't receive the code? 
+          <button type="submit" class="font-bold text-white hover:text-gray-300 transition-colors border-b border-white pb-0.5 ml-2 cursor-pointer focus:outline-none">Resend OTP</button>
+        </p>
+      </form>
+
     </div>
   </div>
 </div>
 
-  <%- include('../partials/footer.ejs') %>
+<%- include('../partials/footer.ejs') %>
  
+<script>
+  // Timer setup
+  let timeLeft = 60; // Default time
+  if ('<%= session.tempUser ? true : false %>') {
+    const otpExpiresAt = new Date('<%= session.tempUser.otpExpiresAt %>');
+    const currentTime = new Date();
+    timeLeft = Math.max(0, Math.floor((otpExpiresAt - currentTime) / 1000)); // Calculate remaining time
+  }
 
-  <script>
-    // Timer setup
-    let timeLeft = 60; // Default time
-    if ('<%= session.tempUser ? true : false %>') {
-      const otpExpiresAt = new Date('<%= session.tempUser.otpExpiresAt %>');
-      const currentTime = new Date();
-      timeLeft = Math.max(0, Math.floor((otpExpiresAt - currentTime) / 1000)); // Calculate remaining time
+  function updateTimer() {
+    const timerDisplay = document.getElementById('timer');
+    if (timeLeft <= 0) {
+      clearInterval(timeInterval);
+      timerDisplay.innerHTML = '<span class="text-red-500">OTP Expired.</span> Please request a new one.';
+      document.getElementById('otp').disabled = true;
+    } else {
+      timerDisplay.innerHTML = 'Code expires in <span class="text-orange-500">' + timeLeft + 's</span>';
+      timeLeft--; // decrement time left
     }
-  
-    function updateTimer() {
-      const timerDisplay = document.getElementById('timer');
-      if (timeLeft <= 0) {
-        clearInterval(timeInterval);
-        timerDisplay.innerHTML = 'The OTP has expired. Please request a new one.';
-        document.getElementById('otp').disabled = true;
-      } else {
-        timerDisplay.innerHTML = 'The OTP will expire in ' + timeLeft + ' seconds';
-        timeLeft--; // decrement time left
-      }
+  }
+  const timeInterval = setInterval(updateTimer, 1000); // call updateTimer function every second
+
+
+  // toggle signup otp visibility
+  const toggleSignupOtp = document.getElementById('toggleSignupOtp');
+  const signupOtpInputs = document.getElementById('otp');
+  const signupOtpEyeIcon = document.getElementById('SignUpOtpEyeIcon');
+
+  toggleSignupOtp.addEventListener('click', function () {
+    const type = signupOtpInputs.getAttribute('type') === 'password' ? 'text' : 'password';
+    signupOtpInputs.setAttribute('type', type);
+    
+    if (type === 'password') {
+        signupOtpEyeIcon.classList.remove('fa-eye-slash');
+        signupOtpEyeIcon.classList.add('fa-eye');
+    } else {
+        signupOtpEyeIcon.classList.remove('fa-eye');
+        signupOtpEyeIcon.classList.add('fa-eye-slash');
     }
-    const timeInterval = setInterval(updateTimer, 1000); // call updateTimer function every second
-
-
-    // toggle signup otp visibility
-    const toggleSignupOtp = document.getElementById('toggleSignupOtp');
-    const signupOtpInputs = document.getElementById('otp');
-    const signupOtpEyeIcon = document.getElementById('SignUpOtpEyeIcon');
-
-    toggleSignupOtp.addEventListener('click', function () {
-      const type = signupOtpInputs.getAttribute('type') === 'password' ? 'text' : 'password';
-      signupOtpInputs.setAttribute('type', type);
-      signupOtpEyeIcon.textContent = type === 'password' ? 'visibility' : 'visibility_off';
-
-      if (type == 'text') {
-        signupOtpInputs.classList.add('border-orange-500');
-      }
-    });
-  </script>
+  });
+</script>

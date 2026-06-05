@@ -1,42 +1,67 @@
 <%- include('../partials/header.ejs') %>
-<div class="bg-black text-white flex flex-col items-center">
+<div class="bg-black text-white flex flex-col items-center min-h-screen pb-20">
 
    <!-- Horizontal Navigation Bar -->
    <%- include('./profileSidebar.ejs') %>
    <!-- Navigation Bar end -->
 
    <!-- Personal Info -->
-   <main class="flex-1 p-4 w-full max-w-2xl">
-       <h3 class="text-lg font-bold text-center">Personal Information</h3>
+   <main class="flex-1 w-full max-w-4xl px-4 md:px-8 mt-12">
+       
+       <!-- Header Section -->
+       <div class="flex items-center justify-between border-b border-white/20 pb-4 mb-10">
+           <div>
+               <h2 class="text-2xl font-bold uppercase tracking-widest text-white">Personal Information</h2>
+           </div>
+           <!-- Minimal Avatar -->
+           <div class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white text-sm font-bold bg-white/5">
+               <%= user.name.charAt(0).toUpperCase() %>
+           </div>
+       </div>
 
        <!-- flash message  -->
-       <%- include('../partials/flashMessage.ejs') %>
+       <div class="mb-8">
+           <%- include('../partials/flashMessage.ejs') %>
+       </div>
        
-       <form id="profileForm" action="/profile/personal-info" method="post" class="flex flex-col mb-4">
-           <div class="mb-4 w-full"> 
-               <label for="nameInput">Name:</label>
-               <input type="text" name="name" id="nameInput" placeholder="Name" value="<%= user.name %>" class="bg-black border border-gray-700 text-white p-2 rounded-lg w-full focus:outline-none focus:border-orange-500" disabled />
-               <p id="nameError" class="text-red-200 text-sm" aria-live="assertive"></p>
-           </div>
+       <!-- Form Section -->
+       <form id="profileForm" action="/profile/personal-info" method="post" class="space-y-8">
            
-           <div class="mb-4 w-full"> 
-               <label for="mobileInput">Mobile No:</label>
-               <input type="tel" id="mobileInput" name="mobile" placeholder="Mobile No" value="<%= user.mobile %>" class="bg-black border border-gray-700 text-white p-2 rounded-lg w-full focus:outline-none focus:border-orange-500" disabled />
-               <p id="mobileError" class="text-red-200 text-sm" aria-live="assertive"></p>
+           <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+               <!-- Name -->
+               <div> 
+                   <label for="nameInput" class="block text-white/50 text-xs uppercase tracking-widest font-bold mb-2">Full Name</label>
+                   <input type="text" name="name" id="nameInput" placeholder="Enter your name" value="<%= user.name %>" class="w-full bg-transparent border-b border-white/20 text-white text-sm p-3 focus:outline-none focus:border-white transition-colors disabled:opacity-40 disabled:border-white/10 disabled:cursor-not-allowed" disabled />
+                   <p id="nameError" class="text-red-500 text-xs mt-2" aria-live="assertive"></p>
+               </div>
+               
+               <!-- Mobile -->
+               <div> 
+                   <label for="mobileInput" class="block text-white/50 text-xs uppercase tracking-widest font-bold mb-2">Mobile Number</label>
+                   <input type="tel" id="mobileInput" name="mobile" placeholder="Enter mobile number" value="<%= user.mobile %>" class="w-full bg-transparent border-b border-white/20 text-white text-sm p-3 focus:outline-none focus:border-white transition-colors disabled:opacity-40 disabled:border-white/10 disabled:cursor-not-allowed" disabled />
+                   <p id="mobileError" class="text-red-500 text-xs mt-2" aria-live="assertive"></p>
+               </div>
            </div>
 
-           <div class="mb-4 w-full"> 
-               <label for="emailInput" class="opacity-20">Email:</label>
-               <input type="email" id="emailInput" name="email" placeholder="Email" value="<%= user.email %>" class="bg-[#2a2a2a] text-white p-2 rounded-lg w-full cursor-not-allowed opacity-20" disabled />
-               <p id="emailError" class="text-red-200 text-sm" aria-live="assertive"></p>
+           <!-- Email (Non-editable) -->
+           <div class="w-full"> 
+               <label for="emailInput" class="flex justify-between items-center text-white/50 text-xs uppercase tracking-widest font-bold mb-2">
+                   Email Address
+                   <span class="text-white/30 text-[10px] lowercase tracking-normal font-normal">Cannot be changed</span>
+               </label>
+               <input type="email" id="emailInput" name="email" placeholder="Email" value="<%= user.email %>" class="w-full bg-white/5 border border-white/10 text-white/40 text-sm p-3 rounded-sm cursor-not-allowed" disabled />
+               <p id="emailError" class="text-red-500 text-xs mt-2" aria-live="assertive"></p>
            </div>
        
-           <button id="editButton" type="button" class="bg-gradient-to-r from-red-600 to-yellow-400 text-black py-2 px-4 rounded-lg hover:bg-yellow-500 transition duration-200 w-32 mx-auto">
-               Edit
-           </button>
-           <button id="submitButton" type="submit" class="bg-yellow-400 text-black py-2 px-4 rounded-lg hover:bg-yellow-500 transition duration-200 w-32 mx-auto hidden">
-               Submit
-           </button>
+           <!-- Action Buttons -->
+           <div class="pt-8 border-t border-white/10 flex justify-end gap-4">
+               <button id="editButton" type="button" class="bg-white text-black px-8 py-3 uppercase tracking-widest text-xs font-bold hover:bg-gray-200 transition-colors w-full sm:w-auto">
+                   Edit Profile
+               </button>
+               <button id="submitButton" type="submit" class="bg-white text-black px-8 py-3 uppercase tracking-widest text-xs font-bold hover:bg-gray-200 transition-colors hidden w-full sm:w-auto">
+                   Save Changes
+               </button>
+           </div>
        </form>
    </main>
    <!-- Personal Info end -->

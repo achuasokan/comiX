@@ -1,98 +1,126 @@
 <!-- views/user/orderDetail.ejs -->
+<div class="bg-black text-white flex flex-col items-center min-h-screen pb-20">
+   <%- include('../partials/header') %>
+   <!-- Horizontal Navigation Bar -->
+   <%- include('./profileSidebar.ejs') %>
+   <!-- Navigation Bar end -->
 
-<div class="bg-black text-white min-h-screen flex flex-col">
-  <%- include('../partials/header') %>
-
-  <div class="container mx-auto py-8 px-4">
-    <!-- Breadcrumb Navigation -->
-    <nav class="mb-4">
-      <ol class="list-reset flex text-blue-400">
-        <li><a href="/" class="hover:underline">Home</a></li>
-        <li><span class="mx-2">/</span></li>
-        <li><a href="/profile/orders" class="hover:underline">Orders</a></li>
-        <li><span class="mx-2">/</span></li>
-        <li class="text-gray-500">Order Details</li>
-      </ol>
-    </nav>
-    <h1 class="text-3xl font-bold mb-6">Order Details</h1>
-
-    <!-- Order Information -->
-    <div class="bg-black border-2 border-gray-800 p-6 rounded-lg mb-6">
-      <p><strong>Order ID:</strong> <%= order._id %></p>
-      <p><strong>Order Date:</strong> <%= order.createdAt.toLocaleDateString() %></p>
-      <p><strong>Payment Method:</strong> <%= order.paymentMethod %></p>
+   <main class="flex-1 w-full max-w-4xl px-4 md:px-8 mt-12">
+    <!-- Header Section -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-white/20 pb-4 mb-10 gap-4">
+        <div>
+            <h2 class="text-2xl font-bold uppercase tracking-widest text-white">Order Details</h2>
+            <p class="text-white/50 text-sm tracking-widest uppercase mt-2">
+                Order #<%= order._id.toString().slice(-8).toUpperCase() %>
+            </p>
+        </div>
+        <div class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white text-sm bg-white/5 shrink-0 hidden md:flex">
+            <i class="fas fa-receipt"></i>
+        </div>
     </div>
 
-    <!-- Shipping Address -->
-    <h2 class="text-2xl font-bold mb-4">Shipping Address</h2>
-    <div class="bg-black border-2 border-gray-800 p-6 rounded-lg mb-6">
-      <% if (order.address) { %>
-        <p><%= order.address.name %></p>
-        <p><%= order.address.buildingName %>, <%= order.address.street %></p>
-        <p><%= order.address.city %>, <%= order.address.state %>, <%= order.address.country %></p>
-        <p><%= order.address.pincode %></p>
-        <p><strong>Mobile:</strong> <%= order.address.mobile %></p>
-      <% } else { %>
-        <p>No shipping address available.</p>
-      <% } %>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+        <!-- Order Info -->
+        <div class="border border-white/10 bg-white/5 p-6 relative">
+            <h3 class="text-xs font-bold uppercase tracking-widest text-white/50 mb-4 border-b border-white/10 pb-2">Information</h3>
+            <div class="space-y-2 text-sm">
+                <p class="flex justify-between"><span class="text-white/50">Date:</span> <span><%= order.createdAt.toLocaleDateString() %></span></p>
+                <p class="flex justify-between"><span class="text-white/50">Payment:</span> <span><%= order.paymentMethod %></span></p>
+                <p class="flex justify-between"><span class="text-white/50">Status:</span> <span><%= order.paymentStatus %></span></p>
+            </div>
+        </div>
+
+        <!-- Shipping Address -->
+        <div class="border border-white/10 bg-white/5 p-6 relative">
+            <h3 class="text-xs font-bold uppercase tracking-widest text-white/50 mb-4 border-b border-white/10 pb-2">Shipping Address</h3>
+            <% if (order.address) { %>
+                <div class="space-y-1 text-sm text-white/80">
+                    <p class="font-bold text-white"><%= order.address.name %></p>
+                    <p><%= order.address.buildingName %>, <%= order.address.street %></p>
+                    <p><%= order.address.city %>, <%= order.address.state %>, <%= order.address.country %></p>
+                    <p><%= order.address.pincode %></p>
+                    <p class="text-white/50 mt-2">Mobile: <span class="text-white/80"><%= order.address.mobile %></span></p>
+                </div>
+            <% } else { %>
+                <p class="text-sm text-white/50">No shipping address available.</p>
+            <% } %>
+        </div>
     </div>
 
     <!-- Ordered Items -->
-    <h2 class="text-2xl font-bold mb-4">Items</h2>
-    <div class="bg-black border-2 border-gray-800 p-6 rounded-lg mb-6">
+    <h3 class="text-xs font-bold uppercase tracking-widest text-white/50 mb-4">Items (<%= order.items.length %>)</h3>
+    <div class="space-y-4 mb-10">
       <% order.items.forEach(item => { %>
-        <div class="flex flex-col md:flex-row justify-between items-center bg-black border-2 border-gray-800 p-4 rounded-lg mb-4 shadow-md">
-          <div class="flex items-center mb-4 md:mb-0">
-            <img src="<%= item.product.image[1] %>" alt="<%= item.product.name %>" class="w-20 h-20 mr-4 object-cover rounded-md">
-            <div class="flex-1">
-              <p class="text-lg font-semibold"><%= item.product.name %></p>
-              <p><span class="line-through">₹<%= item.price %></span></p>
-              <p>Price:<span class="text-orange-500">₹<%= item.discountPrice %></span></p>
-              <p>Quantity: <%= item.quantity %></p>
-              <p>Subtotal: ₹<%= item.discountPrice * item.quantity %></p>
-              <p>Total: ₹<%= item.itemTotal %></p>
+        <div class="border border-white/10 bg-white/5 p-4 flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+            
+            <% if (item.product) { %>
+                <img src="<%= item.product.image[1] %>" alt="<%= item.product.name %>" class="w-20 h-28 object-cover shrink-0 border border-white/10">
+                <div class="flex-1">
+                    <h4 class="text-sm font-bold uppercase tracking-wide text-white"><%= item.product.name %></h4>
+                    <p class="text-xs text-white/50 uppercase tracking-widest mt-1"><%= item.product.category.name %></p>
+                    <div class="mt-4 flex gap-4 text-sm">
+                        <p class="text-white/50">Qty: <span class="text-white"><%= item.quantity %></span></p>
+                        <p class="text-white/50">Price: <span class="text-white">₹<%= item.discountPrice %></span></p>
+                    </div>
+                </div>
+            <% } else { %>
+                <div class="w-20 h-28 bg-white/5 flex items-center justify-center shrink-0 border border-white/10">
+                    <i class="fas fa-image text-white/20"></i>
+                </div>
+                <div class="flex-1">
+                    <p class="text-sm text-white/50 uppercase tracking-widest">Product not found</p>
+                </div>
+            <% } %>
+
+            <div class="flex flex-col gap-3 sm:items-end w-full sm:w-auto border-t sm:border-t-0 border-white/10 pt-4 sm:pt-0">
+                <div class="text-right">
+                    <p class="text-xs text-white/50 uppercase tracking-widest mb-1">Item Total</p>
+                    <p class="text-xl font-light text-white">₹<%= item.itemTotal %></p>
+                </div>
+                
+                <span class="inline-flex items-center px-3 py-1 text-[10px] uppercase tracking-widest font-bold border
+                    <%= item.itemStatus === 'Cancelled' || item.itemStatus === 'Returned' ? 'border-red-500/50 text-red-400' 
+                    : item.itemStatus === 'Delivered' ? 'border-green-500/50 text-green-400' 
+                    : 'border-white/20 text-white' %>">
+                    <%= item.itemStatus %>
+                </span>
+
+                <!-- Action Buttons -->
+                <% if (item.itemStatus === 'Delivered') { %>
+                    <button class="return-order-btn border border-white text-white px-4 py-2 uppercase tracking-widest text-[10px] font-bold hover:bg-white hover:text-black transition-colors w-full sm:w-auto mt-2" data-order-id="<%= order._id %>" data-item-id="<%= item._id %>">Return</button>
+                <% } else if (item.itemStatus !== 'Cancelled' && item.itemStatus !== 'Delivered' && item.itemStatus !== 'Returned' && item.itemStatus !== 'Return Requested' ) { %>
+                    <% if (item.product) { %>
+                    <button class="cancel-order-btn border border-red-500 text-red-500 px-4 py-2 uppercase tracking-widest text-[10px] font-bold hover:bg-red-500 hover:text-white transition-colors w-full sm:w-auto mt-2" data-order-id="<%= order._id %>" data-item-id="<%= item._id %>" data-product-id="<%= item.product._id %>">Cancel</button>
+                    <% } %>
+                <% } %>
             </div>
-          </div>
-          <div class="ml-4">
-            <span class="inline-flex items-center px-3 py-1 rounded-full 
-              <%= item.itemStatus === 'Cancelled' ? 'bg-red-600 text-white' : 'bg-green-600 text-white' %>">
-              <i class="<%= item.itemStatus === 'Cancelled' ? 'fas fa-times-circle' : 'fas fa-check-circle' %> mr-1"></i>
-              Status: <%= item.itemStatus %>
-            </span>
-          </div>
         </div>
       <% }) %>
     </div>
 
     <!-- Order Summary -->
-    <h2 class="text-2xl font-bold mb-4">Order Summary</h2>
-    <div class="bg-black border-2 border-gray-800 p-6 rounded-lg mb-6">
-      <div class="flex flex-col md:flex-row justify-between mb-2">
-        <p>Subtotal:</p>
-        <p>₹<%= order.subtotal %></p>
-      </div>
-      <div class="flex flex-col md:flex-row justify-between mb-2">
-        <p>Discount:</p>
-        <p class="text-red-500">-₹<%= order.discount || 0 %></p>
-      </div>
-      <div class="flex flex-col md:flex-row justify-between mb-2">
-        <p>Delivery Charges:</p>
-        <p>₹0</p>
-      </div>
-      <hr class="border-gray-700 my-2">
-      <div class="flex flex-col md:flex-row justify-between font-bold">
-        <p>Total Amount:</p>
-        <p>₹<%= order.total %></p>
-      </div>
+    <div class="border border-white/10 bg-white/5 p-6 mb-10 sm:w-1/2 ml-auto">
+        <h3 class="text-xs font-bold uppercase tracking-widest text-white/50 mb-4 border-b border-white/10 pb-2">Order Summary</h3>
+        <div class="space-y-2 text-sm text-white/80">
+            <div class="flex justify-between">
+                <p>Subtotal</p>
+                <p>₹<%= order.subtotal %></p>
+            </div>
+            <div class="flex justify-between">
+                <p>Discount</p>
+                <p class="text-white">-₹<%= order.discount || 0 %></p>
+            </div>
+            <div class="flex justify-between">
+                <p>Delivery Charges</p>
+                <p>₹0</p>
+            </div>
+            <div class="border-t border-white/10 my-2 pt-2 flex justify-between font-bold text-lg text-white">
+                <p>Total</p>
+                <p>₹<%= order.total %></p>
+            </div>
+        </div>
     </div>
-
-    <!-- Optional: Cancel Order Button -->
-     <% if (item.itemStatus === 'Delivered') { %>
-     <button class="return-order-btn bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700" data-order-id="<%= order._id %>" data-item-id="<%= item._id %>">Return Order</button>
-     <% } else if (item.itemStatus !== 'Cancelled' && item.itemStatus !== 'Delivered' && item.itemStatus !== 'Returned' && item.itemStatus !== 'Return Requested' ) { %>
-      <button class="cancel-order-btn bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700" data-order-id="<%= order._id %>" data-item-id="<%= item._id %>"data-product-id="<%= item.product._id %>">Cancel Order</button>
-    <% } %>
-  </div>
+  </main>
 
   <%- include('../partials/footer') %>
 </div>

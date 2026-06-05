@@ -9,22 +9,37 @@ export const getWishListPage = async(req,res) => {
   try {
   //get the user id from the session
     const userId = req.session.userID;
+    
+    // pagination setup
+    const page = parseInt(req.query.page) || 1;
+    const limit = 8;
+
   //find the wishlist of the user
-    const wishlist = await wishListModel.findOne({ user: userId })
-      .populate({
+    const wishlist = await wishListModel.findOne({ user: userId });
+
+  //if the wishlist is not found, render the wishlist page with an empty wishlist
+      if(!wishlist || !wishlist.productsId || wishlist.productsId.length === 0){
+        return res.render('user/wishlist',{ wishlist:{productsId:[]}, currentPage: 1, totalPages: 1, title: "Wishlist" })
+      }
+
+      // calculate pagination
+      const totalItems = wishlist.productsId.length;
+      const totalPages = Math.ceil(totalItems / limit);
+      const startIndex = (page - 1) * limit;
+      const endIndex = startIndex + limit;
+
+      // slice for current page and populate
+      wishlist.productsId = wishlist.productsId.slice(startIndex, endIndex);
+      await wishlist.populate({
         path: 'productsId',
         populate: {path: 'category', select: 'name' }
       });
-  //if the wishlist is not found, render the wishlist page with an empty wishlist
-      if(!wishlist){
-        return res.render('user/wishlist',{wishlist:{productsId:[]}})
-      }
 
       for (let product of wishlist.productsId) {
         product.discountedPrice = await calculateDiscountPrice(product);
       }
   
-    res.render('user/wishlist',{ wishlist,title:"Wishlist" });
+    res.render('user/wishlist',{ wishlist, currentPage: page, totalPages, title:"Wishlist" });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal server error" });

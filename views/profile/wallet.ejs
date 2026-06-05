@@ -1,76 +1,98 @@
 <%- include('../partials/header.ejs') %>
-<div class="bg-black text-white flex flex-col items-center">
+<div class="bg-black text-white flex flex-col items-center min-h-screen pb-20">
 
   <!-- Horizontal Navigation Bar -->
   <%- include('./profileSidebar.ejs') %>
   <!-- Navigation Bar end -->
 
-  <div class="flex-1 p-4 w-full">
-    <h1 class="text-4xl font-bold mb-6 mt-5 text-center text-gradient">My Wallet</h1>
+  <main class="flex-1 w-full max-w-4xl px-4 md:px-8 mt-12">
+    <!-- Header Section -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-white/20 pb-4 mb-10 gap-4">
+        <div>
+            <h2 class="text-2xl font-bold uppercase tracking-widest text-white">My Wallet</h2>
+            <p class="text-white/50 text-sm tracking-widest uppercase mt-2">Manage your funds</p>
+        </div>
+        <!-- Minimal Icon -->
+        <div class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white text-sm bg-white/5 shrink-0 hidden md:flex">
+            <i class="fas fa-wallet"></i>
+        </div>
+    </div>
 
-    <!-- Wallet Balance Section -->
-    <% if (wallet && wallet.balance > 0) { %>
-    <div class="flex justify-center mb-6">
-      <div class="bg-gradient-to-r from-teal-400 to-blue-500 p-2 rounded-lg shadow-lg text-center transform transition-transform hover:scale-105">
-        <h2 class="text-md font-semibold">Current Balance</h2>
-        <p class="text-md mt-2 font-bold">₹<%= wallet.balance.toFixed(2) %></p>
+    <!-- Wallet Balance & Actions -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+      <!-- Balance Card -->
+      <div class="border border-white/10 bg-white/5 p-6 flex flex-col justify-center min-h-[140px]">
+        <h3 class="text-xs font-bold uppercase tracking-widest text-white/50 mb-2">Current Balance</h3>
+        <% if (wallet && wallet.balance > 0) { %>
+          <p class="text-4xl font-light text-white">₹<%= wallet.balance.toFixed(2) %></p>
+        <% } else { %>
+          <p class="text-4xl font-light text-white">₹0.00</p>
+        <% } %>
       </div>
-    </div>
-    <% } else { %>
-      <!-- <p class="text-center mt-8">No wallet found.</p> -->
-    <% } %>
 
-    <!-- Add Money Button (Always Visible) -->
-    <div class="flex justify-center mb-6 mt-2">
-      <button id="addMoneyBtn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg transition duration-200">
-        Add Money
-      </button>
-    </div>
-
-    <!-- Add Money Input Field -->
-    <div id="addMoneyInput" class="hidden mb-6 flex justify-center">
-      <input type="number" id="amount" placeholder="Enter amount" class="p-2 rounded-lg bg-black border border-gray-800 focus:outline-none focus:border-orange-500" />
-      <button id="confirmAdd" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg ml-2">
-        Confirm
-      </button>
+      <!-- Add Money Card -->
+      <div class="border border-white/10 bg-white/5 p-6 flex flex-col justify-center min-h-[140px]">
+        <div id="addMoneyContainer" class="w-full flex justify-center">
+          <button id="addMoneyBtn" class="w-full sm:w-auto border border-white text-white px-8 py-3 uppercase tracking-widest text-xs font-bold hover:bg-white hover:text-black transition-colors">
+            Add Money
+          </button>
+        </div>
+        
+        <div id="addMoneyInput" class="hidden w-full flex-col sm:flex-row gap-4">
+          <input type="number" id="amount" placeholder="Enter Amount" class="flex-1 bg-transparent border-b border-white/20 text-white text-sm p-2 focus:outline-none focus:border-white transition-colors" />
+          <button id="confirmAdd" class="bg-white text-black px-6 py-2 uppercase tracking-widest text-xs font-bold hover:bg-gray-200 transition-colors whitespace-nowrap">
+            Confirm
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Transaction History Section -->
-    <div class="overflow-x-auto">
-      <table class="min-w-full bg-black border-2 border-gray-800 text-white rounded-lg shadow-lg">
-        <thead class="bg-black border-b border-gray-800 ">
-          <tr>
-            <th class="py-3 px-4 text-left text-orange-500">Date</th>
-            <th class="py-3 px-4 text-left text-orange-500">Type</th>
-            <th class="py-3 px-4 text-left text-orange-500">Amount</th>
-            <th class="py-3 px-4 text-left text-orange-500">Order ID</th>
-          </tr>
-        </thead>
-        <tbody class="bg-black">
-          <% if (wallet && wallet.transaction && wallet.transaction.length > 0) { %>
-            <% wallet.transaction.forEach(transaction => { %>
-              <tr class="border-b border-gray-600 hover:bg-gradient-to-r from-red-600 to-yellow-400 transition-colors">
-                <td class="py-2 px-4"><%= new Date(transaction.transactionDate).toLocaleDateString() %></td>
-                <td class="py-2 px-4"><%= transaction.transactionType %></td>
-                <td class="py-2 px-4">₹<%= transaction.walletAmount.toFixed(2) %></td>
-                <td class="py-2 px-4"><%= transaction.order_id || 'N/A' %></td>
-              </tr>
-            <% }); %>
-          <% } else { %>
+    <h3 class="text-xs font-bold uppercase tracking-widest text-white/50 mb-4">Transaction History</h3>
+    <div class="border border-white/10 bg-white/5 overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm whitespace-nowrap">
+          <thead class="border-b border-white/10 bg-white/5 text-[10px] uppercase tracking-widest text-white/50">
             <tr>
-              <td colspan="4" class="text-center py-2">No transactions found.</td>
+              <th class="py-4 px-6 font-bold">Date</th>
+              <th class="py-4 px-6 font-bold">Type</th>
+              <th class="py-4 px-6 font-bold text-right">Amount</th>
+              <th class="py-4 px-6 font-bold">Order ID</th>
             </tr>
-          <% } %>
-        </tbody>
-      </table>
+          </thead>
+          <tbody class="text-white/80">
+            <% if (wallet && wallet.transaction && wallet.transaction.length > 0) { %>
+              <% wallet.transaction.forEach(transaction => { %>
+                <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+                  <td class="py-4 px-6"><%= new Date(transaction.transactionDate).toLocaleDateString() %></td>
+                  <td class="py-4 px-6">
+                    <span class="px-2 py-1 text-[9px] uppercase tracking-widest border <%= transaction.transactionType.toLowerCase().includes('credit') ? 'border-green-500/30 text-green-400' : 'border-red-500/30 text-red-400' %>">
+                      <%= transaction.transactionType %>
+                    </span>
+                  </td>
+                  <td class="py-4 px-6 text-right font-bold <%= transaction.transactionType.toLowerCase().includes('credit') ? 'text-green-400' : 'text-red-400' %>">
+                    <%= transaction.transactionType.toLowerCase().includes('credit') ? '+' : '-' %>₹<%= transaction.walletAmount.toFixed(2) %>
+                  </td>
+                  <td class="py-4 px-6 text-white/50 font-mono text-xs"><%= transaction.order_id || 'N/A' %></td>
+                </tr>
+              <% }); %>
+            <% } else { %>
+              <tr>
+                <td colspan="4" class="text-center py-8 text-white/50 text-xs uppercase tracking-widest">No transactions found.</td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
     </div>
-  </div>
-  
+  </main>
 </div>
 
 <script>
   document.getElementById('addMoneyBtn').addEventListener('click', function() {
-    document.getElementById('addMoneyInput').classList.toggle('hidden');
+    document.getElementById('addMoneyContainer').classList.add('hidden');
+    document.getElementById('addMoneyInput').classList.remove('hidden');
+    document.getElementById('addMoneyInput').classList.add('flex');
   });
 
   document.getElementById('confirmAdd').addEventListener('click', function() {
@@ -81,6 +103,8 @@
       // Reset the input field
       document.getElementById('amount').value = '';
       document.getElementById('addMoneyInput').classList.add('hidden');
+      document.getElementById('addMoneyInput').classList.remove('flex');
+      document.getElementById('addMoneyContainer').classList.remove('hidden');
     } else {
       alert('Please enter a valid amount.');
     }
