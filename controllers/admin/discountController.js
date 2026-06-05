@@ -1,6 +1,8 @@
 import discountModel from "../../models/discount.js";
 import productModel from "../../models/Product.js"
 import categoryModel from "../../models/Category.js"
+import { STATUS_CODES } from "../../constants/statusCodes.js"
+import { MESSAGES } from "../../constants/messages.js"
 
 
 
@@ -29,7 +31,7 @@ export const getDiscountListPage = async (req,res) => {
     })
   } catch(error) {
     console.log("error in getDiscountListPage", error);
-    res.status(500).send("Internal server error")
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR)
   }
 }
 
@@ -44,7 +46,7 @@ export const addDiscountPage = async (req,res) => {
     res.render("admin/addDiscount", {productList, categoryList,title:"Add Discount"})
   }catch(error) {
     console.log("error in addDiscountPage", error);
-    res.status(500).send("Internal server error")
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR)
   }
 }
 
@@ -60,27 +62,27 @@ export const addDiscount = async (req,res) => {
 
     const discountValues = parseInt(discountValue);
     if(isNaN(discountValues) || discountValues < 1 || discountValues > 90 || discountValue.startsWith('0')) {
-      errors.push('Discount value must be a number between 1 to 90.')
+      errors.push(MESSAGES.DISCOUNT.INVALID_VALUE)
     }
 
     
     if(discountType === 'product'){
       const existingDiscount = await discountModel.findOne({product})
       if(existingDiscount){
-       errors.push('A discount already exists for this product.')
+       errors.push(MESSAGES.DISCOUNT.PRODUCT_EXISTS)
       }
     }
 
     if(discountType === 'category'){
       const existingDiscount = await discountModel.findOne({category})
       if(existingDiscount){
-       errors.push('A discount already exists for this category.')
+       errors.push(MESSAGES.DISCOUNT.CATEGORY_EXISTS)
       }
     }
 
     if(errors.length > 0) {
       req.flash('error', errors)
-      return res.status(400).redirect('/admin/addDiscount')
+      return res.status(STATUS_CODES.BAD_REQUEST).redirect('/admin/addDiscount')
     }
 
 
@@ -95,12 +97,12 @@ export const addDiscount = async (req,res) => {
     await newDiscount.save()
 
     
-     // Update the product with the new discount ID
+  
      if (discountType === 'product') {
       await productModel.findByIdAndUpdate(product, { discount: newDiscount._id });
     }
 
-    // Update the category with the new discount ID
+   
     if (discountType === 'category') {
       await categoryModel.findByIdAndUpdate(category, { discount: newDiscount._id });
     }
@@ -109,7 +111,7 @@ export const addDiscount = async (req,res) => {
     
   } catch(error) {
     console.log("error in addDiscount", error);
-    res.status(500).send("Internal server error")
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR)
   }
 }
 
@@ -125,7 +127,7 @@ export const editDiscountPage = async (req,res) => {
     res.render("admin/editDiscount", {discount, productList, categoryList,title:"Edit Discount"})
   }catch(error) {
     console.log("error in editDiscountPage", error);
-    res.status(500).send("Internal server error")
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR)
   }
 }
 
@@ -141,7 +143,7 @@ export const postEditDiscount = async (req,res) => {
 
     const discountValues = parseInt(discountValue);
     if(isNaN(discountValues) || discountValues < 1 || discountValues > 90 || discountValue.startsWith('0')) {
-      errors.push('Discount value must be a number between 1 to 90.')
+      errors.push(MESSAGES.DISCOUNT.INVALID_VALUE)
     }
 
     if(discountType === 'product'){
@@ -149,7 +151,7 @@ export const postEditDiscount = async (req,res) => {
         _id: {$ne: discountId}}
       )
       if(existingDiscount){
-       errors.push('A discount already exists for this product.')
+       errors.push(MESSAGES.DISCOUNT.PRODUCT_EXISTS)
       }
     }
 
@@ -158,13 +160,13 @@ export const postEditDiscount = async (req,res) => {
         _id: {$ne: discountId}}
       )
       if(existingDiscount){
-       errors.push('A discount already exists for this category.')
+       errors.push(MESSAGES.DISCOUNT.CATEGORY_EXISTS)
       }
     }
 
     if(errors.length > 0) {
       req.flash('error', errors)
-      return res.status(400).redirect(`/admin/editDiscount/${discountId}`)
+      return res.status(STATUS_CODES.BAD_REQUEST).redirect(`/admin/editDiscount/${discountId}`)
     }
 
     const updatedDiscount = await discountModel.findByIdAndUpdate(discountId,{
@@ -186,7 +188,7 @@ export const postEditDiscount = async (req,res) => {
     res.redirect("/admin/discounts")
   }catch(error) {
     console.log("error in editDiscount", error);
-    res.status(500).send("Internal server error")
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR)
   }
 }
 
@@ -197,7 +199,7 @@ export const blockDiscount = async (req,res) => {
     const discountId = req.params.id
     const discount = await discountModel.findById(discountId)
     if(!discount) {
-      return res.status(404).send("Discount not found")
+      return res.status(STATUS_CODES.NOT_FOUND).send(MESSAGES.DISCOUNT.NOT_FOUND)
     }
     discount.isActive = !discount.isActive;
     await discount.save()
@@ -205,6 +207,6 @@ export const blockDiscount = async (req,res) => {
 
   }catch(error) {
     console.log("error in blockDiscount", error);
-    res.status(500).send("Internal server error")
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR)
   }
 }

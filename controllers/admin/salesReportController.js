@@ -1,6 +1,8 @@
 import orderModel from '../../models/Order.js'
 import PDFDocument from 'pdfkit'
 import ExcelJS from 'exceljs'
+import { STATUS_CODES } from '../../constants/statusCodes.js'
+import { MESSAGES } from '../../constants/messages.js'
 
  //* //  //  //   //  //          GET SALES REPORT PAGE   //  //  //  //  //  //  //
 export const getSalesReportPage = async (req,res) => {
@@ -20,7 +22,7 @@ export const getSalesReportPage = async (req,res) => {
       orderedAt: {}
     }
 
-    //filtering the orders based on the filter type
+
 
     switch (filterType) {
      case 'custom':
@@ -49,7 +51,7 @@ export const getSalesReportPage = async (req,res) => {
     }
 
 
-    //fetch  the filtered orders for display with pagination
+   
    const orders = await orderModel.find(matchCriteria)
         .populate('user', 'name')
         .populate('items.product', 'name')
@@ -91,7 +93,7 @@ export const getSalesReportPage = async (req,res) => {
 
   }catch (error) {
     console.log("Error in getSalesReportPage",error);
-    res.status(500).send("Internal Server Error");   
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR);   
   }
 }
 
@@ -200,7 +202,7 @@ export const generatePDFReport = async (req, res) => {
     doc.end();
   } catch (error) {
     console.error('Error in generatePDFReport:', error);
-    res.status(500).send('Internal Server Error');
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR);
   }
 };
 
@@ -213,13 +215,13 @@ export const generateExcelReport = async (req, res) => {
     const { filterType, startDate, endDate } = req.query;
     const matchCriteria = getMatchCriteria(filterType, startDate, endDate);
 
-    // Fetch orders based on match criteria
+    
     const orders = await orderModel.find(matchCriteria)
       .populate('user', 'name')
       .populate('items.product', 'name')
       .sort({ createdAt: -1 });
 
-    // Calculate summary data using aggregation
+    
     const salesReport = await orderModel.aggregate([
       { $match: matchCriteria },
       { $unwind: '$items' },
@@ -237,11 +239,11 @@ export const generateExcelReport = async (req, res) => {
     const reportData = salesReport[0] || { totalRevenue: 0, totalDiscount: 0, salesCount: 0 };
     
 
-    // Initialize workbook and worksheet
+    
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Sales Report');
 
-    // columns with headers and keys
+    
     worksheet.columns = [
       { header: 'User', key: 'user', width: 20 },
       { header: 'Order ID', key: 'orderId', width: 30 },
@@ -254,7 +256,7 @@ export const generateExcelReport = async (req, res) => {
       { header: 'Date', key: 'date', width: 15 },
     ];
 
-    //  title row with styling
+    
     worksheet.mergeCells('A1:I1');
     const titleCell = worksheet.getCell('A1');
     titleCell.value = 'ComiX Sales Report';
@@ -263,17 +265,17 @@ export const generateExcelReport = async (req, res) => {
     titleCell.alignment = { vertical: 'middle', horizontal: 'center' };
     worksheet.getRow(1).height = 30;
 
-    // Add filter info  below the title name
+  
     const filterInfoRow = worksheet.getRow(2);
     filterInfoRow.getCell(1).value = `Filter Type: ${filterType || 'All'}`;
     filterInfoRow.getCell(2).value = `Start Date: ${startDate || 'N/A'}`;
     filterInfoRow.getCell(3).value = `End Date: ${endDate || 'N/A'}`;
 
-    // Merge cells for filter info
+    
     worksheet.mergeCells('A2:I2');
     filterInfoRow.getCell(1).alignment = { vertical: 'middle', horizontal: 'center' };
 
-    // Style the filter info row
+    
     filterInfoRow.eachCell((cell) => {
       cell.font = { bold: true };
       cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFADD8E6' } }; 
@@ -281,7 +283,7 @@ export const generateExcelReport = async (req, res) => {
     });
     filterInfoRow.height = 20;
 
-    //  header row with styling
+    
     const headerRow = worksheet.getRow(3);
     const headers = [
       'User',
@@ -310,7 +312,7 @@ export const generateExcelReport = async (req, res) => {
     });
     headerRow.height = 25;
 
-    // data rows starting from row 4
+
     let dataRowIndex = 4; 
     orders.forEach(order => {
       order.items.forEach(item => {
@@ -327,7 +329,7 @@ export const generateExcelReport = async (req, res) => {
             date: new Date(order.orderedAt).toLocaleDateString(),
           });
 
-          // Styling each cell in the data row
+         
           row.eachCell((cell) => {
             cell.alignment = { vertical: 'middle', horizontal: 'center' };
             cell.border = {
@@ -343,17 +345,17 @@ export const generateExcelReport = async (req, res) => {
       });
     });
 
-    // Add an empty row for spacing before summary
+
     worksheet.addRow([]);
 
-    // Adding summary data 
+
     const summaryStartRow = worksheet.lastRow.number + 1;
 
-    //  a helper function to add summary rows
+
     const addSummaryRow = (label, value) => {
       const row = worksheet.addRow([label, value]);
 
-      //  summary row styling
+     
       row.getCell(1).font = { bold: true };
       row.getCell(2).font = { bold: true };
       row.getCell(1).alignment = { horizontal: 'right' };
@@ -371,31 +373,31 @@ export const generateExcelReport = async (req, res) => {
       row.height = 20;
     };
 
-    // Adding Total Revenue
+    
     addSummaryRow('Total Revenue:', `₹${reportData.totalRevenue.toFixed(2)}`);
 
-    // Adding Total Discount
+   
     addSummaryRow('Total Discount:', `₹${reportData.totalDiscount.toFixed(2)}`);
 
-    // Adding Total Sales Count
+    
     addSummaryRow('Total Sales Count:', reportData.salesCount);
 
-    // Fine-tune column widths increase
+   
     worksheet.columns.forEach(column => {
       column.width = column.width < 20 ? 20 : column.width;
     });
 
-    // Set response headers for Excel file download
+    
     const filename = `ComiX_sales_report_${Date.now()}.xlsx`;
     res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 
-    // Write the workbook to the response
+    
     await workbook.xlsx.write(res);
     res.end();
   } catch (error) {
     console.log("Error in generateExcelReport", error);
-    res.status(500).send("Internal Server Error");
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR);
   }
 };
 

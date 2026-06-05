@@ -3,6 +3,8 @@ import productModel from '../../models/Product.js'
 import addressModel from '../../models/address.js'
 import userModel from '../../models/User.js'
 import walletModel from '../../models/wallet.js'
+import { STATUS_CODES } from '../../constants/statusCodes.js'
+import { MESSAGES } from '../../constants/messages.js'
 
 //*  //  //   //  //          GET ORDER LIST PAGE   //  //  //  //  //  //  //
 
@@ -41,7 +43,7 @@ export const getOrderListPage = async (req,res) => {
 
   }catch (error) {
     console.log("get order list page error :",error);
-    res.status(500).send('Internal Server Error');
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR);
   }
  }
 
@@ -62,7 +64,7 @@ export const changeItemStatus = async (req,res) => {
     });
 
     if(!order) {
-      return res.status(404).json({success:false, message:"Order or item not found"})
+      return res.status(STATUS_CODES.NOT_FOUND).json({success:false, message:MESSAGES.ORDER.NOT_FOUND})
     }
 
     const item = order.items.id(itemId)
@@ -72,7 +74,7 @@ export const changeItemStatus = async (req,res) => {
     
 
     if(currentStatusIndex === -1 || currentStatusIndex >= status.length - 1) {
-      return res.status(400).json({success:false, message:"Cannot change item status no more"})
+      return res.status(STATUS_CODES.BAD_REQUEST).json({success:false, message:MESSAGES.ORDER.STATUS_CHANGE_ERROR})
     }
 
     const newStatus = status[currentStatusIndex + 1]
@@ -87,11 +89,11 @@ export const changeItemStatus = async (req,res) => {
       { $set: updateFields},{new: true}
     );
 
-    res.status(200).json({success:true, newStatus})
+    res.status(STATUS_CODES.OK).json({success:true, newStatus})
 
   } catch (error) {
     console.log("Error changing item status :",error);
-    res.status(500).json({success:false, message:"Internal Server Error"})
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({success:false, message:MESSAGES.COMMON.INTERNAL_SERVER_ERROR})
   }
 }
 
@@ -111,7 +113,7 @@ export const getOrderDetails = async (req,res) => {
     
 
     if(!order) {
-      return res.status(404).send("Order not found")
+      return res.status(STATUS_CODES.NOT_FOUND).send(MESSAGES.ORDER.NOT_FOUND)
     }
 
    console.log(order.items[0].product.image); 
@@ -119,7 +121,7 @@ export const getOrderDetails = async (req,res) => {
     
   } catch (error) {
     console.log("Error getting order details :",error);
-    res.status(500).send('Internal Server Error');
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR);
   }
 }
 
@@ -135,7 +137,7 @@ export const getReturnRequestDetails = async (req, res) => {
       .populate('items.product');
 
     if (!order) {
-      return res.status(404).json({ message: 'Order or item not found' });
+      return res.status(STATUS_CODES.NOT_FOUND).json({ message: MESSAGES.ORDER.NOT_FOUND });
     }
 
     const item = order.items.id(itemId);
@@ -147,7 +149,7 @@ export const getReturnRequestDetails = async (req, res) => {
     });
   } catch (error) {
     console.log("Error fetching return request details:", error);
-    res.status(500).send('Internal Server Error');
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR);
   }
 };
 
@@ -166,12 +168,12 @@ export const changeReturnStatus = async (req, res) => {
     }).populate('items.product')
 
     if (!order) {
-      return res.status(404).json({ success: false, message: "Order or item not found" });
+      return res.status(STATUS_CODES.NOT_FOUND).json({ success: false, message: MESSAGES.ORDER.NOT_FOUND });
     }
 
     const item = order.items.id(itemId);
     if (!item) {
-      return res.status(404).json({ success: false, message: "Item not found" });
+      return res.status(STATUS_CODES.NOT_FOUND).json({ success: false, message: MESSAGES.ORDER.ITEM_NOT_FOUND });
     }
 
     item.returnStatus = returnStatus;
@@ -220,10 +222,10 @@ export const changeReturnStatus = async (req, res) => {
 
     await order.save();
 
-    res.status(200).json({ success: true, newStatus: returnStatus });
+    res.status(STATUS_CODES.OK).json({ success: true, newStatus: returnStatus });
   } catch (error) {
     console.log("Error changing return status:", error);
-    res.status(500).json({ success: false, message: "Internal Server Error" });
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({ success: false, message: MESSAGES.COMMON.INTERNAL_SERVER_ERROR });
   }
 };
 

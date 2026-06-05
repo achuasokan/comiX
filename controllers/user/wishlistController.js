@@ -1,33 +1,49 @@
 import wishListModel from '../../models/wishlist.js'
 import { calculateDiscountPrice } from '../../utils/discountprice.js'
-
+import { STATUS_CODES } from '../../constants/statusCodes.js'
+import { MESSAGES } from '../../constants/messages.js'
 
 
 //* //  //  //   //  //         GET WISHLIST PAGE   //  //  //  //  //  //  //
 
 export const getWishListPage = async(req,res) => {
   try {
-  //get the user id from the session
+
     const userId = req.session.userID;
-  //find the wishlist of the user
-    const wishlist = await wishListModel.findOne({ user: userId })
-      .populate({
+    
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = 8;
+
+ 
+    const wishlist = await wishListModel.findOne({ user: userId });
+
+
+      if(!wishlist || !wishlist.productsId || wishlist.productsId.length === 0){
+        return res.render('user/wishlist',{ wishlist:{productsId:[]}, currentPage: 1, totalPages: 1, title: "Wishlist" })
+      }
+
+    
+      const totalItems = wishlist.productsId.length;
+      const totalPages = Math.ceil(totalItems / limit);
+      const startIndex = (page - 1) * limit;
+      const endIndex = startIndex + limit;
+
+      
+      wishlist.productsId = wishlist.productsId.slice(startIndex, endIndex);
+      await wishlist.populate({
         path: 'productsId',
         populate: {path: 'category', select: 'name' }
       });
-  //if the wishlist is not found, render the wishlist page with an empty wishlist
-      if(!wishlist){
-        return res.render('user/wishlist',{wishlist:{productsId:[]}})
-      }
 
       for (let product of wishlist.productsId) {
         product.discountedPrice = await calculateDiscountPrice(product);
       }
   
-    res.render('user/wishlist',{ wishlist,title:"Wishlist" });
+    res.render('user/wishlist',{ wishlist, currentPage: page, totalPages, title:"Wishlist" });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({ error: MESSAGES.COMMON.INTERNAL_SERVER_ERROR });
   }
 }
 
@@ -36,27 +52,27 @@ export const getWishListPage = async(req,res) => {
 
 export const addToWishlist = async (req, res) => {
   try {
-    //get the user id from the session
-    const userId = req.session.userID; // Get logged-in user ID from session
-    // Check if userId is valid
+  
+    const userId = req.session.userID; 
+   
     if (!userId) {
-      return res.status(400).send('User not logged in');
+      return res.status(STATUS_CODES.BAD_REQUEST).send(MESSAGES.AUTH.NOT_LOGGED_IN);
     }
-    //get the product id from the route params
+ 
     const productId = req.params.productId; 
 
     
     await wishListModel.updateOne(
-      { user: userId }, // Find the wishlist for the user
-      { $addToSet: { productsId: productId } }, // Add product to wishlist if not already present
-      { upsert: true } // Create a new wishlist if one doesn't exist
+      { user: userId }, 
+      { $addToSet: { productsId: productId } }, 
+      { upsert: true } 
     );
 
     //  
-    res.status(200).json({message: 'Added to your wishlist'});
+    res.status(STATUS_CODES.OK).json({message: MESSAGES.WISHLIST.ADDED});
   } catch (error) {
     console.log(error);
-    res.status(500).send('Error adding product to wishlist');
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.WISHLIST.ADD_ERROR);
   }
 };
 
@@ -69,14 +85,14 @@ export const removeFromWishlist = async (req, res) => {
 
     
     await wishListModel.updateOne(
-      { user: userId }, // Find the wishlist for the user
-      { $pull: { productsId: product } } // Remove the product from the wishlist
+      { user: userId }, 
+      { $pull: { productsId: product } } 
     );
 
-    // res.redirect('/wishlist'); 
-    res.status(200).json({message: 'Removed from your wishlist'});
+    
+    res.status(STATUS_CODES.OK).json({message: MESSAGES.WISHLIST.REMOVED});
   } catch (error) {
     console.log(error);
-    res.status(500).send('Error removing product from wishlist');
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.WISHLIST.REMOVE_ERROR);
   }
 };

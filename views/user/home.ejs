@@ -1,116 +1,185 @@
-<!-- main Container/body -->
-    <div class="bg-black text-white">
-      
-        <%- include('../partials/header.ejs')%>
+<!-- Main Container -->
+<div class="bg-[#050505] text-white min-h-screen font-sans selection:bg-orange-500 selection:text-white">
+  
+  <%- include('../partials/header.ejs') %>
 
-
-            <!-- Banner -->
-             <% if (banner) { %>
-              <section class="relative h-64 sm:h-80 md:h-96 bg-cover bg-center" style="background-image: url('<%= banner.image %>');">
-                <div class="absolute inset-0 bg-black bg-opacity-5 flex justify-center items-center mt-40 sm:mt-32 md:mt-64">
-                  <h1 class="text-white text-2xl sm:text-3xl md:text-5xl font-bold almendra-sc-regular">
-                    <%= banner.description %>
-                  </h1>
-                </div>
-              </section>
-             <% } else { %>
-              <section class="relative h-64 sm:h-80 md:h-96 bg-cover bg-center" style="background-image: url('img/banner.jpg');">
-                <div class="absolute inset-0 bg-black bg-opacity-5 flex justify-center items-center mt-40 sm:mt-32 md:mt-64">
-                  <h1 class="text-white text-2xl sm:text-3xl md:text-5xl font-bold almendra-sc-regular">
-                    Seen the World of Unseen
-                  </h1>
-                </div>
-              </section>
-             <% } %>
+  <!-- Hero Section -->
+  <% if (banner) { %>
+    <section class="relative h-[70vh] md:h-[85vh] w-full overflow-hidden flex items-center justify-center group">
+      <div class="absolute inset-0 bg-cover bg-center transform scale-100 group-hover:scale-105 transition-transform duration-[10s] ease-out" style="background-image: url('<%= banner.image %>');"></div>
+      <!-- Gradient Overlay -->
+      <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-black/50 to-black/30"></div>
       
-          
-          <!-- Category -->
-          <div class="bg-black py-8">
-            <h2 class="text-center text-5xl mb-8  almendra-sc-regular">Category</h2>         
-            <!--  grid layout -->
-             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
-                 <!-- Card 1 -->
-                  <% if (categoryList .length > 0 ) { %>
-               <% categoryList.forEach(Category => { %>
-                <div class="  rounded-lg overflow-hidden shadow-lg">
-                  <div class="h-96 w-full overflow-hidden">
-                    <a href="/shop/category/<%= Category._id %>">
-                      <img src="<%- Category.image %>" alt="<%- Category.image %>" class="w-full h-full object-cover" loading="lazy">
-                    </a>
-                  </div>
-                  <div class="p-4">
-                    <h3 class="text-white text-xl font-semibold text-center"><%- Category.name %></h3>
-                    <p class="text-center">
-                      <a href="/shop/category/<%= Category._id %>" class="text-orange-400 hover:text-orange-600 font-bold">Shop Now</a>
-                    </p>
+      <div class="relative z-10 text-center px-4 max-w-4xl mx-auto transform translate-y-10 opacity-0 animate-[fade-in-up_1s_ease-out_forwards]">
+        <h1 class="text-4xl sm:text-5xl md:text-7xl font-bold almendra-sc-regular text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-200 to-gray-400 drop-shadow-lg mb-6">
+          <%= banner.description %>
+        </h1>
+        <p class="text-lg md:text-2xl text-gray-300 font-light tracking-wide mb-8">Discover the best comics and graphic novels curated just for you.</p>
+        <a href="#categories" class="inline-block bg-gradient-to-r from-orange-500 to-red-600 text-white font-semibold px-8 py-4 rounded-full shadow-[0_0_20px_rgba(249,115,22,0.4)] hover:shadow-[0_0_30px_rgba(249,115,22,0.6)] transform hover:-translate-y-1 transition-all duration-300">
+          Explore Now
+        </a>
+      </div>
+    </section>
+  <% } else { %>
+    <section class="relative h-[70vh] md:h-[85vh] w-full overflow-hidden flex items-center justify-center group">
+      <div class="absolute inset-0 bg-cover bg-center transform scale-100 group-hover:scale-105 transition-transform duration-[10s] ease-out" style="background-image: url('/img/banner.jpg');"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-black/50 to-black/30"></div>
+      
+      <div class="relative z-10 text-center px-4 max-w-4xl mx-auto transform translate-y-10 opacity-0 animate-[fade-in-up_1s_ease-out_forwards]">
+        <h1 class="text-4xl sm:text-5xl md:text-7xl font-bold almendra-sc-regular text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-200 to-gray-400 drop-shadow-lg mb-6">
+          Seen the World of Unseen
+        </h1>
+        <p class="text-lg md:text-2xl text-gray-300 font-light tracking-wide mb-8">Discover the best comics and graphic novels curated just for you.</p>
+        <a href="#categories" class="inline-block bg-gradient-to-r from-orange-500 to-red-600 text-white font-semibold px-8 py-4 rounded-full shadow-[0_0_20px_rgba(249,115,22,0.4)] hover:shadow-[0_0_30px_rgba(249,115,22,0.6)] transform hover:-translate-y-1 transition-all duration-300">
+          Explore Now
+        </a>
+      </div>
+    </section>
+  <% } %>
+
+  <!-- Decorative Separator -->
+  <div class="w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent my-4"></div>
+
+  <!-- Category Section -->
+  <div id="categories" class="py-20 bg-[#050505] relative overflow-hidden">
+    <!-- Background Glow -->
+    <div class="absolute top-1/2 left-1/4 w-96 h-96 bg-red-600/10 blur-[120px] rounded-full pointer-events-none"></div>
+
+    <div class="container mx-auto px-6 relative z-10">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl md:text-5xl almendra-sc-regular inline-block relative">
+          Categories
+          <span class="absolute -bottom-4 left-1/2 -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-orange-500 to-red-600 rounded-full"></span>
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
+        <% if (categoryList && categoryList.length > 0) { %>
+          <% categoryList.forEach(Category => { %>
+            <div class="group relative rounded-2xl overflow-hidden bg-[#111] shadow-2xl aspect-[3/4] cursor-pointer">
+              <a href="/shop/category/<%= Category._id %>" class="block w-full h-full">
+                <img src="<%- Category.image %>" alt="<%- Category.name %>" class="w-full h-full object-cover transform scale-100 group-hover:scale-110 transition-transform duration-700 ease-in-out" loading="lazy">
+                <!-- Overlay -->
+                <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-black/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300"></div>
+                
+                <div class="absolute inset-0 flex flex-col justify-end p-8 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                  <h3 class="text-white text-3xl font-bold mb-2 almendra-sc-regular drop-shadow-md"><%- Category.name %></h3>
+                  <div class="flex items-center text-orange-400 font-semibold uppercase tracking-widest text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
+                    Explore <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-2 transition-transform duration-300"></i>
                   </div>
                 </div>
-               <% }) %>     
-               <% } else { %>
-                <p class="text-center text-red-400">No categories available</p>
-                <% } %>        
+              </a>
+            </div>
+          <% }) %>
+        <% } else { %>
+          <div class="col-span-full flex justify-center">
+            <div class="bg-red-500/10 border border-red-500/20 rounded-xl p-8 text-center max-w-md w-full">
+              <i class="fas fa-folder-open text-4xl text-red-400 mb-4"></i>
+              <p class="text-red-400 font-medium">No categories available at the moment.</p>
             </div>
           </div>
-    
-       
-    
-    <!-- Latest Products -->
-    <div class="text-center p-10">
-        <h1 class="font-bold text-4xl mb-4 almendra-sc-regular">Latest Products</h1>
-        
+        <% } %>
+      </div>
     </div>
-    
-    <!-- ✅ product Section - Starts Here 👇 -->
-    <section
-        class="flex flex-wrap justify-center gap-14 mt-10 mb-5 ">
-           <% latestProduct.forEach(products => { %>
-            
-            <article class="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-                <a href="/product/<%= products._id %>">
-    
-                    <img src="<%= products.image[1] %>" alt="<%= products.image[1] %>" class="h-80 w-72 object-cover rounded-t-xl" />
-                </a>
-                  <div class="px-4 py-3 w-72">
-                    <span class="text-gray-400 mr-3 uppercase text-xs"><%= products.category.name %></span>
-                    <p class="text-lg font-bold text-black truncate block capitalize"><%= products.name %></p>
-                    <div class="flex items-center">
+  </div>
+
+  <!-- Latest Products Section -->
+  <div class="py-20 bg-gradient-to-b from-[#050505] to-[#0a0a0a] relative overflow-hidden">
+    <!-- Background Glow -->
+    <div class="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-orange-600/5 blur-[150px] rounded-full pointer-events-none"></div>
+
+    <div class="container mx-auto px-6 relative z-10">
+      <div class="text-center mb-16">
+        <h1 class="text-4xl md:text-5xl font-bold almendra-sc-regular inline-block relative">
+          Latest Arrivals
+          <span class="absolute -bottom-4 left-1/2 -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-orange-500 to-red-600 rounded-full"></span>
+        </h1>
+        <p class="text-gray-400 mt-8 text-lg">Fresh off the press, straight to your collection.</p>
+      </div>
+      
+      <section class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        <% if (latestProduct && latestProduct.length > 0) { %>
+          <% latestProduct.forEach(products => { %>
+            <article class="group relative rounded-2xl overflow-hidden shadow-2xl aspect-[3/4] cursor-pointer transform hover:-translate-y-2 transition-transform duration-500">
+              <a href="/product/<%= products._id %>" class="block w-full h-full">
+                <img src="<%= products.image[1] || products.image[0] %>" alt="<%= products.name %>" class="w-full h-full object-cover transform scale-100 group-hover:scale-110 transition-transform duration-700 ease-in-out" />
+                
+                <!-- Discount Badge -->
+                <% if(products.discountedPrice < products.price) { %>
+                  <div class="absolute top-4 left-4 bg-gradient-to-r from-red-600 to-orange-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg z-10">
+                    <%= Math.round(((products.price - products.discountedPrice) / products.price) * 100) %>% OFF
+                  </div>
+                <% } %>
+
+                <!-- Dark Overlay for text readability -->
+                <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-black/60 to-transparent opacity-90 transition-opacity duration-300"></div>
+                
+                <!-- Content overlay at bottom -->
+                <div class="absolute inset-0 flex flex-col justify-end p-6 z-10">
+                  <span class="text-orange-500 text-xs font-bold uppercase tracking-wider mb-1 drop-shadow-md"><%= products.category.name %></span>
+                  <h3 class="text-xl font-bold text-white mb-2 line-clamp-2 almendra-sc-regular drop-shadow-md"><%= products.name %></h3>
+                  
+                  <div class="flex items-center justify-between mt-2 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                    <div class="flex flex-col">
                       <% if(products.discountedPrice < products.price) { %>
-                        <span class="text-lg text-black font-bold cursor-auto mr-2">₹<%= products.discountedPrice.toFixed(0) %></span>
-                        <p class="text-sm font-semibold text-black cursor-auto my-3 line-through">₹<%= products.price %></p>      
-                        <span class="text-sm text-yellow-500 ml-2 font-bold"><%= Math.round(((products.price - products.discountedPrice) / products.price) * 100) %> % OFF</span>
+                        <span class="text-2xl text-white font-bold drop-shadow-md">₹<%= products.discountedPrice.toFixed(0) %></span>
+                        <span class="text-sm text-gray-300 line-through drop-shadow-md">₹<%= products.price %></span>
                       <% } else { %>
-                        <p class="text-lg font-semibold text-black cursor-auto my-3">₹<%= products.price %></p>
-                        <% } %>
-                        
-                        <div class="ml-auto flex items-center gap-3">
-                          <% if(user) { %>
-                            <form action="/wishlist/<%= products._id %>" method="POST" class="wishlist-form">
-                              <button type="submit" class="text-black wishlist-button" data-product-id="<%= products._id %>" data-in-wishlist="<%=products.Wishlist %>">
-                                <i class="fas fa-heart"></i>
-                              </button>
-                            </form>
-                            <button onclick="addToCart('<%= products._id %>')"  class="text-black">
-                              <i class="fas fa-cart-plus"></i>
-                            </button>
-                    
-                          <% } else { %>
-                            <a href="/login">
-                              <i class="fas fa-heart text-black"></i>
-                            </a>
-                            <a href="/login">
-                              <i class="fas fa-cart-plus text-black"></i>
-                            </a>
-                          <% } %>
-                        </div>
+                        <span class="text-2xl text-white font-bold drop-shadow-md">₹<%= products.price %></span>
+                      <% } %>
                     </div>
                   </div>
-                
+                </div>
+              </a>
+
+              <!-- Quick Actions Overlay -->
+              <div class="absolute top-4 right-4 flex flex-col gap-3 opacity-100 md:opacity-0 group-hover:opacity-100 transform translate-x-0 md:translate-x-4 group-hover:translate-x-0 transition-all duration-300 z-20">
+                <% if(user) { %>
+                  <form action="/wishlist/<%= products._id %>" method="POST" class="wishlist-form m-0">
+                    <button type="submit" class="wishlist-button w-10 h-10 rounded-full bg-black/40 backdrop-blur-md hover:bg-orange-500 text-white flex items-center justify-center transition-all shadow-lg border border-white/20" data-product-id="<%= products._id %>" data-in-wishlist="<%=products.Wishlist %>">
+                      <i class="fas fa-heart <%= products.Wishlist ? 'text-red-500' : '' %>"></i>
+                    </button>
+                  </form>
+                  <button onclick="addToCart('<%= products._id %>')" class="w-10 h-10 rounded-full bg-black/40 backdrop-blur-md hover:bg-orange-500 text-white flex items-center justify-center transition-all shadow-lg border border-white/20">
+                    <i class="fas fa-cart-plus"></i>
+                  </button>
+                <% } else { %>
+                  <a href="/login" class="w-10 h-10 rounded-full bg-black/40 backdrop-blur-md hover:bg-orange-500 text-white flex items-center justify-center transition-all shadow-lg border border-white/20">
+                    <i class="fas fa-heart"></i>
+                  </a>
+                  <a href="/login" class="w-10 h-10 rounded-full bg-black/40 backdrop-blur-md hover:bg-orange-500 text-white flex items-center justify-center transition-all shadow-lg border border-white/20">
+                    <i class="fas fa-cart-plus"></i>
+                  </a>
+                <% } %>
+              </div>
             </article>
-           <% }) %>
-                
-    </section>
-    
-    <%- include('../partials/footer.ejs') %>
-  
+          <% }) %>
+        <% } else { %>
+          <div class="col-span-full flex justify-center">
+             <div class="bg-white/5 border border-white/10 rounded-xl p-8 text-center max-w-md w-full">
+               <i class="fas fa-box-open text-4xl text-gray-500 mb-4"></i>
+               <p class="text-gray-400">No products available at the moment.</p>
+             </div>
+          </div>
+        <% } %>
+      </section>
     </div>
-    
+  </div>
+  
+  <%- include('../partials/footer.ejs') %>
+
+</div>
+
+<!-- Inline styles for custom animations that Tailwind CDN might not have out-of-the-box -->
+<style>
+  @keyframes fade-in-up {
+    0% {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>

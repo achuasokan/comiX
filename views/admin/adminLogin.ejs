@@ -1,38 +1,64 @@
-<style>
-  .relative input:focus + label,
-.relative input:not(:placeholder-shown) + label {
-  top: -13px; /* Adjust as needed */
-  left: -1px; /* Adjust as needed */
-  font-size: 16px; /* Adjust as needed */
-  color: #fbbf24; /* Change to your desired color */
-  background-color: black; /* Add background color */
-  padding: 0 4px; /* Add padding to the label */
-  z-index: 1; /* Ensure the label is above the input */
-}
-</style>
-<div class="relative h-full w-full bg-black">
-  <div class="absolute inset-0 -z-10 h-full w-full items-center px-5 py-24 [background:radial-gradient(125%_125%_at_50%_10%,#000_40%,#63e_100%)]"></div>
-  <div class="m-0 p-0 flex justify-center items-center min-h-screen tracking-widest font-poppins">
-    <div class="image-section p-10 border border-[#0e066b] shadow-lg rounded-2xl h-[480px] w-[400px] flex justify-center items-end bg-[url('/img/luffy-logo.png')] bg-center bg-no-repeat bg-cover">
-    </div>
-    <div class="login-section h-[480px] w-[400px] p-10 border border-[#0e066b] shadow-lg rounded-2xl">
-      <h1 class="title text-4xl font-bold text-[#00C9FFFF] shadow-md mb-5 text-center">Admin Login</h1>
+<div class="min-h-screen bg-[#020202] flex items-center justify-center p-4 relative overflow-hidden font-sans">
+  
+  <!-- Ambient Deep Background -->
+  <div class="absolute inset-0 z-0 pointer-events-none flex items-center justify-center">
+    <div class="w-[800px] h-[800px] bg-blue-600/10 blur-[150px] rounded-full mix-blend-screen absolute"></div>
+    <div class="w-[600px] h-[600px] bg-purple-600/10 blur-[120px] rounded-full mix-blend-screen absolute translate-x-1/4 -translate-y-1/4"></div>
+    <!-- Grid overlay -->
+    <div class="absolute inset-0" style="background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 50px 50px;"></div>
+  </div>
+
+  <!-- Admin Login Card -->
+  <div class="w-full max-w-md relative z-10">
+    <div class="bg-[#050505]/80 backdrop-blur-2xl border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)] rounded-2xl p-10 overflow-hidden">
       
+      <!-- Top Accent Line -->
+      <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500"></div>
+
+      <div class="flex flex-col items-center mb-10">
+        <div class="w-16 h-16 rounded-full bg-blue-500/10 border border-blue-500/30 flex items-center justify-center mb-6 shadow-[0_0_20px_rgba(59,130,246,0.2)]">
+          <i class="fas fa-fingerprint text-blue-400 text-3xl"></i>
+        </div>
+        <h1 class="text-3xl font-black text-white uppercase tracking-widest mb-2">ComiX <span class="text-blue-500">Admin</span></h1>
+        <p class="text-white/40 text-[10px] tracking-[0.3em] uppercase">Secure Authentication</p>
+      </div>
+
       <%- include('../partials/flashMessage.ejs') %>
-      <form class="flex flex-col box-border" method="post" action="/admin/login">
-        <div class="my-4 relative">
-          <input type="email" name="email" id="email" required spellcheck="false" placeholder=" " class="block w-full px-2 py-2 bg-transparent text-white border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 placeholder:text-transparent transition duration-300" />
-          <label for="email" class="absolute left-2 top-2 ml-2 text-white text-md transition-all duration-300 transform origin-left scale-75 pointer-events-none">Enter Email</label>
+
+      <form class="space-y-6" action="/admin/login" method="POST" id="adminLoginForm">
+        
+        <div class="space-y-2">
+          <label for="email" class="block text-[10px] uppercase tracking-widest font-bold text-white/50 ml-1">Email Address</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+              <i class="fas fa-envelope text-white/30"></i>
+            </div>
+            <input id="email" name="email" type="email" class="w-full bg-black/50 border border-white/10 text-white text-sm py-4 pl-12 pr-4 focus:outline-none focus:border-blue-500 focus:bg-black/80 transition-all rounded-xl placeholder-white/20 tracking-widest" placeholder="Enter credentials" required>
+          </div>
         </div>
-        <div class="my-4 relative">
-          <input type="password" name="password" id="password" required spellcheck="false" placeholder=" " class="block w-full px-2 py-2 bg-transparent text-white border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 placeholder:text-transparent transition duration-300" />
-          <label for="password" class="absolute left-2 top-2 ml-2 text-white text-md transition-all duration-300 transform origin-left scale-75 pointer-events-none">Enter Password</label>
-          <button type="button" id="toggleAdminPassword" class="absolute right-2 top-2 text-orange-500">
-            <span class="material-icons" id="adminPasswordEyeIcon">visibility</span>
-          </button>
+
+        <div class="space-y-2">
+          <label for="password" class="block text-[10px] uppercase tracking-widest font-bold text-white/50 ml-1">Master Password</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+              <i class="fas fa-lock text-white/30"></i>
+            </div>
+            <input id="password" name="password" type="password" class="w-full bg-black/50 border border-white/10 text-white text-sm py-4 pl-12 pr-12 focus:outline-none focus:border-blue-500 focus:bg-black/80 transition-all rounded-xl placeholder-white/20 tracking-widest" placeholder="Enter secure key" required>
+            <button type="button" id="toggleAdminPassword" class="absolute inset-y-0 right-0 flex items-center pr-4 text-white/30 hover:text-white transition-colors">
+              <i class="fas fa-eye" id="adminPasswordEyeIcon"></i>
+            </button>
+          </div>
         </div>
-        <button type="submit" class="submit-btn w-full h-[40px] border-2 border-black rounded-md bg-gradient-to-r dark:text-gray-300 from-blue-500 to-purple-500 shadow-lg text-white cursor-pointer transition-colors duration-300 text-xl mt-11 hover:scale-105 hover:from-purple-500 hover:to-blue-500">Log in</button>
+
+        <div class="pt-6">
+          <button type="submit" class="w-full bg-blue-600 text-white py-4 rounded-xl uppercase tracking-widest text-xs font-bold hover:bg-blue-500 transition-all shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] transform hover:-translate-y-1">Verify Identity</button>
+        </div>
+
       </form>
+    </div>
+    
+    <div class="text-center mt-6">
+      <p class="text-white/20 text-[9px] uppercase tracking-widest">Unauthorized access is strictly prohibited and logged.</p>
     </div>
   </div>
 </div>
@@ -46,10 +72,13 @@
   toggleAdminPassword.addEventListener('click', function () {
     const type = adminPasswordInputs.getAttribute('type') === 'password' ? 'text' : 'password';
     adminPasswordInputs.setAttribute('type', type);
-    adminPasswordEyeIcon.textContent = type === 'password' ? 'visibility' : 'visibility_off';
-
-    if (type == 'text') {
-      adminPasswordInputs.classList.add('border-blue-500');
+    
+    if (type === 'password') {
+        adminPasswordEyeIcon.classList.remove('fa-eye-slash');
+        adminPasswordEyeIcon.classList.add('fa-eye');
+    } else {
+        adminPasswordEyeIcon.classList.remove('fa-eye');
+        adminPasswordEyeIcon.classList.add('fa-eye-slash');
     }
   });
 </script>

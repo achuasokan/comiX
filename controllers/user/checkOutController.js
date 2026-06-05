@@ -6,6 +6,8 @@ import couponModel from '../../models/Coupon.js';
 import { razorpay } from '../../config/razorpay.js'
 import crypto from 'crypto';
 import walletModel from '../../models/wallet.js'
+import { STATUS_CODES } from '../../constants/statusCodes.js'
+import { MESSAGES } from '../../constants/messages.js'
 
 
 
@@ -13,12 +15,9 @@ import walletModel from '../../models/wallet.js'
 //* //  //  //   //  //          get Checkout page     //  //  //  //  //  //  //
 export const getCheckoutPage = async (req, res) => {
   try {
-    // Get the user's cart
+
     const cart = await cartModel.findOne({ user: req.session.userID }).populate({path:'items.product', populate:{path:'category'}});
 
-    // if(!cart || cart.items.length === 0){
-    //   return res.status(400).json({error:'Your cart is empty. Please add items to your cart before proceeding to checkout.'})
-    // }
     
     if (cart.couponCode) {
       cart.couponCode = null;
@@ -28,19 +27,19 @@ export const getCheckoutPage = async (req, res) => {
     
     const outOfStockItems = cart.items.filter(item => item.product.stock < item.quantity)
     if(outOfStockItems.length > 0){      
-      return res.status(400).json({error:'Some of the items in your cart are out of stock.Please update your cart before proceeding to checkout.'})
+      return res.status(STATUS_CODES.BAD_REQUEST).json({error: MESSAGES.CHECKOUT.OUT_OF_STOCK})
     }
     
     const addresses = await addressModel.find({ userId: req.session.userID });
     
-    // calculate the subtotal and total discount of the cart items in the cart for the checkout page for the user for the order 
+
     const { subtotal, totalDiscount } = calculateSubtotal(cart.items);
     
     const coupons = await couponModel.find({}).populate('applicableCategory').populate('applicableProduct');
     
 
    
-    // Render the checkout page
+
     res.render('user/checkout', {
       cart,
       addresses,
@@ -53,7 +52,7 @@ export const getCheckoutPage = async (req, res) => {
     });
   } catch (error) {
     console.error('Error loading checkout page:', error);
-    res.status(500).send('Server Error');
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR);
   }
 };
 
@@ -75,13 +74,13 @@ export const postOrder = async (req, res) => {
 
     const address = await addressModel.findById(addressId);
     if (!address) {
-      return res.status(400).json({ message: 'Invalid address' });
+      return res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.CHECKOUT.INVALID_ADDRESS });
     }
 
 
     const totalAmount = cart.total
     if (paymentMethod === 'COD'  && totalAmount > 1000) {
-      return res.status(400).json({success:false, message:"COD is not available for orders above ₹1000"})
+      return res.status(STATUS_CODES.BAD_REQUEST).json({success:false, message: MESSAGES.CHECKOUT.COD_LIMIT_EXCEEDED})
     }
 
     const items = cart.items.map(item => {
@@ -113,7 +112,7 @@ export const postOrder = async (req, res) => {
       totalDiscount: items.reduce((acc, item) => acc + item.totalDiscount, 0) 
     });
 
-    // Handle Razorpay Payment
+
     if (paymentMethod === 'Razorpay') {
       const options = {
         amount: cart.total * 100,
@@ -127,13 +126,13 @@ export const postOrder = async (req, res) => {
       await newOrder.save();
       await updateStock(items);
       await clearCart(userId);
-      res.status(200).json({ success: true, razorpayOrderId: razorpayOrder.id, OrderId: newOrder._id });
+      res.status(STATUS_CODES.OK).json({ success: true, razorpayOrderId: razorpayOrder.id, OrderId: newOrder._id });
 
     } else if (paymentMethod === 'Wallet') {
       const wallet = await walletModel.findOne({ user: userId });
 
       if (!wallet || wallet.balance < cart.total) {
-        return res.status(400).json({ success: false, message: "Insufficient balance in wallet" });
+        return res.status(STATUS_CODES.BAD_REQUEST).json({ success: false, message: MESSAGES.CHECKOUT.INSUFFICIENT_WALLET_BALANCE });
       }
 
       wallet.balance -= cart.total;
@@ -150,7 +149,7 @@ export const postOrder = async (req, res) => {
       await updateStock(items);
       await clearCart(userId);
 
-      //~ if coupon is applied then update the used count of the coupon
+
       if(cart.couponCode) {
         const coupon = await couponModel.findOne({couponCode:cart.couponCode})
         if(coupon) {
@@ -158,14 +157,14 @@ export const postOrder = async (req, res) => {
           await coupon.save();
         }
       }
-      res.status(200).json({ success: true, message: "Order placed successfully", order: newOrder });
+      res.status(STATUS_CODES.OK).json({ success: true, message: MESSAGES.CHECKOUT.ORDER_PLACED, order: newOrder });
 
     } else if (paymentMethod === 'COD') {
       await newOrder.save();
       await updateStock(items);
       await clearCart(userId);
 
-      //~ if coupon is applied then update the used count of the coupon
+
       if(cart.couponCode) {
         const coupon = await couponModel.findOne({couponCode:cart.couponCode})
         if(coupon) {
@@ -173,15 +172,15 @@ export const postOrder = async (req, res) => {
           await coupon.save();
         }
       }
-      res.status(200).json({ success: true, message: "Order placed successfully", order: newOrder });
+      res.status(STATUS_CODES.OK).json({ success: true, message: MESSAGES.CHECKOUT.ORDER_PLACED, order: newOrder });
 
     } else {
-      res.status(400).json({ success: false, message: "Invalid payment method" });
+      res.status(STATUS_CODES.BAD_REQUEST).json({ success: false, message: MESSAGES.CHECKOUT.INVALID_PAYMENT_METHOD });
     }
 
   } catch (error) {
     console.error('Error placing order:', error);
-    res.status(500).send('Internal server error in post order');
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR);
   }
 };
 
@@ -200,13 +199,13 @@ export const verifyPayment = async (req,res) => {
         newOrder.paymentStatus = 'Completed';
         await newOrder.save();
       }
-      res.status(200).json({success:true, message:"Payment verified successfully"})
+      res.status(STATUS_CODES.OK).json({success:true, message: MESSAGES.CHECKOUT.PAYMENT_VERIFIED})
     } else {
-      res.status(400).json({success:false, message:"Payment verification failed "})
+      res.status(STATUS_CODES.BAD_REQUEST).json({success:false, message: MESSAGES.CHECKOUT.PAYMENT_VERIFICATION_FAILED})
     }
   }  catch (error) {
     console.log("error in verify payment", error);
-    res.status(500).send("Internal server error in verify payment");
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR);
   }
 }
   
@@ -233,7 +232,7 @@ export const addNewAddress = async (req, res) => {
     res.redirect('/checkout');
   } catch (error) {
     console.error('Error adding new address:', error);
-    res.status(500).send('Server Error');
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR);
   }
 };
 
@@ -246,27 +245,26 @@ export const applyCoupon = async (req, res) => {
   const { couponCode } = req.body;
   const userId = req.session.userID;
   try {
-    //~ Finding the coupon in the database
+
     const coupon = await couponModel.findOne({ couponCode });
     console.log("coupon", coupon);
     if (!coupon) {
-      return res.status(400).json({ message: "Invalid coupon code" });
+      return res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.CHECKOUT.INVALID_COUPON });
     }
 
-    //~ Finding the cart of the user
+
     const cart = await cartModel.findOne({ user: userId }).populate('items.product');
     if (!cart) {
-      return res.status(400).json({ message: "Cart not found" });
+      return res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.CART.CART_NOT_FOUND });
     }
 
-    //~ Checking coupon validity dates
-    // const currentDate = new Date("2024-11-10T10:00:00Z"); // Use the current date
+
     const currentDate = new Date();
     if (currentDate < coupon.startDate || currentDate > coupon.expiryDate) {
-      return res.status(400).json({ message: "Coupon is not valid for the current date" });
+      return res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.CHECKOUT.COUPON_EXPIRED });
     }
 
-    //~ Checking applicability of the coupon based (product/category/all)
+
     const applicableItems = cart.items.filter(item => 
       coupon.applicableType === 'all' ||
       (coupon.applicableType === 'category' && item.product.category.equals(coupon.applicableCategory)) ||
@@ -274,24 +272,22 @@ export const applyCoupon = async (req, res) => {
     );
 
     if (applicableItems.length === 0) {
-      return res.status(400).json({ message: "Coupon not applicable to the current products" });
+      return res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.CHECKOUT.COUPON_NOT_APPLICABLE });
     }
 
-    //~ Calculating the discount amount
+
     let discountAmount = 0;
     if (coupon.discountType === 'percentage') {
       discountAmount = applicableItems.reduce((total, item) => {
         const calculatedDiscount = (item.discountPrice * coupon.discountValue / 100);
         const applicableDiscount = Math.min(calculatedDiscount, item.discountPrice);
-        // Store coupon details in the item
-        item.couponCode = coupon.couponCode; // Store coupon code
-        item.couponDiscountAmount = applicableDiscount * item.quantity; // Store discount amount for this item
+        item.couponCode = coupon.couponCode; 
+        item.couponDiscountAmount = applicableDiscount * item.quantity; 
         return total + (applicableDiscount * item.quantity);
       }, 0);
 
-      //~ Prevent applying a 100% discount if it would reduce the total to zero
       if (coupon.discountValue === 100 && discountAmount >= cart.subtotal) {
-        return res.status(400).json({ message: "This coupon cannot be applied right now. Please select a different one." });
+        return res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.CHECKOUT.COUPON_CANNOT_BE_APPLIED });
       }
     } else if (coupon.discountType === 'fixed') {
       discountAmount = applicableItems.reduce((total, item) => {
@@ -305,20 +301,19 @@ export const applyCoupon = async (req, res) => {
 
     
     if (coupon.discountValue >= cart.subtotal) {
-      return res.status(400).json({ message: "This coupon cannot be applied right now. Please select a different one." });
+      return res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.CHECKOUT.COUPON_CANNOT_BE_APPLIED });
     }
 
-    //~ Checking the minimum spend of the coupon
+ 
     if (cart.subtotal < coupon.minSpend) {
       return res.json({ success: false, message: `Minimum spend of ₹${coupon.minSpend} required to use this coupon` });
     }
 
-    //~ Checking the usage limit of the coupon
+
     if (coupon.usageLimit && coupon.usedCount >= coupon.usageLimit) {
-      return res.json({ success: false, message: `Coupon limit reached` });
+      return res.json({ success: false, message: MESSAGES.CHECKOUT.COUPON_LIMIT_REACHED });
     }
 
-    //~ Updating the cart with the coupon code, discount, and total
     cart.couponCode = coupon.couponCode;
     cart.couponDiscount = discountAmount;
     cart.total = cart.subtotal - discountAmount;
@@ -326,16 +321,16 @@ export const applyCoupon = async (req, res) => {
 
     
 
-    //~ Sending the response to the client
+
     res.json({
       success: true, 
       discountAmount: discountAmount, 
       newTotal: cart.total,
-      message: `Coupon applied successfully`
+      message: MESSAGES.CHECKOUT.COUPON_APPLIED
     });
   } catch (error) {
     console.log("error in apply coupon", error);
-    res.status(500).send("Internal server error in apply coupon");
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR);
   }
 };
 
@@ -348,7 +343,7 @@ export const removeCoupon = async (req,res) => {
   try{
     const cart = await cartModel.findOne({user:userId})
     if(!cart || !cart.couponCode) {
-      return res.status(400).json({message:"No coupon applied"})
+      return res.status(STATUS_CODES.BAD_REQUEST).json({message: MESSAGES.CHECKOUT.NO_COUPON_APPLIED})
     }
 
     const coupon = await couponModel.findOne({couponCode:cart.couponCode})
@@ -358,7 +353,7 @@ export const removeCoupon = async (req,res) => {
       await coupon.save();
     }
 
-    // Remove coupon details from items array
+
     cart.items.forEach(item => {
       item.couponCode = null; 
       item.couponDiscountAmount = 0; 
@@ -370,14 +365,14 @@ export const removeCoupon = async (req,res) => {
     await cart.save();
 
     res.json({
-      message:"Coupon removed successfully", 
+      message: MESSAGES.CHECKOUT.COUPON_REMOVED, 
       success:true,
       newTotal:cart.total,
       couponDiscount:cart.couponDiscount
     })
   }catch(error){
     console.log("error in remove coupon", error);
-    res.status(500).send("Internal server error in remove coupon");
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR);
   }
 }
 
@@ -389,12 +384,12 @@ export const orderConfirmation = async (req,res) => {
     const newOrder = await orderModel.findOne({user:userId}).sort({createdAt:-1}).populate('items.product');
 
     if(!newOrder) {
-      return res.status(400).json({message:"No orders found"})
+      return res.status(STATUS_CODES.BAD_REQUEST).json({message: MESSAGES.CHECKOUT.NO_ORDERS_FOUND})
     }
     res.render('user/orderConfirmation', {order:newOrder,title:"Order Confirmation"})
   }catch (error) {
     console.error('Error loading order confirmation:', error);
-    res.status(500).send('Server Error');
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR);
   }
 }
 
@@ -408,12 +403,12 @@ export const updateSelectedAddress = async (req,res) => {
 
     const address = await addressModel.findOne({_id:addressId, userId:userId});
     if(!address) {
-      return res.status(400).json({message:"Invalid address"})
+      return res.status(STATUS_CODES.BAD_REQUEST).json({message: MESSAGES.CHECKOUT.INVALID_ADDRESS})
     }
-  res.status(200).json({success:true, message:"Address selected successfully"})
+  res.status(STATUS_CODES.OK).json({success:true, message: MESSAGES.CHECKOUT.ADDRESS_SELECTED})
   } catch (error) {
     console.log("error in update selected address", error);
-    res.status(500).send("Internal server error in update selected address");
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR);
   }
 }
 
@@ -426,12 +421,12 @@ export const updatePaymentMethod = async (req,res) => {
     const userId = req.session.userID;
 
     if(!['COD','Razorpay','Wallet'].includes(paymentMethod)) {
-      return res.status(400).json({message:"Invalid payment method"})
+      return res.status(STATUS_CODES.BAD_REQUEST).json({message: MESSAGES.CHECKOUT.INVALID_PAYMENT_METHOD})
     }
-   res.status(200).json({success:true, message:"Payment method selected successfully"})
+   res.status(STATUS_CODES.OK).json({success:true, message: MESSAGES.CHECKOUT.PAYMENT_METHOD_SELECTED})
   } catch (error) {
     console.log('error in update payment method', error);
-    res.status(500).send('Internal server error in update payment method');
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR);
   }
 }
 
@@ -445,7 +440,7 @@ export const repayOrder = async (req,res) => {
     const orderId = req.params.orderId;
     const order = await orderModel.findById(orderId)
     if(!order) {
-      return res.status(400).json({success:false, message:"Order not found"})
+      return res.status(STATUS_CODES.BAD_REQUEST).json({success:false, message: MESSAGES.ORDER.NOT_FOUND})
     }
 
     const options = {
@@ -457,11 +452,11 @@ export const repayOrder = async (req,res) => {
     const razorpayOrder = await razorpay.orders.create(options);
     console.log("razorpayOrder", razorpayOrder);
 
-   res.status(200).json({success:true, razorpayOrderId:razorpayOrder.id, OrderId:order._id})
+   res.status(STATUS_CODES.OK).json({success:true, razorpayOrderId:razorpayOrder.id, OrderId:order._id})
 
   }catch (error) {
     console.log("error in repay order", error);
-    res.status(500).send("Internal server error in repay order");
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR);
   }
 }
 
@@ -474,7 +469,7 @@ export const failedOrderPage = async (req,res) => {
     res.render('user/failedOrder', {title:"Order Failed"})
   } catch (error) {
     console.log("error in failed order page", error);
-    res.status(500).send("Internal server error in failed order page");
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR);
   }
 }
 

@@ -1,25 +1,24 @@
-import nodemailer from 'nodemailer'
+import { Resend } from 'resend';
 
 
 export const generateOTP = () => {                                                          
-  return Math.floor(100000 + Math.random() * 900000).toString(); // Generate a 6-digit OTP
+  return Math.floor(100000 + Math.random() * 900000).toString(); 
 };
 
-export const sendOTPEmail = async (email, otp) => {                           // send otp to email
-  const transporter = nodemailer.createTransport({                            // create email transporter
-      service: 'Gmail', // your email service provider
-      auth: {
-          user: process.env.EMAIL_USER,                                       // your email address
-          pass: process.env.EMAIL_PASS,                                       // your email password
-      },
+export const sendOTPEmail = async (email, otp) => {                          
+  
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
+  
+  const { data, error } = await resend.emails.send({
+      from: process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev',            
+      to: [email],                                                           
+      subject: 'Your OTP Code',                                            
+      text: `Your OTP code is ${otp}. It is valid for 5 minutes.`,            
   });
 
-  const mailOptions = {                                                       // set email options
-      from: process.env.EMAIL_USER,                                           // sender's email address
-      to: email,                                                              // recipient's email address
-      subject: 'Your OTP Code',                                               // email subject
-      text: `Your OTP code is ${otp}. It is valid for 5 minutes.`,            // plain text body
-  };
-
-  await transporter.sendMail(mailOptions);                                    // send email
+  if (error) {
+      console.error("Resend error:", error);
+      throw new Error("Failed to send OTP email");
+  }
 };

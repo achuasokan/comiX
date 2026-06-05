@@ -1,71 +1,110 @@
-<div class="bg-black text-white min-h-screen flex flex-col">
+<div class="bg-black text-white min-h-screen pb-20 flex flex-col">
   <%- include('../partials/header.ejs') %>
 
-  <div class="container mx-auto py-8 px-4 md:px-8">
-    <h1 class="text-2xl md:text-3xl font-bold text-center mb-6">Shopping Cart</h1>
+  <main class="container mx-auto px-4 md:px-8 max-w-7xl mt-12 flex-1">
+    <!-- Header Section -->
+    <div class="border-b border-white/20 pb-4 mb-10 text-center md:text-left flex items-end justify-between">
+      <div>
+        <h1 class="text-2xl font-bold uppercase tracking-widest text-white">Shopping Cart</h1>
+        <p class="text-white/50 text-sm tracking-widest uppercase mt-2">Review your selected items</p>
+      </div>
+      <div class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white text-sm bg-white/5 shrink-0 hidden md:flex">
+          <i class="fas fa-shopping-bag"></i>
+      </div>
+    </div>
 
     <% if (cart && cart.items.length > 0) { %>
-      <!-- Responsive Grid Layout -->
-      <div class="lg:grid lg:grid-cols-3 lg:gap-8">
+      <div class="lg:grid lg:grid-cols-3 lg:gap-12 relative">
        
-        <div class="lg:col-span-2 space-y-6">
+        <div class="lg:col-span-2 flex flex-col border-t border-white/10">
           <% cart.items.forEach(item => { %>
-            <div id="cart-item-<%= item.product._id %>" class="bg-black border-2 border-gray-800 p-4 rounded-lg flex flex-col md:flex-row items-start md:items-center justify-between">
-              <div class="flex items-start md:items-center mb-4 md:mb-0">
-                <a href="/product/<%= item.product._id %>">
-                  <img src="<%= item.product.image[1] %>" alt="<%= item.product.name %>" class="w-20 h-20 mr-4 object-cover rounded-md">
-                </a>
+            <div id="cart-item-<%= item.product._id %>" class="py-6 border-b border-white/10 flex flex-col md:flex-row gap-6 relative group transition-colors hover:bg-white/5 p-4 -mx-4 md:p-6 md:-mx-6 rounded-lg">
+              
+              <a href="/product/<%= item.product._id %>" class="shrink-0 self-start">
+                <img src="<%= item.product.image[1] %>" alt="<%= item.product.name %>" class="w-24 h-32 object-cover border border-white/10 transition-all duration-500">
+              </a>
+              
+              <div class="flex flex-col flex-1 justify-between">
                 <div>
                   <a href="/product/<%= item.product._id %>">
-                    <h3 class="text-lg font-semibold"><%= item.product.name %></h3>
+                    <h3 class="text-lg font-bold text-white mb-1"><%= item.product.name %></h3>
                   </a>
-                  <p class="text-gray-400"><%= item.product.category.name %></p>
-                  <p class="text-gray-400 line-through"><strong>Price:</strong> ₹<span class="item-original-price"><%= item.price %></span></p>
+                  <p class="text-[10px] uppercase tracking-widest text-white/50 mb-3"><%= item.product.category.name %></p>
+                  
+                  <div class="flex gap-3 items-center">
+                    <span class="text-white/50 line-through text-xs">₹<span class="item-original-price"><%= item.price %></span></span>
+                    <p class="text-green-400 font-bold text-lg">₹<span class="item-total-price"><%= Math.floor((item.discountPrice ? item.discountPrice : 0) * item.quantity) %></span></p>
+                  </div>
 
-                  <div class="flex items-center justify-between">
-                    <p class="text-green-500"><strong>Total:</strong> ₹<span class="item-total-price"><%= Math.floor((item.discountPrice ? item.discountPrice : 0) * item.quantity) %></span></p>
-                    <% if (item.product.stock < item.quantity) { %>
-                      <p class="text-red-500 font-semibold ml-4">Currently out of stock</p>
-                    <% } %>
+                  <% if (item.product.stock < item.quantity) { %>
+                    <p class="text-red-500 text-[10px] uppercase tracking-widest font-bold mt-2">Currently out of stock</p>
+                  <% } %>
+                </div>
+
+                <div class="mt-4 md:mt-0 flex items-center justify-between md:justify-start md:gap-8 pt-4 border-t border-white/5 md:border-t-0 md:pt-0">
+                  <div class="update-cart-form flex items-center border border-white/20" data-product-id="<%= item.product._id %>">
+                    <button type="button" class="w-8 h-8 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-colors decrement-quantity"><i class="fas fa-minus text-[10px]"></i></button>
+                    <input type="number" name="quantity" value="<%= item.quantity %>" min="1" max="5" class="w-10 h-8 bg-transparent text-center text-sm font-bold focus:outline-none quantity-input" readonly>
+                    <button type="button" class="w-8 h-8 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-colors increment-quantity"><i class="fas fa-plus text-[10px]"></i></button>
                   </div>
                   
+                  <button type="button" class="text-white/30 hover:text-red-500 transition-colors delete-item text-sm flex items-center gap-2" data-product-id="<%= item.product._id %>">
+                    <i class="fas fa-trash-alt"></i> <span class="text-[10px] uppercase tracking-widest hidden sm:inline font-bold">Remove</span>
+                  </button>
                 </div>
-              </div>
-
-              <div class="flex items-center">
-                <div class="update-cart-form flex items-center" data-product-id="<%= item.product._id %>">
-                  <button type="button" class="bg-black border border-gray-800 text-white text-center rounded-l px-3 decrement-quantity">-</button>
-                  <input type="number" name="quantity" value="<%= item.quantity %>" min="1" max="5" class="border border-gray-800 rounded p-1 w-16 bg-black text-white text-center mx-2 quantity-input" readonly>
-                  <button type="button" class="bg-black border border-gray-800 text-white text-center rounded-r px-3 increment-quantity">+</button>
-                </div>
-                
-                <button type="button" class="text-red-500 hover:text-red-700 ml-4 delete-item" data-product-id="<%= item.product._id %>">
-                  <i class="fas fa-trash"></i>
-                </button>
               </div>
             </div>
           <% }) %>
         </div>
 
-        <div class="mt-8 lg:mt-0 bg-black border-2 border-gray-800 shadow-md p-4 rounded-lg lg:sticky lg:top-4 lg:self-start">
-          <h2 class="text-xl font-bold mb-4">Order Summary</h2>
-          <p class="mb-2">Items: <span id="total-items"><%= cart.items.length %></span></p>
-          <p class="mb-2">Original Price: <span  id="original-price">₹<%= originalPrice %></span></p>
-          <p class="mb-2">Discount:<span class="text-green-500"> -₹ <span id="total-discount"><%= Math.floor(totalDiscount) %></span></span></p>
-          <p class="mb-2">Total Amount: <span id="total-amount">₹<%= Math.floor(cart.total) %></span></p>
+        <div class="mt-12 lg:mt-0 relative">
+          <div class="bg-white/5 border border-white/10 p-8 lg:sticky lg:top-8">
+            <h2 class="text-xs font-bold uppercase tracking-widest text-white/50 mb-6 border-b border-white/10 pb-4">Order Summary</h2>
+            
+            <div class="space-y-4 text-sm mb-6">
+              <div class="flex justify-between items-center">
+                <span class="text-white/70">Items</span>
+                <span class="font-bold" id="total-items"><%= cart.items.length %></span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-white/70">Original Price</span>
+                <span class="font-bold" id="original-price">₹<%= originalPrice %></span>
+              </div>
+              <div class="flex justify-between items-center text-green-400">
+                <span>Discount</span>
+                <span class="font-bold">-₹<span id="total-discount"><%= Math.floor(totalDiscount) %></span></span>
+              </div>
+            </div>
 
-          <!-- checkout button -->
-          <button id="checkout-button" class="mt-2 bg-green-600 text-white rounded px-4 py-2 w-full block text-center">Proceed to Checkout</button>
+            <div class="border-t border-white/10 pt-6 mb-8 mt-2">
+              <div class="flex justify-between items-end">
+                <span class="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-1">Total Amount</span>
+                <span class="text-3xl font-light" id="total-amount">₹<%= Math.floor(cart.total) %></span>
+              </div>
+            </div>
+
+            <button id="checkout-button" class="w-full bg-white text-black px-6 py-4 uppercase tracking-widest text-xs font-bold hover:bg-gray-200 transition-colors">
+              Proceed to Checkout
+            </button>
+          </div>
         </div>
       </div>
     <% } else { %>
-      <div class="flex flex-col items-center justify-center h-64 bg-black shadow-md rounded-lg p-6">
-        <h2 class="text-2xl font-bold">Your cart is empty!</h2>
-        <p class="text-gray-400">Add items to it now.</p>
-        <a href="/" class="mt-4 bg-yellow-500 text-black px-3 py-1 font-semibold uppercase rounded hover:bg-yellow-600 transition duration-200">Shop Now</a>
+      <div class="flex flex-col items-center justify-center py-24 border border-white/10 bg-white/5 mt-10">
+        <div class="w-20 h-20 rounded-full border border-white/20 flex items-center justify-center text-white/20 text-3xl bg-white/5 mb-6">
+            <i class="fas fa-shopping-cart"></i>
+        </div>
+        <h2 class="text-xl font-bold uppercase tracking-widest mb-2">Your cart is empty</h2>
+        <p class="text-white/50 text-xs tracking-widest uppercase mb-8">Add items to it now</p>
+        <a href="/shop/allProducts" class="border border-white text-white px-8 py-3 uppercase tracking-widest text-[10px] font-bold hover:bg-white hover:text-black transition-colors">
+          Explore Shop
+        </a>
       </div>
     <% } %>
 
+  </main>
+  
+  <div class="mt-auto pt-20">
     <%- include('../partials/footer.ejs') %>
   </div>
 </div>
@@ -132,18 +171,17 @@
     Swal.fire({
       title: 'Are you sure?',
       text: "You want to remove this item from your cart",
-      iconHtml: '<i class="fas fa-trash-alt text-red-500"></i>',
+      iconHtml: '<i class="fas fa-trash-alt text-white/50 text-3xl"></i>',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
       confirmButtonText: 'Yes, remove it!',
       customClass: {
-        popup:'bg-black border-2 border-gray-800 text-white rounded-lg shadow-lg p-6',
-        title:'text-xl font-bold',
-        content:'text-base mb-4',
-        confirmButton:'bg-green-600 text-white rounded-lg px-4 py-2 hover:bg-green-700 transition duration-200 ease-in-out',
-        cancelButton:'bg-red-600 text-white rounded-lg px-4 py-2 hover:bg-red-700 transition duration-200 ease-in-out'
-      }
+        popup: 'bg-[#050505] border border-white/10 text-white rounded-none shadow-2xl p-8',
+        title: 'text-lg font-bold uppercase tracking-widest text-white mb-2 mt-4',
+        htmlContainer: 'text-[10px] tracking-widest uppercase text-white/50 mb-6',
+        confirmButton: 'bg-white text-black px-6 py-3 uppercase tracking-widest text-xs font-bold hover:bg-gray-200 transition-colors mx-2',
+        cancelButton: 'bg-transparent border border-white/20 text-white px-6 py-3 uppercase tracking-widest text-xs font-bold hover:bg-white/10 transition-colors mx-2'
+      },
+      buttonsStyling: false
     }).then((result) => {
       if (result.isConfirmed) {
         fetch(`/cart/${productId}`, {
@@ -199,13 +237,13 @@
     title: title,
     text: text,
     icon: icon,
-    confirmButtonColor: '#4CAF50', // Green color for the confirm button
     customClass: {
-      popup: 'bg-black border-2 border-gray-800 text-white rounded-lg shadow-lg p-6 transition-transform transform hover:scale-105', // Dark background
-      title: 'text-2xl font-bold mb-2', // Larger title with margin
-      content: 'text-base mb-4', // Content with margin
-      confirmButton: 'bg-green-600 text-white rounded-lg px-6 py-2 hover:bg-green-700 transition duration-200 ease-in-out', // Button with hover effect
+      popup: 'bg-[#050505] border border-white/10 text-white rounded-none shadow-2xl p-8',
+      title: 'text-lg font-bold uppercase tracking-widest text-white mb-2',
+      htmlContainer: 'text-sm tracking-widest uppercase text-white/50 mb-6',
+      confirmButton: 'bg-white text-black px-6 py-3 uppercase tracking-widest text-xs font-bold hover:bg-gray-200 transition-colors',
     },
+    buttonsStyling: false
   });
 }
 

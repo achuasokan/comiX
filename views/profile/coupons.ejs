@@ -1,44 +1,74 @@
 <%- include('../partials/header.ejs') %>
-<div class="bg-black text-white flex flex-col items-center">
+<div class="bg-black text-white flex flex-col items-center min-h-screen pb-20">
 
   <!-- Horizontal Navigation Bar -->
   <%- include('./profileSidebar.ejs') %>
   <!-- Navigation Bar end -->
 
-  <div class="flex-1 p-6 w-full">
-    <h1 class="text-2xl font-bold mb-4 text-center">Available Coupons</h1>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <% couponsList.forEach(coupon => { %>
-        <a href="<%= coupon.applicableType === 'product' ? '/product/' + coupon.applicableProduct.id : coupon.applicableType === 'category' ? '/shop/category/' + coupon.applicableCategory.id : '/shop/allProducts' %>" class="bg-black border-2 border-gray-800 p-4 rounded-lg shadow-lg transition-transform transform hover:scale-105 block">
-          
-          <h2 class="text-lg font-semibold mb-2 text-yellow-400">
-            <%= coupon.couponCode %> - <%= coupon.discountValue %> <%= coupon.discountType === 'percentage' ? '%OFF' : '₹OFF' %>
-          </h2>
-          
-          <div class="mt-2">
-            <% if (coupon.applicableType === 'category') { %>
-              <img src="<%= coupon.applicableCategory.image %>" alt="<%= coupon.applicableCategory.name %>" class="w-full h-48 object-cover rounded-md border border-gray-600">
-              <p class="mt-2 text-sm text-purple-400">Category: <%= coupon.applicableCategory.name %></p>
-            <% } else if (coupon.applicableType === 'product') { %>
-              <img src="<%= coupon.applicableProduct.image[1] %>" alt="<%= coupon.applicableProduct.name %>" class="w-full h-48 object-cover rounded-md border border-gray-600">
-              <p class="mt-2 text-sm text-purple-400">Product: <%= coupon.applicableProduct.name %></p>
-            <% } else { %>
-              <img src="/img/All1.jpg" alt="Default Product Image" class="w-full h-48 object-cover rounded-md border border-gray-600">
-              <p class="mt-2 text-sm text-purple-400">Applicable for all products</p>
-            <% } %>
-          </div>
-
-          <p class="mt-4 text-sm text-gray-400">
-            <span class="font-semibold text-green-400">Valid from:</span> 
-            <span class="text-orange-400">
-              <%= coupon.startDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }) %> to 
-              <%= coupon.expiryDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }) %>
-            </span>
-          </p>
-        </a>
-      <% }) %>
+  <main class="flex-1 w-full max-w-4xl px-4 md:px-8 mt-12">
+    <!-- Header Section -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-white/20 pb-4 mb-10 gap-4">
+        <div>
+            <h2 class="text-2xl font-bold uppercase tracking-widest text-white">Available Coupons</h2>
+            <p class="text-white/50 text-sm tracking-widest uppercase mt-2">Special offers and discounts</p>
+        </div>
+        <!-- Minimal Icon -->
+        <div class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white text-sm bg-white/5 shrink-0 hidden md:flex">
+            <i class="fas fa-ticket-alt"></i>
+        </div>
     </div>
-  </div>
 
+    <% if (!couponsList || couponsList.length === 0) { %>
+      <div class="flex flex-col items-center justify-center py-20 border border-white/10 bg-white/5 rounded-sm">
+        <i class="fas fa-ticket-alt fa-3x text-white/20 mb-4"></i>
+        <p class="text-white/50 text-xs tracking-widest uppercase mb-6">No coupons available right now.</p>
+      </div>
+    <% } else { %>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <% couponsList.forEach(coupon => { %>
+          <a href="<%= coupon.applicableType === 'product' ? '/product/' + coupon.applicableProduct.id : coupon.applicableType === 'category' ? '/shop/category/' + coupon.applicableCategory.id : '/shop/allProducts' %>" class="border border-white/10 bg-white/5 flex flex-col group hover:bg-white/10 transition-colors shadow-2xl relative overflow-hidden">
+            
+            <!-- Image Section -->
+            <div class="w-full h-48 overflow-hidden border-b border-white/10 relative">
+              <% if (coupon.applicableType === 'category' && coupon.applicableCategory) { %>
+                <img src="<%= coupon.applicableCategory.image %>" alt="<%= coupon.applicableCategory.name %>" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity">
+                <span class="absolute top-4 left-4 bg-black/80 backdrop-blur-md border border-white/20 px-3 py-1 text-[9px] uppercase tracking-widest text-white">Category</span>
+              <% } else if (coupon.applicableType === 'product' && coupon.applicableProduct) { %>
+                <img src="<%= coupon.applicableProduct.image[1] %>" alt="<%= coupon.applicableProduct.name %>" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity">
+                <span class="absolute top-4 left-4 bg-black/80 backdrop-blur-md border border-white/20 px-3 py-1 text-[9px] uppercase tracking-widest text-white">Product</span>
+              <% } else { %>
+                <img src="/img/All1.jpg" alt="Storewide Coupon" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity">
+                <span class="absolute top-4 left-4 bg-black/80 backdrop-blur-md border border-white/20 px-3 py-1 text-[9px] uppercase tracking-widest text-white">Storewide</span>
+              <% } %>
+            </div>
+
+            <!-- Content Section -->
+            <div class="p-6 flex flex-col flex-1 justify-between bg-gradient-to-t from-black/50 to-transparent">
+              <div>
+                <div class="flex justify-between items-start mb-4">
+                  <h3 class="text-xl font-bold text-white uppercase tracking-wider"><%= coupon.couponCode %></h3>
+                  <span class="text-sm font-bold border border-white bg-white text-black px-2 py-1 uppercase tracking-widest"><%= coupon.discountValue %><%= coupon.discountType === 'percentage' ? '%' : '₹' %> OFF</span>
+                </div>
+
+                <% if (coupon.applicableType === 'category' && coupon.applicableCategory) { %>
+                  <p class="text-xs text-white/70 uppercase tracking-widest mb-4 truncate">For <%= coupon.applicableCategory.name %></p>
+                <% } else if (coupon.applicableType === 'product' && coupon.applicableProduct) { %>
+                  <p class="text-xs text-white/70 uppercase tracking-widest mb-4 truncate">For <%= coupon.applicableProduct.name %></p>
+                <% } else { %>
+                  <p class="text-xs text-white/70 uppercase tracking-widest mb-4 truncate">Applicable on all products</p>
+                <% } %>
+              </div>
+
+              <div class="pt-4 border-t border-white/10 mt-2">
+                <p class="text-[9px] text-white/40 uppercase tracking-widest">
+                  Valid: <%= coupon.startDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }) %> — <%= coupon.expiryDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }) %>
+                </p>
+              </div>
+            </div>
+          </a>
+        <% }) %>
+      </div>
+    <% } %>
+  </main>
 </div>
 <%- include('../partials/footer.ejs') %>

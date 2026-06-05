@@ -1,68 +1,83 @@
 <%- include('../partials/header.ejs') %>
-<div class="bg-black text-white flex flex-col items-center">
+<div class="bg-black text-white flex flex-col items-center min-h-screen pb-20">
 
   <!-- Horizontal Navigation Bar -->
   <%- include('./profileSidebar.ejs') %>
   <!-- Navigation Bar end -->
 
-  <!-- Edit Address Form -->
-  <main class="flex-1 p-4 w-full max-w-md mx-auto">
-    <h2 class="text-lg font-bold mb-4 text-center">Edit Address</h2>
-    <form class="w-full space-y-4" action="/profile/edit-address/<%= address._id %>" method="POST" id="edit-address-form">
+  <main class="flex-1 w-full max-w-4xl px-4 md:px-8 mt-12">
+    <!-- Header Section -->
+    <div class="border-b border-white/20 pb-4 mb-10">
+      <h2 class="text-2xl font-bold uppercase tracking-widest text-white">Edit Address</h2>
+      <p class="text-white/50 text-sm tracking-widest uppercase mt-2">Update your shipping details</p>
+    </div>
     
-      <div class="flex flex-col space-y-1">
-        <input type="text" placeholder="Name" id="name" value="<%= address.name %>" name="name" class="p-2 rounded bg-black border border-blue-500 text-white focus:outline-none focus:border-orange-500" />
-        <p id="nameError" class="text-red-500 text-sm" aria-live="assertive"></p>
-      </div>
-
-      <div class="flex flex-col space-y-1">
-        <input type="tel" placeholder="10-digit mobile number" id="mobile" value="<%= address.mobile %>" name="mobile" class="p-2 rounded bg-black border border-blue-500 text-white focus:outline-none focus:border-orange-500" />
-        <p id="mobileError" class="text-red-500 text-sm" aria-live="assertive"></p>
-      </div>
-
-      <div class="flex flex-col space-y-1">
-        <input type="text" placeholder="Building Name" id="building" value="<%= address.buildingName %>" name="buildingName" class="p-2 rounded bg-black border border-blue-500 text-white focus:outline-none focus:border-orange-500" />
-        <p id="buildingNameError" class="text-red-500 text-sm" aria-live="assertive"></p>
-      </div>
-
-      <div class="flex flex-col space-y-1">
-        <input type="text" placeholder="Street" id="street" value="<%= address.street %>" name="street" class="p-2 rounded bg-black border border-blue-500 text-white focus:outline-none focus:border-orange-500" />
-        <p id="streetError" class="text-red-500 text-sm" aria-live="assertive"></p>
-      </div>
-
-      <div class="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
-        <div class="flex flex-col space-y-1 flex-1">
-          <input type="text" placeholder="City" id="city" value="<%= address.city %>" name="city" class="p-2 rounded bg-black border border-blue-500 text-white focus:outline-none focus:border-orange-500" />
-          <p id="cityError" class="text-red-500 text-sm" aria-live="assertive"></p>
+    <form class="w-full space-y-8" action="/profile/edit-address/<%= address._id %>" method="POST" id="edit-address-form">
+    
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="flex flex-col">
+          <label class="text-white/50 text-[10px] uppercase tracking-widest mb-2 font-bold">Full Name</label>
+          <input type="text" placeholder="Name" id="name" value="<%= address.name %>" name="name" class="w-full bg-transparent border-b border-white/20 text-white text-sm p-3 focus:outline-none focus:border-white transition-colors" />
+          <p id="nameError" class="text-red-500 text-xs mt-2" aria-live="assertive"></p>
         </div>
-        <div class="flex flex-col space-y-1 flex-1">
-          <input type="text" placeholder="State" id="state" value="<%= address.state %>" name="state" class="p-2 rounded bg-black border border-blue-500 text-white focus:outline-none focus:border-orange-500" />
-          <p id="stateError" class="text-red-500 text-sm" aria-live="assertive"></p>
+
+        <div class="flex flex-col">
+          <label class="text-white/50 text-[10px] uppercase tracking-widest mb-2 font-bold">Mobile Number</label>
+          <input type="tel" placeholder="10-digit mobile number" id="mobile" value="<%= address.mobile %>" name="mobile" class="w-full bg-transparent border-b border-white/20 text-white text-sm p-3 focus:outline-none focus:border-white transition-colors" />
+          <p id="mobileError" class="text-red-500 text-xs mt-2" aria-live="assertive"></p>
+        </div>
+
+        <div class="flex flex-col">
+          <label class="text-white/50 text-[10px] uppercase tracking-widest mb-2 font-bold">Building Name/No.</label>
+          <input type="text" placeholder="Building Name" id="building" value="<%= address.buildingName %>" name="buildingName" class="w-full bg-transparent border-b border-white/20 text-white text-sm p-3 focus:outline-none focus:border-white transition-colors" />
+          <p id="buildingNameError" class="text-red-500 text-xs mt-2" aria-live="assertive"></p>
+        </div>
+
+        <div class="flex flex-col">
+          <label class="text-white/50 text-[10px] uppercase tracking-widest mb-2 font-bold">Street Area</label>
+          <input type="text" placeholder="Street" id="street" value="<%= address.street %>" name="street" class="w-full bg-transparent border-b border-white/20 text-white text-sm p-3 focus:outline-none focus:border-white transition-colors" />
+          <p id="streetError" class="text-red-500 text-xs mt-2" aria-live="assertive"></p>
+        </div>
+
+        <div class="flex flex-col">
+          <label class="text-white/50 text-[10px] uppercase tracking-widest mb-2 font-bold">City</label>
+          <input type="text" placeholder="City" id="city" value="<%= address.city %>" name="city" class="w-full bg-transparent border-b border-white/20 text-white text-sm p-3 focus:outline-none focus:border-white transition-colors" />
+          <p id="cityError" class="text-red-500 text-xs mt-2" aria-live="assertive"></p>
+        </div>
+        
+        <div class="flex flex-col">
+          <label class="text-white/50 text-[10px] uppercase tracking-widest mb-2 font-bold">State</label>
+          <input type="text" placeholder="State" id="state" value="<%= address.state %>" name="state" class="w-full bg-transparent border-b border-white/20 text-white text-sm p-3 focus:outline-none focus:border-white transition-colors" />
+          <p id="stateError" class="text-red-500 text-xs mt-2" aria-live="assertive"></p>
+        </div>
+
+        <div class="flex flex-col">
+          <label class="text-white/50 text-[10px] uppercase tracking-widest mb-2 font-bold">Country</label>
+          <input type="text" placeholder="Country" id="country" value="<%= address.country %>" name="country" class="w-full bg-transparent border-b border-white/20 text-white text-sm p-3 focus:outline-none focus:border-white transition-colors" />
+          <p id="countryError" class="text-red-500 text-xs mt-2" aria-live="assertive"></p>
+        </div>
+
+        <div class="flex flex-col">
+          <label class="text-white/50 text-[10px] uppercase tracking-widest mb-2 font-bold">Pincode</label>
+          <input type="text" placeholder="Pincode" id="pincode" value="<%= address.pincode %>" name="pincode" pattern="[0-9]{6}" class="w-full bg-transparent border-b border-white/20 text-white text-sm p-3 focus:outline-none focus:border-white transition-colors" />
+          <p id="pincodeError" class="text-red-500 text-xs mt-2" aria-live="assertive"></p>
         </div>
       </div>
 
-      <div class="flex flex-col space-y-1">
-        <input type="text" placeholder="Country" id="country" value="<%= address.country %>" name="country" class="p-2 rounded bg-black border border-blue-500 text-white focus:outline-none focus:border-orange-500" />
-        <p id="countryError" class="text-red-500 text-sm" aria-live="assertive"></p>
-      </div>
-
-      <div class="flex flex-col space-y-1">
-        <input type="text" placeholder="Pincode" id="pincode" value="<%= address.pincode %>" name="pincode" pattern="[0-9]{6}" class="p-2 rounded bg-black border border-blue-500 text-white focus:outline-none focus:border-orange-500" />
-        <p id="pincodeError" class="text-red-500 text-sm" aria-live="assertive"></p>
-      </div>
-
-      <label class="flex items-center">
-        <input type="checkbox" name="isDefault" class="mr-2" <%= address.isDefault ? 'checked' : '' %> />
-        <span class="text-white">Set as Default</span>
+      <label class="flex items-center gap-3 cursor-pointer group">
+        <div class="relative flex items-center justify-center">
+            <input type="checkbox" name="isDefault" class="peer appearance-none w-5 h-5 border border-white/20 checked:bg-white checked:border-white transition-colors cursor-pointer" <%= address.isDefault ? 'checked' : '' %> />
+            <i class="fas fa-check absolute text-black text-[10px] opacity-0 peer-checked:opacity-100 pointer-events-none"></i>
+        </div>
+        <span class="text-white/70 text-xs uppercase tracking-widest font-bold group-hover:text-white transition-colors">Set as Default Address</span>
       </label>
       
-      <div class="flex justify-between">
-        <button type="submit" class="bg-yellow-400 text-black py-2 px-4 rounded">Save Changes</button>
-        <a href="/profile/address" class="bg-red-500 text-white py-2 px-4 rounded">Cancel</a>
+      <div class="pt-8 border-t border-white/10 flex justify-end gap-4">
+        <a href="/profile/address" class="border border-white/20 text-white px-8 py-3 uppercase tracking-widest text-xs font-bold hover:bg-white/5 transition-colors w-full sm:w-auto text-center">Cancel</a>
+        <button type="submit" class="bg-white text-black px-8 py-3 uppercase tracking-widest text-xs font-bold hover:bg-gray-200 transition-colors w-full sm:w-auto">Save Changes</button>
       </div>
     </form>
   </main>
-  <!-- Edit Address Form end -->
 </div>
 
 <%- include('../partials/footer.ejs') %>

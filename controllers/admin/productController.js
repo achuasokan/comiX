@@ -2,6 +2,8 @@ import productModel from "../../models/Product.js"
 import categoryModel from "../../models/Category.js"
 import cloudinary from "../../config/cloudinary.js"
 import fs from "fs"
+import { STATUS_CODES } from "../../constants/statusCodes.js"
+import { MESSAGES } from "../../constants/messages.js"
 
 //* //  //  //   //  //          GET PRODUCT LIST PAGEs  //  //  //  //  //  //  //
 export const getProduct=async(req,res)=>{
@@ -30,7 +32,7 @@ export const getProduct=async(req,res)=>{
 
   }catch(error){
     console.log(error);
-    res.status(500)
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR)
   }
 }
 //* //  //  //   //  //          GET ADD PRODUCT PAGE   //  //  //  //  //  //  //
@@ -42,7 +44,7 @@ export const getAddProduct=async(req,res)=>{
 
   }catch(error){
     console.log(error);
-    res.status(500)
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR)
   }
 }
 
@@ -54,77 +56,77 @@ export const getAddProduct=async(req,res)=>{
       const { productName, description, category, price, stock, SKU } = req.body;
       
   
-      // validation
+      
       const errors = [];
   
-      //  Validate Product Name
+  
       const productNameRegex = /^[a-zA-Z][a-zA-Z0-9\s!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]{2,49}$/;
       if (!productName || !productNameRegex.test(productName)) {
-        errors.push("Product name must be between 3 and 50 characters.");
+        errors.push(MESSAGES.PRODUCT.INVALID_NAME_LENGTH);
       }
   
-      //  Validate Description
+    
       const descriptionRegex = /^[a-zA-Z][\s\S]{9,999}$/;
       if (!description || !descriptionRegex.test(description.trim())) {
-        errors.push("Description must be between 10 and 1000 characters.");
+        errors.push(MESSAGES.PRODUCT.INVALID_DESCRIPTION_LENGTH);
       }
   
-      //  Validate Category
+      
       if (!category) {
-        errors.push("Please select a category.");
+        errors.push(MESSAGES.PRODUCT.CATEGORY_REQUIRED);
       }
   
-      //  Validate Price
+    
       const priceValue = parseFloat(price);
       if (isNaN(priceValue) || priceValue <= 0 || !/^\d+(\.\d{1,2})?$/.test(price)) {
-          errors.push("Product Price must be a valid number greater than zero and can have up to two decimal places.");
+          errors.push(MESSAGES.PRODUCT.INVALID_PRICE);
       }
   
-      //  Validate Stock
+      
       const Stocks = parseFloat(stock);
       if (isNaN(Stocks) || Stocks < 0 || !Number.isInteger(Stocks)) {
-        errors.push("Stock must be a number and zero or greater.");
+        errors.push(MESSAGES.PRODUCT.INVALID_STOCK);
       }
   
-      //  Validate SKU
+      
       const skuRegex = /^[a-zA-Z0-9\-]+$/;
       if (!SKU || !skuRegex.test(SKU)) {
-        errors.push("Invalid SKU format. Only letters, numbers, and dashes are allowed.");
+        errors.push(MESSAGES.PRODUCT.INVALID_SKU);
       }
 
       if (files.length === 0) {
-        errors.push('Please upload at least one image')
+        errors.push(MESSAGES.PRODUCT.IMAGE_REQUIRED)
       } else if (files.length > 3) {
-        errors.push('You can upload up to 3 images')
+        errors.push(MESSAGES.PRODUCT.MAX_IMAGES_EXCEEDED)
       } else {
         const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp', 'image/svg+xml'];
         const maxSize = 10 * 1024 * 1024; // 10 MB
         for (let  file of files) {
           if (!allowedTypes.includes(file.mimetype)) {
-            errors.push(`Invalid file type ${file.originalname}. Only jpeg, png, jpg, gif, webp and svg are allowed.`)
+            errors.push(MESSAGES.PRODUCT.INVALID_IMAGE_TYPE)
           }
 
           if (file.size > maxSize) {
-            errors.push(`File ${file.originalname} is too large. Maximum size is 10 MB`)
+            errors.push(MESSAGES.PRODUCT.IMAGE_SIZE_EXCEEDED)
           }
         }
       }
        
-      //  Check for existing product with same name or SKU
+    
       const existingProduct = await productModel.findOne({ $or: [{ SKU: SKU }, {name: productName}] })
       if(existingProduct) {
-        errors.push('A product is already exists with this name or SKU')
+        errors.push(MESSAGES.PRODUCT.ALREADY_EXISTS)
       }
 
       
   
-      // If there are validation errors, return them
+      
       if (errors.length > 0) {
         req.flash('error',errors)
         return res.redirect('/admin/addProduct')
       }
   
-      // Upload each image to Cloudinary
+    
       const imageUrls = [];
       for (let file of files) {
         const result = await cloudinary.uploader.upload(file.path, {
@@ -134,28 +136,28 @@ export const getAddProduct=async(req,res)=>{
         imageUrls.push(result.secure_url);
       }
   
-      // Create the product
+    
       const newProduct = new productModel({
         name: productName,
         description: description,
-        image: imageUrls, // Save the array of image URLs
+        image: imageUrls, 
         price: priceValue,
         stock: Stocks,
         category: category,
         SKU: SKU,
       });
 
-      req.flash('success','product added successfully')
+      req.flash('success', MESSAGES.PRODUCT.ADD_SUCCESS)
   
-      // Save the product to the database
+     
       await newProduct.save();
   
       res.redirect('/admin/products');
     } catch (error) {
       console.error("Error adding product:", error);
-      res.status(500).send('Error adding product');
+      res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR);
     } finally {
-      // Clean up the local uploaded files after uploading to Cloudinary
+      
       files.forEach(file => {
         if(file.path && fs.existsSync(file.path)) {
           fs.unlinkSync(file.path)
@@ -174,13 +176,13 @@ export const softDeleteProduct=async(req,res)=>{
     const product=await productModel.findByIdAndUpdate(productId,{isDeleted:true})
     console.log(product);
     if(!product){
-      return res.status(404).send("Product not found")
+      return res.status(STATUS_CODES.NOT_FOUND).send(MESSAGES.COMMON.PRODUCT_NOT_FOUND)
     }
     res.redirect("/admin/products")
 
   }catch(error){
     console.log(error);
-    res.status(500).send("Error deleting product")
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR)
   }
 }
 
@@ -195,7 +197,7 @@ export const getEditProduct=async(req,res)=>{
 
   }catch(error){
     console.log(error);
-    res.status(500).send("internal server error")
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR)
   }
 }
 
@@ -209,86 +211,83 @@ export const postEditProduct = async (req, res) => {
 
     const currentProduct = await productModel.findById(id);
 
-    //  validation
+ 
     const errors = [];
 
-    //  Validate Product Name
+
     const productNameRegex = /^[a-zA-Z][a-zA-Z0-9\s!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]{2,49}$/;
     if (!productName || !productNameRegex.test(productName)) {
-      errors.push("Product name must be between 3 and 50 characters.");
+      errors.push(MESSAGES.PRODUCT.INVALID_NAME_LENGTH);
     }
 
-    //  Validate Description
+  
     const descriptionRegex = /^[a-zA-Z][\s\S]{9,999}$/;
     if (!description || !descriptionRegex.test(description.trim())) {
-      errors.push("Description must be between 10 and 1000 characters.");
+      errors.push(MESSAGES.PRODUCT.INVALID_DESCRIPTION_LENGTH);
     }
 
-    //  Validate Category
+    
     if (!category) {
-      errors.push("Please select a category.");
+      errors.push(MESSAGES.PRODUCT.CATEGORY_REQUIRED);
     }
 
-    //  Validate Price
+  
     const priceValue = parseFloat(price);
     if (isNaN(priceValue) || priceValue <= 0 || !/^\d+(\.\d{1,2})?$/.test(price)) {
-        errors.push("Product Price must be a valid number greater than zero and can have up to two decimal places.");
+        errors.push(MESSAGES.PRODUCT.INVALID_PRICE);
     }
 
-    //  Validate Stock
+  
     const Stocks = parseFloat(stock);
     if (isNaN(Stocks) || Stocks < 0 || !Number.isInteger(Stocks)) {
-      errors.push("Stock must be a whole number and zero or greater.");
+      errors.push(MESSAGES.PRODUCT.INVALID_STOCK);
     }
 
-    //  Validate SKU
+  
     const skuRegex = /^[a-zA-Z0-9\-]+$/;
     if (!SKU || !skuRegex.test(SKU)) {
-      errors.push("Invalid SKU format. Only letters, numbers, and dashes are allowed.");
+      errors.push(MESSAGES.PRODUCT.INVALID_SKU);
     }
 
-    // Check for existing product with same name or SKU (excluding the current product)
     const existingProduct = await productModel.findOne({
       $or: [{ SKU: SKU }, { name: productName }],
       _id: { $ne: id }
     });
 
     if (existingProduct) {
-      errors.push('Another product already exists with this name or SKU');
+      errors.push(MESSAGES.PRODUCT.ALREADY_EXISTS);
     }
 
 
     let updatedImages = existingImages ? (Array.isArray(existingImages) ? existingImages : [existingImages]) : [];
 
-      //  Validate Image
+      
       if (files.length > 3) {
-        errors.push('You can upload up to 3 images');
+        errors.push(MESSAGES.PRODUCT.MAX_IMAGES_EXCEEDED);
       } else {
         const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp', 'image/svg+xml'];
         const maxSize = 10 * 1024 * 1024; // 10 MB
         for (let file of files) {
           if (!allowedTypes.includes(file.mimetype)) {
-            errors.push(`Invalid file type ${file.originalname}. Only jpeg, png, jpg, gif, webp, and svg are allowed.`);
+            errors.push(MESSAGES.PRODUCT.INVALID_IMAGE_TYPE);
           }
 
           if (file.size > maxSize) {
-            errors.push(`File ${file.originalname} is too large. Maximum size is 10 MB.`);
+            errors.push(MESSAGES.PRODUCT.IMAGE_SIZE_EXCEEDED);
           }
         }
       }
     
-     //  Validate Image
+     
     if (updatedImages.length === 0 && files.length === 0){
-      errors.push('Please upload at least one image');
+      errors.push(MESSAGES.PRODUCT.IMAGE_REQUIRED);
     }
-
-    // If there are validation errors, return them
     if (errors.length > 0) {
       req.flash('error', errors);
       return res.redirect(`/admin/editProduct/${id}`);
     }
 
-    // Prepare the update object
+   
     const updateData = {
       name: productName,
       description: description,
@@ -298,7 +297,7 @@ export const postEditProduct = async (req, res) => {
       SKU: SKU,
     };
 
-    // Handle image updates
+    
    
     if (files && files.length > 0) {
       for (let file of files) {
@@ -312,15 +311,14 @@ export const postEditProduct = async (req, res) => {
 
     updateData.image = updatedImages;
 
-    // Update the product
+    
     const updatedProduct = await productModel.findByIdAndUpdate(id, updateData, { new: true });
 
     res.redirect("/admin/products");
   } catch (error) {
     console.error("Error updating product:", error);
-    res.status(500).send("Internal server error");
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR);
   } finally {
-    // Clean up the local uploaded files
     files.forEach(file => {
       if (file.path && fs.existsSync(file.path)) {
         fs.unlinkSync(file.path);

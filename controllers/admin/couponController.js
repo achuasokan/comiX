@@ -1,6 +1,8 @@
 import couponModel from '../../models/Coupon.js'
 import categoryModel from '../../models/Category.js'
 import productModel from '../../models/Product.js'
+import { STATUS_CODES } from '../../constants/statusCodes.js'
+import { MESSAGES } from '../../constants/messages.js'
 
 //* //  //  //   //  //          GET COUPON LIST     //  //  //  //  //  //  //
 
@@ -27,7 +29,7 @@ export const getCouponListPage = async (req,res) => {
     })
   } catch (error) {
     console.log("error in coupon list",error);
-    res.status(500).json({message:"Internal server error"})
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({message: MESSAGES.COMMON.INTERNAL_SERVER_ERROR})
   }
 }
 
@@ -41,7 +43,7 @@ export const addCouponPage =async (req,res) => {
 
   } catch (error) {
     console.log("error in add coupon page",error);
-    res.status(500).json({message:"Internal server error"})
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({message: MESSAGES.COMMON.INTERNAL_SERVER_ERROR})
   }
 }
 
@@ -55,48 +57,48 @@ export const postAddCoupon = async (req,res) => {
 
     const couponCodes = /^[A-Z][A-Z0-9 ]{4,9}$/; 
     if(!couponCodes.test(couponCode)){
-      errors.push('Coupon code must be uppercase letters.')
+      errors.push(MESSAGES.COUPON.INVALID_CODE)
     }
 
     const discountValues = parseFloat(discountValue);
     if (discountType === 'fixed') {
         if (isNaN(discountValues) || discountValues <= 0 || !Number.isInteger(discountValues)) {
-            errors.push('Discount value for fixed type must be a whole number greater than zero.');
+            errors.push(MESSAGES.COUPON.INVALID_FIXED_DISCOUNT);
         }
     } else if (discountType === 'percentage') {
         if (isNaN(discountValues) || discountValues < 1 || discountValues > 100 || !Number.isInteger(discountValues)) {
-            errors.push('Discount value for percentage type must be a whole number between 1 and 100.');
+            errors.push(MESSAGES.COUPON.INVALID_PERCENTAGE_DISCOUNT);
         }
     }
 
     const minSpends = parseInt(minSpend);
     if(isNaN(minSpends) || minSpends <= 0 || !Number.isInteger(minSpends)) {
-      errors.push('Minimum spend must be a whole number greater than zero.')
+      errors.push(MESSAGES.COUPON.INVALID_MIN_SPEND)
     }
 
     const usageLimits = parseInt(usageLimit);
     if(isNaN(usageLimits) || usageLimits <= 0 || !Number.isInteger(usageLimits)) {
-      errors.push('Usage limit must be a whole number greater than zero.')
+      errors.push(MESSAGES.COUPON.INVALID_USAGE_LIMIT)
     }
 
     const startDates = new Date(startDate);
     const currentDate = new Date()
 
     if(isNaN(startDates) || startDates < currentDate.setHours(0,0,0,0) ) {
-      errors.push('Start date must be today or a future date.')
+      errors.push(MESSAGES.COUPON.INVALID_START_DATE)
     }
 
     const expiryDates = new Date(expiryDate);
     if(isNaN(expiryDates) || expiryDates <= 0) {
-      errors.push('Expiry date must be a date.')
+      errors.push(MESSAGES.COUPON.INVALID_EXPIRY_DATE)
     }
 
     if(expiryDates < startDates){
-      errors.push('Expiry date must same or after start date.')
+      errors.push(MESSAGES.COUPON.EXPIRY_BEFORE_START)
     }
 
     if(applicableType === ''){
-      errors.push('Applicable type is required.')
+      errors.push(MESSAGES.COUPON.APPLICABLE_TYPE_REQUIRED)
     }
 
     if (applicableType === 'product' && product) {
@@ -106,7 +108,7 @@ export const postAddCoupon = async (req,res) => {
       });
 
       if (existingProductCoupon) {
-        errors.push('A coupon already exists for this product.');
+        errors.push(MESSAGES.COUPON.PRODUCT_EXISTS);
       }
     }
 
@@ -117,7 +119,7 @@ export const postAddCoupon = async (req,res) => {
       });
 
       if (existingCategoryCoupon) {
-        errors.push('A coupon already exists for this category.');
+        errors.push(MESSAGES.COUPON.CATEGORY_EXISTS);
       }
     }
 
@@ -127,7 +129,7 @@ export const postAddCoupon = async (req,res) => {
       })
 
       if (existingAllCoupon) {
-        errors.push('A coupon already exists for All');
+        errors.push(MESSAGES.COUPON.ALL_EXISTS);
       }
     }
 
@@ -139,14 +141,14 @@ export const postAddCoupon = async (req,res) => {
     })
 
     if(existingCoupon){
-      errors.push('Another coupon already exists with this coupon code.')
+      errors.push(MESSAGES.COUPON.CODE_EXISTS)
     }
 
   
 
     if(errors.length > 0){
       req.flash('error',errors)
-      return res.status(400).redirect('/admin/addCoupon')
+      return res.status(STATUS_CODES.BAD_REQUEST).redirect('/admin/addCoupon')
     }
 
     const newCoupon = new couponModel({
@@ -174,7 +176,7 @@ export const postAddCoupon = async (req,res) => {
 
   }catch (error) {
     console.log("error in post add coupon",error);
-    res.status(500).json({message:"Internal server error"})
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({message: MESSAGES.COMMON.INTERNAL_SERVER_ERROR})
   }
 }
 
@@ -194,7 +196,7 @@ export const getEditCouponPage = async (req,res) => {
     res.render('admin/editCoupon',{coupon: {...coupon.toObject(),startDate,expiryDate},categories,products,title:"Edit Coupon"})
   }catch (error) {
     console.log("Error in edit coupon page",error);
-res.status(500).send('Internal server error')    
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR)    
   }
 }
 
@@ -210,48 +212,48 @@ export const postEditCoupon = async (req,res) => {
     
     const couponCodes = /^[A-Z][A-Z0-9 ]{4,9}$/; 
     if(!couponCodes.test(couponCode)){
-      errors.push('Coupon code must be uppercase letters .')
+      errors.push(MESSAGES.COUPON.INVALID_CODE)
     }
 
     const discountValues = parseFloat(discountValue);
     if (discountType === 'fixed') {
         if (isNaN(discountValues) || discountValues <= 0 || !Number.isInteger(discountValues)) {
-            errors.push('Discount value for fixed type must be a whole number greater than zero.');
+            errors.push(MESSAGES.COUPON.INVALID_FIXED_DISCOUNT);
         }
     } else if (discountType === 'percentage') {
         if (isNaN(discountValues) || discountValues < 1 || discountValues > 100 || !Number.isInteger(discountValues)) {
-            errors.push('Discount value for percentage type must be a whole number between 1 and 100.');
+            errors.push(MESSAGES.COUPON.INVALID_PERCENTAGE_DISCOUNT);
         }
     }
 
     const minSpends = parseInt(minSpend);
     if(isNaN(minSpends) || minSpends <= 0 || !Number.isInteger(minSpends)) {
-      errors.push('Minimum spend must be a whole number greater than zero.')
+      errors.push(MESSAGES.COUPON.INVALID_MIN_SPEND)
     }
 
     const usageLimits = parseInt(usageLimit);
     if(isNaN(usageLimits) || usageLimits <= 0 || !Number.isInteger(usageLimits)) {
-      errors.push('Usage limit must be a whole number greater than zero.')
+      errors.push(MESSAGES.COUPON.INVALID_USAGE_LIMIT)
     }
 
     const startDates = new Date(startDate);
     const currentDate = new Date()
 
     if(isNaN(startDates) || startDates < currentDate.setHours(0,0,0,0) ) {
-      errors.push('Start date must be today or a future date.')
+      errors.push(MESSAGES.COUPON.INVALID_START_DATE)
     }
 
     const expiryDates = new Date(expiryDate);
     if(isNaN(expiryDates) || expiryDates <= 0) {
-      errors.push('Expiry date must be a date.')
+      errors.push(MESSAGES.COUPON.INVALID_EXPIRY_DATE)
     }
 
     if(expiryDates < startDates){
-      errors.push('Expiry date must same or after start date.')
+      errors.push(MESSAGES.COUPON.EXPIRY_BEFORE_START)
     }
 
     if(applicableType === ''){
-      errors.push('Applicable type is required.')
+      errors.push(MESSAGES.COUPON.APPLICABLE_TYPE_REQUIRED)
     }
 
     if (applicableType === 'product' && product) {
@@ -262,7 +264,7 @@ export const postEditCoupon = async (req,res) => {
       });
 
       if (existingProductCoupon) {
-        errors.push('A coupon already exists for this product.');
+        errors.push(MESSAGES.COUPON.PRODUCT_EXISTS);
       }
     }
 
@@ -274,7 +276,7 @@ export const postEditCoupon = async (req,res) => {
       });
 
       if (existingCategoryCoupon) {
-        errors.push('A coupon already exists for this category.');
+        errors.push(MESSAGES.COUPON.CATEGORY_EXISTS);
       }
     }
 
@@ -285,7 +287,7 @@ export const postEditCoupon = async (req,res) => {
       })
 
       if (existingAllCoupon) {
-        errors.push('A coupon already exists for All.');
+        errors.push(MESSAGES.COUPON.ALL_EXISTS);
       }
     }
 
@@ -295,13 +297,13 @@ export const postEditCoupon = async (req,res) => {
     })
 
     if(existingCoupon){
-      errors.push('Another coupon already exists with this coupon code.')
+      errors.push(MESSAGES.COUPON.CODE_EXISTS)
     }
 
 
     if(errors.length > 0){
       req.flash('error',errors)
-      return res.status(400).redirect(`/admin/editCoupon/${couponId}`)
+      return res.status(STATUS_CODES.BAD_REQUEST).redirect(`/admin/editCoupon/${couponId}`)
     }
 
     const updatedCoupon = await couponModel.findByIdAndUpdate(couponId,{
@@ -329,7 +331,7 @@ export const postEditCoupon = async (req,res) => {
 
   }catch (error) {
     console.log("Error in post edit coupon",error);
-    res.status(500).json({message:"Internal server error"})
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({message: MESSAGES.COMMON.INTERNAL_SERVER_ERROR})
   }
 }
 
@@ -342,6 +344,6 @@ export const deleteCoupon = async (req,res) => {
     res.redirect("/admin/coupons")
   } catch (error) {
       console.log("Error in delete coupon",error);
-      res.status(500).json({message:"Internal server error"})
+      res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({message: MESSAGES.COMMON.INTERNAL_SERVER_ERROR})
   }
 }
