@@ -1,4 +1,6 @@
 import userModel from '../../models/User.js'
+import { STATUS_CODES } from '../../constants/statusCodes.js'
+import { MESSAGES } from '../../constants/messages.js'
 
 //* //  //  //   //  //          GET USER LIST PAGE   //  //  //  //  //  //  //
 export const getUserList=async (req,res)=> {
@@ -21,7 +23,7 @@ export const getUserList=async (req,res)=> {
     })                                                    //render customers page
   }catch(message){
     console.log(message);
-     res.status(500)                                                                           //render message page
+     res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR)                                                                           //render message page
   }
 }
 
@@ -33,7 +35,7 @@ export const blockUser=async (req,res)=>{                                       
     const user=await userModel.findById(userId)                                               //get user from database
 
     if(!user){
-      return res.status(404).send("User not found")
+      return res.status(STATUS_CODES.NOT_FOUND).send(MESSAGES.COMMON.USER_NOT_FOUND)
     }
     user.isBlocked = !user.isBlocked;                                                         //block user
     await user.save();
@@ -41,7 +43,7 @@ export const blockUser=async (req,res)=>{                                       
 
   }catch(error){
     console.log(error);
-    res.status(500)
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR)
   }
 }
 
@@ -53,6 +55,6 @@ export const searchUser=async(req,res)=>{
     res.render('admin/userList',{usersdata,title:"Customers"})
   }catch(error){
     console.log(error);
-    res.status(500).send("Internal server error")
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR)
   }
 }

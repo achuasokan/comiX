@@ -1,5 +1,6 @@
 import userModel from '../../models/User.js'
-
+import { STATUS_CODES } from '../../constants/statusCodes.js'
+import { MESSAGES } from '../../constants/messages.js'
 
 //* //  //  //   //  //          GET LOGIN Page    //  //  //  //  //  //  //
 export const getAdminLogin = async (req,res) => {                                                      
@@ -19,7 +20,7 @@ export const postAdminLogin = async (req,res)=>{
     req.session.adminID=email                                                                      //set admin id in session  
     res.redirect('/admin/dashboard')                                                                //redirect to dashboard
   }else{                                                                                            //if email and password are incorrect
-    req.flash('error',["Invalid Email or Password"])
+    req.flash('error',[MESSAGES.ADMIN.INVALID_CREDENTIALS])
     res.redirect('/admin/login')
   }
 }

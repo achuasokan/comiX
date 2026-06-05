@@ -1,6 +1,8 @@
 import userModel from "../../models/User.js";
 import productModel from "../../models/Product.js";
 import orderModel from "../../models/Order.js";
+import { STATUS_CODES } from "../../constants/statusCodes.js"
+import { MESSAGES } from "../../constants/messages.js"
 
 export const getDashboard = async (req, res) => {
   const { filterType = 'daily' } = req.query;
@@ -241,6 +243,6 @@ export const getDashboard = async (req, res) => {
     });
   } catch (error) {
     console.error("Dashboard Error:", error);
-    res.status(500).render('error', { message: "Error loading dashboard" });
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).render('error', { message: MESSAGES.DASHBOARD.LOAD_ERROR });
   }
 };

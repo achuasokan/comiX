@@ -4,6 +4,8 @@ import mongoose from 'mongoose'
 import PDFDocument from 'pdfkit'
 
 import walletModel from '../../models/wallet.js'
+import { STATUS_CODES } from '../../constants/statusCodes.js'
+import { MESSAGES } from '../../constants/messages.js'
 
 
 //*  //  //   //  //          GET ORDER  HistoryPAGE   //  //  //  //  //  //  //
@@ -37,7 +39,7 @@ export const getOrderHistoryPage = async (req,res) => {
     })
   } catch (error) {
     console.log("get order history page error :",error);
-    res.status(500).send('Internal Server Error');
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR);
   }
 }
 
@@ -52,7 +54,7 @@ export const getOrderDetailPage = async (req,res) => {
     const itemId = req.params.itemId
     
     if (!mongoose.Types.ObjectId.isValid(orderId) || !mongoose.Types.ObjectId.isValid(itemId)) {
-      return res.status(400).send('Invalid Order ID or Item ID');
+      return res.status(STATUS_CODES.BAD_REQUEST).send(MESSAGES.ORDER.INVALID_ID);
     }
 
     const order = await orderModel.findOne({ _id:orderId, user:userId})
@@ -63,20 +65,20 @@ export const getOrderDetailPage = async (req,res) => {
     }).populate('address')
 
     if(!order){
-      return res.status(404).send('Order not found')
+      return res.status(STATUS_CODES.NOT_FOUND).send(MESSAGES.ORDER.NOT_FOUND)
     }
    
 
     const item = order.items.id(itemId)
     if(!item){
-      return res.status(404).send('Item not found')
+      return res.status(STATUS_CODES.NOT_FOUND).send(MESSAGES.ORDER.ITEM_NOT_FOUND)
     }
    
 
     res.render('profile/orderDetail',{ order, item,title:"Order Detail" })    
   } catch (error) {
     console.log("get order detail page error :",error);
-    res.status(500).send('Internal Server Error');
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR);
   }
 }
 
@@ -98,7 +100,7 @@ export const orderCancel = async (req,res) => {
     console.log("order in cancel",order);
 
     if(!order){
-      return res.status(404).json({message: 'Order not found'})
+      return res.status(STATUS_CODES.NOT_FOUND).json({message: MESSAGES.ORDER.NOT_FOUND})
     }
    
     //update the order document to set the item status to cancelled
@@ -109,7 +111,7 @@ export const orderCancel = async (req,res) => {
     );
 
     if(!updatedOrder){
-      return res.status(404).json({message: 'Item not found in the order'})
+      return res.status(STATUS_CODES.NOT_FOUND).json({message: MESSAGES.ORDER.ITEM_NOT_FOUND})
     }
   
 
@@ -160,10 +162,10 @@ export const orderCancel = async (req,res) => {
       }
     }
     await wallet.save();
-    res.status(200).json({message: 'Order cancelled successfully'})
+    res.status(STATUS_CODES.OK).json({message: MESSAGES.ORDER.CANCELLED})
   } catch (error) {
     console.log("order cancel error :",error);
-    res.status(500).send('Internal Server Error');
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR);
   }
 }
 
@@ -178,12 +180,12 @@ export const requestReturn = async (req, res) => {
     const order = await orderModel.findOne({ _id: orderId, user: userId });
 
     if (!order) {
-      return res.status(404).json({ message: 'Order not found' });
+      return res.status(STATUS_CODES.NOT_FOUND).json({ message: MESSAGES.ORDER.NOT_FOUND });
     }
 
     const item = order.items.id(itemId);
     if (!item) {
-      return res.status(404).json({ message: 'Item not found' });
+      return res.status(STATUS_CODES.NOT_FOUND).json({ message: MESSAGES.ORDER.ITEM_NOT_FOUND });
     }
 
     // Update the item with return request details
@@ -195,10 +197,10 @@ export const requestReturn = async (req, res) => {
 
     
 
-    res.status(200).json({ message: 'Return request submitted successfully' });
+    res.status(STATUS_CODES.OK).json({ message: MESSAGES.ORDER.RETURN_REQUESTED });
   } catch (error) {
     console.log("Error in requesting return:", error);
-    res.status(500).send('Internal Server Error');
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR);
   }
 };
 
@@ -218,7 +220,7 @@ export const downloadInvoice = async (req,res) => {
     .populate('user')
 
     if(!order){
-      return res.status(404).send('Order not found')
+      return res.status(STATUS_CODES.NOT_FOUND).send(MESSAGES.ORDER.NOT_FOUND)
     }
 
   const docInvoice = new PDFDocument({ margin: 50 })
@@ -309,6 +311,6 @@ export const downloadInvoice = async (req,res) => {
    docInvoice.end();
   }catch (error) {
     console.log("download invoice error :",error);
-    res.status(500).send('Internal Server Error');
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR);
   }
 }

@@ -1,4 +1,6 @@
 import walletModel from "../../models/wallet.js"
+import { STATUS_CODES } from '../../constants/statusCodes.js'
+import { MESSAGES } from '../../constants/messages.js'
 
 //* //  //  //   //  //          GET WALLET PAGE    //  //  //  //  //  //  //
 
@@ -17,6 +19,6 @@ export const getWalletPage = async (req,res) => {
     res.render('profile/wallet',{wallet,title:"Wallet"})
   } catch (error) {
     console.error("error in get wallet page",error);
-    res.status(500).send("internal server error in get wallet page")
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR)
   }
 }

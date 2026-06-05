@@ -1,6 +1,7 @@
 import wishListModel from '../../models/wishlist.js'
 import { calculateDiscountPrice } from '../../utils/discountprice.js'
-
+import { STATUS_CODES } from '../../constants/statusCodes.js'
+import { MESSAGES } from '../../constants/messages.js'
 
 
 //* //  //  //   //  //         GET WISHLIST PAGE   //  //  //  //  //  //  //
@@ -42,7 +43,7 @@ export const getWishListPage = async(req,res) => {
     res.render('user/wishlist',{ wishlist, currentPage: page, totalPages, title:"Wishlist" });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({ error: MESSAGES.COMMON.INTERNAL_SERVER_ERROR });
   }
 }
 
@@ -55,7 +56,7 @@ export const addToWishlist = async (req, res) => {
     const userId = req.session.userID; // Get logged-in user ID from session
     // Check if userId is valid
     if (!userId) {
-      return res.status(400).send('User not logged in');
+      return res.status(STATUS_CODES.BAD_REQUEST).send(MESSAGES.AUTH.NOT_LOGGED_IN);
     }
     //get the product id from the route params
     const productId = req.params.productId; 
@@ -68,10 +69,10 @@ export const addToWishlist = async (req, res) => {
     );
 
     //  
-    res.status(200).json({message: 'Added to your wishlist'});
+    res.status(STATUS_CODES.OK).json({message: MESSAGES.WISHLIST.ADDED});
   } catch (error) {
     console.log(error);
-    res.status(500).send('Error adding product to wishlist');
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.WISHLIST.ADD_ERROR);
   }
 };
 
@@ -89,9 +90,9 @@ export const removeFromWishlist = async (req, res) => {
     );
 
     // res.redirect('/wishlist'); 
-    res.status(200).json({message: 'Removed from your wishlist'});
+    res.status(STATUS_CODES.OK).json({message: MESSAGES.WISHLIST.REMOVED});
   } catch (error) {
     console.log(error);
-    res.status(500).send('Error removing product from wishlist');
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.WISHLIST.REMOVE_ERROR);
   }
 };

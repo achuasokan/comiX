@@ -5,6 +5,8 @@ import categoryModel from '../../models/Category.js'
 import productModel from '../../models/Product.js'
 import bannerModel from '../../models/Banner.js'
 import  {calculateDiscountPrice  } from '../../utils/discountprice.js'
+import { STATUS_CODES } from '../../constants/statusCodes.js'
+import { MESSAGES } from '../../constants/messages.js'
 
 
 //* //  //  //   //  //          getting Login pagessss     //  //  //  //  //  //  //
@@ -34,18 +36,18 @@ export const postLogin=async(req,res)=>{
 
     //if user not found                               
     if(!userFind){                                                                       
-      req.flash('error',"Please enter a valid email address")
+      req.flash('error',MESSAGES.AUTH.INVALID_EMAIL)
       return res.redirect('/login')
     }
     //if user is blocked
     if(userFind.isBlocked){                                                                  //if user is blocked                     
-      req.flash('error','Your account has been blocked.Please contact Support')
+      req.flash('error',MESSAGES.COMMON.ACCOUNT_BLOCKED)
       return res.redirect('/login')
     }
 
     //if user is not verified
     if(!userFind.isVerified){
-      req.flash('error',"Please verify your account before login")
+      req.flash('error',MESSAGES.AUTH.UNVERIFIED_ACCOUNT)
       return res.redirect('/login')
     }
 
@@ -54,7 +56,7 @@ export const postLogin=async(req,res)=>{
 
     //if password is incorrect
     if(!passwordMatch) {                                                                  
-      req.flash('error',"Please enter a valid password")
+      req.flash('error',MESSAGES.AUTH.INVALID_PASSWORD)
       return res.redirect('/login')
     } else {   
 
@@ -68,7 +70,7 @@ res.redirect('/home')
     }
   }catch(error){
     console.log(error);
-    req.flash('error',"Internal server error")
+    req.flash('error',MESSAGES.COMMON.INTERNAL_SERVER_ERROR)
     return res.redirect('/login') 
   }
 }
@@ -80,7 +82,7 @@ export const getHome=async (req,res)=> {
     res.redirect("/")
   }catch(error){
     console.log(error);
-    res.status(500).send("Internal server error")
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR)
     
   }
 }
@@ -110,13 +112,13 @@ export const postSignup=async(req,res)=>{
     const passwordpattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])(?!.*\s)[A-Za-z\d!@#$%^&*]{6,}$/;
 
     if(!namepattern.test(name)){
-      error="Name must be between 3 to 20 characters long and contain only alphabets."
+      error=MESSAGES.AUTH.INVALID_NAME_FORMAT
     }else if(!emailpattern.test(email)){
-      error="Please enter a valid email address"
+      error=MESSAGES.AUTH.INVALID_EMAIL
     }else if(!passwordpattern.test(password)){
-      error="Password must be at least 6 characters long, include upper and lower case letters, a digit and a special character."
+      error=MESSAGES.AUTH.INVALID_PASSWORD_FORMAT
     }else if(password !== confirmPassword){
-      error="The passwords you entered do not match. Please try again."
+      error=MESSAGES.AUTH.PASSWORD_MISMATCH
     }
 
     if(error){
@@ -127,7 +129,7 @@ export const postSignup=async(req,res)=>{
    // check if user already exist
     const userMatch=await userModel.findOne({email})
     if(userMatch){
-      req.flash('error',"User Already Exist")
+      req.flash('error',MESSAGES.AUTH.USER_ALREADY_EXISTS)
       return res.redirect('/signup')
     }
 
@@ -148,12 +150,12 @@ export const postSignup=async(req,res)=>{
     //send otp to email
     await sendOTPEmail(email,otp)  
 
-   req.flash('success','OTP sent to your email. Please check your email')                          //render otp page
+   req.flash('success',MESSAGES.AUTH.OTP_SENT)                          //render otp page
    return res.redirect('/otp/verify')
 
   }catch(error){
     console.log(error);
-    req.flash('error',`An error occurred during registration,Please try again`)
+    req.flash('error',MESSAGES.AUTH.REGISTRATION_ERROR)
     return res.redirect('/signup')
   }
 }
@@ -166,7 +168,7 @@ export const getVerifyOTP=(req,res)=>{
     res.render('user/otpSignup',{title:"Verify OTP", session: req.session})
   }catch(error){
     console.log(error);
-    res.status(500).send("Internal server error in verify OTP")
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.AUTH.VERIFY_OTP_ERROR)
   }
  
 }
@@ -184,7 +186,7 @@ export const postVerifyOTP=async (req,res)=>{
   const tempUser=req.session.tempUser
    
   if(!tempUser){
-    req.flash('error',"session expired. please signup again")
+    req.flash('error',MESSAGES.AUTH.SESSION_EXPIRED)
     return res.redirect('/signup')
   }
 
@@ -193,7 +195,7 @@ export const postVerifyOTP=async (req,res)=>{
 
 // Check if the provided OTP matches and whether it is expired
   if(otp !== storedOtp || otpExpiresAt < new Date()){
-    req.flash('error','invalid or Expired otp')
+    req.flash('error',MESSAGES.AUTH.INVALID_OR_EXPIRED_OTP)
     return res.redirect('/otp/verify')
   }
 
@@ -211,12 +213,12 @@ export const postVerifyOTP=async (req,res)=>{
   delete req.session.tempUser
 
 // Render login page with after successful signup
-  req.flash('success','Signup Successful.Please login')
+  req.flash('success',MESSAGES.AUTH.SIGNUP_SUCCESS)
   return res.redirect('/login')
 
   }catch(error){
     console.log(error);
-    res.status(500).send("Internal server error in verify OTP")
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.AUTH.VERIFY_OTP_ERROR)
   }
 }
 
@@ -230,7 +232,7 @@ export const resendOTP=async (req,res)=>{
 
 // If tempUser doesn't exist, prompt the user to sign up again    
   if(!tempUser || !tempUser.email){
-    req.flash('error',"session expired. please signup again")
+    req.flash('error',MESSAGES.AUTH.SESSION_EXPIRED)
     return res.redirect('/signup')
   }
 // Destructure tempUser data
@@ -253,12 +255,12 @@ export const resendOTP=async (req,res)=>{
      await sendOTPEmail(email,newOTP)   
 
 // Render OTP page with a success message                                                           
-   req.flash('success','New OTP has been sent to your email')                 //render otp page
+   req.flash('success',MESSAGES.AUTH.NEW_OTP_SENT)                 //render otp page
    return res.redirect('/otp/verify')
 
   }catch(error){
     console.log('Error resending OTP',error);
-    res.status(500).send("Internal server error in resend OTP")
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.AUTH.RESEND_OTP_ERROR)
   }
 }
 
@@ -302,12 +304,6 @@ export const getLandingPage=async(req,res)=>{
   }catch(error){
 
     console.log(error); 
-    res.status(500).send("Internal server error")
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR)
   }
 }
-
-
-
-
-
-

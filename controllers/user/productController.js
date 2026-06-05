@@ -2,6 +2,8 @@ import productModel from '../../models/Product.js'
 import categoryModel from '../../models/Category.js'
 import bannerModel from '../../models/Banner.js'
 import {calculateDiscountPrice} from '../../utils/discountprice.js'
+import { STATUS_CODES } from '../../constants/statusCodes.js'
+import { MESSAGES } from '../../constants/messages.js'
 
 //* //  //  //   //  //         GET PRODUCTS BY CATEGORY   //  //  //  //  //  //  //
 export const getProductsByCategory = async (req,res)=> {
@@ -61,7 +63,7 @@ export const getProductsByCategory = async (req,res)=> {
     
     //if the category is not found, return a 404 error
     if(!category){
-      return res.status(404).send("Category not found")
+      return res.status(STATUS_CODES.NOT_FOUND).send(MESSAGES.COMMON.CATEGORY_NOT_FOUND)
     }
 
   const totalProducts = await productModel.countDocuments({category: categoryId, isDeleted: false})
@@ -79,7 +81,7 @@ export const getProductsByCategory = async (req,res)=> {
 
   }catch(error){
     console.log(error);
-    res.status(500).send("Internal server error")
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR)
   }
 }
 
@@ -95,7 +97,7 @@ export const getProductDetail = async (req,res) => {
 
     //if the product is not found, return a 404 error
     if(!product){
-      return res.status(404).send("Product not found")
+      return res.status(STATUS_CODES.NOT_FOUND).send(MESSAGES.COMMON.PRODUCT_NOT_FOUND)
     }
    
     //calculate the discounted price for the product
@@ -117,7 +119,7 @@ export const getProductDetail = async (req,res) => {
 
   }catch(error){
     console.log(error);
-    res.status(500).send("Internal server error")
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR)
   }
 }
 
@@ -130,7 +132,7 @@ export const addReview = async (req,res) => {
 
     const product = await productModel.findById(productId)
     if(!product){
-      return res.status(404).send("Product not found")
+      return res.status(STATUS_CODES.NOT_FOUND).send(MESSAGES.COMMON.PRODUCT_NOT_FOUND)
     }
 
     const review = {
@@ -149,7 +151,7 @@ export const addReview = async (req,res) => {
     
   }catch(error){
     console.log("adding review error",error);
-    res.status(500).send("Internal server error")
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR)
   }
 }
 
@@ -174,7 +176,7 @@ export const getAllProductPage = async (req, res) => {
     if (categoryFilter !== "all") {
       const category = await categoryModel.findOne({ name: categoryFilter });
       if (!category) {
-        return res.status(400).send("category not found");
+        return res.status(STATUS_CODES.BAD_REQUEST).send(MESSAGES.COMMON.CATEGORY_NOT_FOUND);
       }
       filterOption.category = category._id;
     }
@@ -247,7 +249,7 @@ export const getAllProductPage = async (req, res) => {
 
   } catch (error) {
     console.log("Error in all products page", error);
-    res.status(500).send("Internal server error");
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR);
   }
 }
 

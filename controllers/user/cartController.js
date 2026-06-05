@@ -1,6 +1,8 @@
 import cartModel from '../../models/Cart.js'
 import productModel from '../../models/Product.js'
 import { calculateDiscountPrice } from '../../utils/discountprice.js'
+import { STATUS_CODES } from '../../constants/statusCodes.js'
+import { MESSAGES } from '../../constants/messages.js'
 
 //* //  //  //   //  //         GET CART PAGE   //  //  //  //  //  //  //
 
@@ -27,7 +29,7 @@ export const getCartPage = async (req,res) => {
     })
   } catch (error) {
     console.log("Error in getCartPage:", error)
-    res.status(500).json({error: "Internal server error"})
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({error: MESSAGES.COMMON.INTERNAL_SERVER_ERROR})
   }
 }
 
@@ -42,12 +44,12 @@ export const addToCart = async (req,res) => {
     
     const product = await productModel.findById(productId).populate('discount')
     if (!product) {
-      return res.status(404).json({message: "Product not found"})
+      return res.status(STATUS_CODES.NOT_FOUND).json({message: MESSAGES.COMMON.PRODUCT_NOT_FOUND})
     }
 
     
     if(quantity > product.stock) {
-      return res.status(400).json({message: "Not enoughsss stock available"})
+      return res.status(STATUS_CODES.BAD_REQUEST).json({message: MESSAGES.CART.OUT_OF_STOCK})
     }
     // calculate the discount price of the product
     const discountprice = await calculateDiscountPrice(product)
@@ -68,11 +70,11 @@ export const addToCart = async (req,res) => {
 
      
       // if(newQuantity > product.stock) {
-      //   return res.status(400).send({message: "Not enough stock available"})
+      //   return res.status(STATUS_CODES.BAD_REQUEST).send({message: MESSAGES.CART.OUT_OF_STOCK})
       // }
 
       if (newQuantity > 5) {
-        return res.status(400).json({ message: " You cannot add more than 5 of the same item to your cart." });
+        return res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.CART.MAX_QUANTITY_REACHED });
       }
       // increase the quantity of the product
       cart.items[itemIndex].quantity += quantity
@@ -80,11 +82,11 @@ export const addToCart = async (req,res) => {
   
       
       if(quantity > product.stock) {
-        return res.status(400).json({message: "Not enough stock availables"})
+        return res.status(STATUS_CODES.BAD_REQUEST).json({message: MESSAGES.CART.OUT_OF_STOCK})
       }
     
       if (quantity > 5) {
-        return res.status(400).json({ message: "You cannot add more than 5 of the same item to your cart." });
+        return res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.CART.MAX_QUANTITY_REACHED });
       }
       // add the product to the cart
       cart.items.push({
@@ -100,11 +102,11 @@ export const addToCart = async (req,res) => {
     cart.total = calculateTotal(cart.subtotal, cart.discount)
 
     await cart.save()
-   res.status(200).json({message: "Product added to cart successfully"})
+   res.status(STATUS_CODES.OK).json({message: MESSAGES.CART.ADD_SUCCESS})
 
   } catch (error) {
     console.log("error in addtoCart",error);
-   return res.status(500).json({message: "Something went wrong.Please try again later."})
+   return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({message: MESSAGES.CART.GENERAL_ERROR})
   }
 }
 
@@ -117,14 +119,14 @@ export const updateCartItemQuantity = async (req, res) => {
 
     const cart = await cartModel.findOne({ user: userId }).populate('items.product')
     if (!cart) {
-      return res.status(404).json({ error: "Cart not found" })
+      return res.status(STATUS_CODES.NOT_FOUND).json({ error: MESSAGES.CART.CART_NOT_FOUND })
     }
 
     const itemIndex = cart.items.findIndex(item => item.product._id.equals(productId))
     if (itemIndex > -1 && newQuantity > 0 && newQuantity <= 5) {
       const product = await productModel.findById(productId).populate('discount')
       if (newQuantity > product.stock) {
-        return res.status(400).json({ error: "Not enough stock available" })
+        return res.status(STATUS_CODES.BAD_REQUEST).json({ error: MESSAGES.CART.OUT_OF_STOCK })
       }
 
       cart.items[itemIndex].quantity = newQuantity;
@@ -151,11 +153,11 @@ export const updateCartItemQuantity = async (req, res) => {
         }))
       })
     } else {
-      res.status(400).json({ error: "Invalid quantity" })
+      res.status(STATUS_CODES.BAD_REQUEST).json({ error: MESSAGES.CART.INVALID_QUANTITY })
     }
   } catch (error) {
     console.log("Error in updateCartItemQuantity", error)
-    res.status(500).json({ error: "Error updating cart item quantity" })
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({ error: MESSAGES.CART.UPDATE_ERROR })
   }
 }
 
@@ -193,11 +195,11 @@ export const removeCartItem = async (req, res) => {
         }))
       })
     } else {
-      res.status(404).json({ error: "Cart not found" })
+      res.status(STATUS_CODES.NOT_FOUND).json({ error: MESSAGES.CART.CART_NOT_FOUND })
     }
   } catch (error) {
     console.log("Error in removeCartItem", error)
-    res.status(500).json({ error: "Error removing cart item" })
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({ error: MESSAGES.CART.REMOVE_ERROR })
   }
 }
 

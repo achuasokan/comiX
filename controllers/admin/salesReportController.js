@@ -1,6 +1,8 @@
 import orderModel from '../../models/Order.js'
 import PDFDocument from 'pdfkit'
 import ExcelJS from 'exceljs'
+import { STATUS_CODES } from '../../constants/statusCodes.js'
+import { MESSAGES } from '../../constants/messages.js'
 
  //* //  //  //   //  //          GET SALES REPORT PAGE   //  //  //  //  //  //  //
 export const getSalesReportPage = async (req,res) => {
@@ -91,7 +93,7 @@ export const getSalesReportPage = async (req,res) => {
 
   }catch (error) {
     console.log("Error in getSalesReportPage",error);
-    res.status(500).send("Internal Server Error");   
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR);   
   }
 }
 
@@ -200,7 +202,7 @@ export const generatePDFReport = async (req, res) => {
     doc.end();
   } catch (error) {
     console.error('Error in generatePDFReport:', error);
-    res.status(500).send('Internal Server Error');
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR);
   }
 };
 
@@ -395,7 +397,7 @@ export const generateExcelReport = async (req, res) => {
     res.end();
   } catch (error) {
     console.log("Error in generateExcelReport", error);
-    res.status(500).send("Internal Server Error");
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR);
   }
 };
 

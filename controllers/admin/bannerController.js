@@ -1,6 +1,8 @@
 import cloudinary from "../../config/cloudinary.js";
 import bannerModel from  "../../models/Banner.js"
 import fs from "fs"
+import { STATUS_CODES } from "../../constants/statusCodes.js"
+import { MESSAGES } from "../../constants/messages.js"
 
 //* //  //  //   //  //          GET   Banner LIST PAGE   //  //  //  //  //  //  //
 
@@ -28,7 +30,7 @@ export const getBannerPage = async (req,res) => {
 
   }catch (error) {
     console.log('Error in getBannerPage',error)
-    res.status(500).send("Internal server error while fetching banner page")
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR)
   }
 }
 
@@ -39,7 +41,7 @@ export const getAddBannerPage = async (req,res) => {
     res.render('admin/addBanner',{title:'Add Banner'})
   }catch (error) {
     console.log("error in get banner page",error);
-    res.status(500).send('Internal server error')
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR)
   }
 }
 
@@ -56,31 +58,31 @@ export const postAddBanner = async (req,res) => {
 
     const bannerTitleRegex = /^[a-zA-Z][a-zA-Z0-9\s!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]{2,49}$/;
     if (!bannerTitle || ! bannerTitleRegex.test(bannerTitle)) {
-      errors.push('Banner title must be between 3 and 50 characters')
+      errors.push(MESSAGES.BANNER.INVALID_TITLE_LENGTH)
     }
 
     // validate Description
     const descriptionsRegex = /^[a-zA-Z][\s\S]{9,49}$/;
     if(!descriptions || !descriptionsRegex.test(descriptions.trim())) {
-      errors.push('Description must be between 10 to 50 characters')
+      errors.push(MESSAGES.BANNER.INVALID_DESCRIPTION_LENGTH)
     }
 
 
     if (files.length === 0) {
-      errors.push('Please upload at least one image')
+      errors.push(MESSAGES.BANNER.IMAGE_REQUIRED)
     } else  if (files.length > 3) {
-      errors.push("You can upload up to 3 images")
+      errors.push(MESSAGES.BANNER.MAX_IMAGES_EXCEEDED)
     } else {
       const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/gif', 'image/webp', 'image/svg+xml'];
       const maxSize = 10 * 1024 * 1024; // 10MB
 
       for (let file of files) {
         if (!allowedTypes.includes(file.mimetype)) {
-          errors.push(`Invalid file type ${file.originalname}. Only jpeg, png, jpg, gif, webp and svg are allowed`)
+          errors.push(MESSAGES.BANNER.INVALID_IMAGE_TYPE)
         }
 
         if (file.size > maxSize) {
-          errors.push(`File ${file.originalname} is too large. Maximum size is 10 MB`)
+          errors.push(MESSAGES.BANNER.IMAGE_SIZE_EXCEEDED)
         }
       }
     }
@@ -88,7 +90,7 @@ export const postAddBanner = async (req,res) => {
     //check for existing banner with same title
     const existingBanner = await bannerModel.findOne({title: bannerTitle})
     if(existingBanner) {
-      errors.push('A banner is already exists with this title')
+      errors.push(MESSAGES.BANNER.ALREADY_EXISTS)
     }
 
     if (errors.length > 0) {
@@ -113,7 +115,7 @@ export const postAddBanner = async (req,res) => {
       image: imageUrls
     })
 
-    req.flash('success','Banner added successfully')
+    req.flash('success', MESSAGES.BANNER.ADD_SUCCESS)
 
     // save the banner to the database
     await newBanner.save()
@@ -121,7 +123,7 @@ export const postAddBanner = async (req,res) => {
     res.redirect('/admin/banner')
   }catch (error) {
     console.log("error while adding a banner",error);
-    res.status(500).send('Internal server error')
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR)
   } finally {
    // Clean up the local uploaded files after uploading to Cloudinary
     files.forEach(file => {
@@ -158,13 +160,13 @@ export const postEditBanner = async (req,res) => {
     //validate Banner Title
     const bannerTitleRegex = /^[a-zA-Z][a-zA-Z0-9\s!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]{2,49}$/;
     if (!bannerTitle || !bannerTitleRegex.test(bannerTitle)) {
-      errors.push('Banner title must be between 3 to 50 characters')
+      errors.push(MESSAGES.BANNER.INVALID_TITLE_LENGTH)
     }
 
     // validate Description 
     const descriptionsRegex = /^[a-zA-Z][\s\S]{9,49}$/;
     if (!descriptions || !descriptionsRegex.test(descriptions)) {
-      errors.push('Description must be between 10 to 50 characters')
+      errors.push(MESSAGES.BANNER.INVALID_DESCRIPTION_LENGTH)
     }
 
     // check for existing banner with same title (excluding the current product)
@@ -174,31 +176,31 @@ export const postEditBanner = async (req,res) => {
     });
 
     if (existingBanner) {
-      errors.push('Another banner already exits with this Banner Title')
+      errors.push(MESSAGES.BANNER.ALREADY_EXISTS)
     }
     
     let  updatedImages = existingImages ? (Array.isArray(existingImages) ? existingImages : [existingImages]) : [];
 
     // validate Image
     if(files.length > 3) {
-      errors.push('You can upload up to 3 images')
+      errors.push(MESSAGES.BANNER.MAX_IMAGES_EXCEEDED)
     } else {
       const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp', 'image/svg+xml'];
       const maxSize = 10 * 1024 * 1024; // 10 MB
       for (let file of files) {
         if (!allowedTypes.includes(file.mimetype)) {
-          errors.push(`Invalid file type ${file.originalname}. Only jpeg, png, jpg, gif, webp, and svg are allowed.`)
+          errors.push(MESSAGES.BANNER.INVALID_IMAGE_TYPE)
         }
 
         if (file.size > maxSize) {
-          errors.push(`File ${file.originalname} is too large. Maximum size is 10 MB.`);
+          errors.push(MESSAGES.BANNER.IMAGE_SIZE_EXCEEDED);
         }
       }
     }
 
     // validate Image 
     if (updatedImages.length === 0 && files.length === 0){
-      errors.push('Please upload at least One Image')
+      errors.push(MESSAGES.BANNER.IMAGE_REQUIRED)
     }
 
     if (errors.length > 0) {
@@ -232,7 +234,7 @@ export const postEditBanner = async (req,res) => {
     res.redirect('/admin/banner')
   } catch (error) {
     console.log("error while adding banner",error);
-    res.status(500).send("Internal server error")
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR)
   } finally {
     // Clean up the local uploaded files
     files.forEach(file => {
@@ -250,14 +252,14 @@ export const blockBanner = async(req,res) => {
     const bannerId = req.params.bannerId
     const banner = await bannerModel.findById(bannerId)
     if (!banner) {
-      return res.status(400).send('Discount not found')
+      return res.status(STATUS_CODES.NOT_FOUND).send(MESSAGES.BANNER.NOT_FOUND)
     }
     banner.isActive = !banner.isActive;
     await banner.save()
     res.redirect('/admin/banner')
   } catch (error) {
     console.log("error in BlockBanner", error);
-    res.status(500).send('Internal server error')
+    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(MESSAGES.COMMON.INTERNAL_SERVER_ERROR)
   }
 }
 
