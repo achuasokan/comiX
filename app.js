@@ -33,18 +33,18 @@ import googleAuthRouter from './routes/googleAuthRoutes.js'
 
 
 //? middleware
-app.use(express.json());                                                                        //parse json
-app.use(express.urlencoded({extended:false}));                                                  //parse urlencoded
-app.use(express.static(path.join(__dirname,'public')));                                         //set public directory
-app.use(morgan('dev'));                                                                         //use morgan
+app.use(express.json());                                                                        
+app.use(express.urlencoded({extended:false}));                                                  
+app.use(express.static(path.join(__dirname,'public')));                                         
+app.use(morgan('dev'));                                                                         
 
 //? set template engine
-app.set('view engine','ejs');                                                                  //set view engine
-app.set('views',path.join(__dirname,'views'));                                                //set views directory
+app.set('view engine','ejs');                                                                  
+app.set('views',path.join(__dirname,'views'));                                                
 
 //? Use express-ejs-layouts middleware
 app.use(expressLayouts);
-app.set('layout', 'layouts/layout');                                                           // Default layout
+app.set('layout', 'layouts/layout');                                                           
 
 //? set cache
 app.use(nocache());                                                                           
@@ -67,12 +67,17 @@ app.use((req,res,next)=>{
 })
 
 //? passport middleware
-app.use(passport.initialize());                                                                //initialize passport
-app.use(passport.session());                                                                   //session middleware
+app.use(passport.initialize());                                                                
+app.use(passport.session());                                                                   
         
+//? health check 
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'OK', message: 'Server is running normally.' });
+});
+
 //? routes
-app.use('/admin',adminRouter)                                                                  //admin routes
-app.use('/',userRouter)                                                                         //user routes
+app.use('/admin',adminRouter)                                                                  
+app.use('/',userRouter)                                                                         
 app.use('/',googleAuthRouter)
 
 app.use((req,res, next) => {
