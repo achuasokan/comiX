@@ -27,13 +27,21 @@ export const postLogin=async(req,res)=>{
   try{
 
 
-    const {email,password}=req.body                                                       
+    const { email, password } = req.body;
 
-   
+    let userFind = await userModel.findOne({ email });  
 
-    
-    const userFind=await userModel.findOne({email})  
-
+    // If guest user doesn't exist yet, auto-create demo account
+    if (!userFind && email === 'guest@comix.com') {
+      const hashedPassword = await bcrypt.hash('Guest@123', 10);
+      userFind = await userModel.create({
+        name: 'Guest User',
+        email: 'guest@comix.com',
+        password: hashedPassword,
+        isVerified: true,
+        isBlocked: false
+      });
+    }
                                
     if(!userFind){                                                                       
       req.flash('error',MESSAGES.AUTH.INVALID_EMAIL)
